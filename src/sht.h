@@ -34,39 +34,9 @@
 /**
  * Critical error printing function.
  *
- * If certain program logic errors occur, this library will issue an error
- * message and abort the calling program.
- *
- * * An invalid value is passed to sht_msg().
- * * A `NULL` function pointer is passed to sht_new_().
- * * An invalid load factor threshold is passed to sht_set_lft().
- * * One of the following functions is called on a table that has been
- *   initialized:
- *   * sht_set_hash_ctx()
- *   * sht_set_eq_ctx()
- *   * sht_set_freefn()
- *   * sht_set_lft()
- *   * sht_init()
- * * One of the following functions is called on a table that has not been
- *   initialized:
- *   * sht_size()
- *   * sht_empty()
- *   * sht_get()
- *   * sht_add()
- *   * sht_set()
- *   * sht_replace()
- *   * sht_swap()
- *   * sht_pop()
- *   * sht_delete()
- *   * sht_ro_iter()
- *   * sht_rw_iter()
- * * One of the following functions is called on a table that has one or more
- *   iterators:
- *   * sht_add()
- *   * sht_set()
- *   * sht_pop()
- *   * sht_delete()
- *   * sht_free()
+ * If the calling program violates this library's contract, the library will
+ * print an error message and abort the program.  This variable can be set to
+ * customize how the error message is printed or logged.
  *
  * ```c
  * static void log_sht_err(const char *msg)
@@ -76,6 +46,40 @@
  *
  * sht_abort_print = log_sht_err;
  * ```
+ *
+ * The library will abort the program if any of the following occur.
+ *
+ * * An invalid value is passed to sht_msg().
+ *
+ * * A `NULL` function pointer is passed to sht_new_().
+ *
+ * * An invalid load factor threshold is passed to sht_set_lft().
+ *
+ * * One of the functions in the table below is called on a table that is in an
+ *   inappropriate state.
+ *
+ *   | Function             | Uninitialized | Initialized | Iterator(s) exist |
+ *   |----------------------|:-------------:|:-----------:|:-----------------:|
+ *   |sht_set_hash_ctx()    |               |  **ABORT**  |         †         |
+ *   |sht_set_eq_ctx()      |               |  **ABORT**  |         †         |
+ *   |sht_set_freefn()      |               |  **ABORT**  |         †         |
+ *   |sht_set_lft()         |               |  **ABORT**  |         †         |
+ *   |sht_init()            |               |  **ABORT**  |         †         |
+ *   |sht_free()            |               |             |     **ABORT**     |
+ *   |sht_add()             |   **ABORT**   |             |     **ABORT**     |
+ *   |sht_set()             |   **ABORT**   |             |     **ABORT**     |
+ *   |sht_get()             |   **ABORT**   |             |                   |
+ *   |sht_size()            |   **ABORT**   |             |                   |
+ *   |sht_empty()           |   **ABORT**   |             |                   |
+ *   |sht_delete()          |   **ABORT**   |             |     **ABORT**     |
+ *   |sht_pop()             |   **ABORT**   |             |     **ABORT**     |
+ *   |sht_replace()         |   **ABORT**   |             |                   |
+ *   |sht_swap()            |   **ABORT**   |             |                   |
+ *   |sht_ro_iter()         |   **ABORT**   |             |                   |
+ *   |sht_rw_iter()         |   **ABORT**   |             |                   |
+ *
+ *   † Abort implied.  (An iterator cannot be created on an uninitialized
+ *     table.)
  *
  * @param	msg	The error message (not newline terminated).
  */
