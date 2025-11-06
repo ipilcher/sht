@@ -36,8 +36,8 @@ at that position.
 *PSL_h = (hypothetical_position - ideal_position + table_size) mod table_size*
 
 The Robin Hood insertion and search algorithms depend heavily on PSLs (actual
-and hypothetical), although they are calculated with addition rather than the
-formulas above.
+and hypothetical), although they are calculated step-by-step instead of using
+the formulas above.
 
 ## Insertion algorithm
 
@@ -100,8 +100,8 @@ The algorithm has the effect of grouping entries with equal ideal positions
 together.  These groupings are called "bucket groups," and each bucket group
 within a table is defined by the common ideal position of its members.
 
-Consider this table (which has a very load factor in order to better illustrate
-the bucket group concept).
+Consider this table (which has a very high load factor in order to better
+illustrate the bucket group concept).
 
 |Position|   Hash   |Ideal position|PSL|  Key |
 |:------:|:--------:|:------------:|:-:|------|
@@ -180,7 +180,8 @@ Insertion always starts at an entry's ideal position and proceeds forward from
 there.  Thus, entries are always inserted at or after their ideal position.
 (An entry cannot have a negative PSL.)
 
-When the algorithm considers the current position, there are 5 possibilities.
+When the algorithm considers the current position, there are 5 possibilities
+(or 4 possibilities, one of which has 2 options).
 
 1. The position is unoccupied.  The candidate will be stored at the current
    position.
@@ -197,20 +198,20 @@ When the algorithm considers the current position, there are 5 possibilities.
    indicate that the candidate and the occupant are members of the same bucket
    group.
 
-   * If the keys of the candidate and the occupant are also equal, then the key
-     was already stored in the table at the current position.  The value
-     associated with the key may or may not be updated; either way, the
-     structure of the table is unaffected.
+   1. If the keys of the candidate and the occupant are also equal, then the key
+      was already stored in the table at the current position.  The value
+      associated with the key may or may not be updated; either way, the
+      structure of the table is unaffected.
 
-   * If the keys of the candidate and the occupant are not equal, the algorithm
-     will skip the current position and advance to the next position.
+   2. If the keys of the candidate and the occupant are not equal, the algorithm
+      will skip the current position and advance to the next position.
 
-     (This behavior is not strictly required.  Entries within the same bucket
-     group could displace one another without affecting the continuity of the
-     group.  This would result in all existing members of the group being
-     shifted by one position.  Instead, the algorithm skips over the existing
-     members of the group until it finds either an empty position or the
-     beginning of a later group.)
+      (This behavior is not strictly required.  Entries within the same bucket
+      group could displace one another without affecting the continuity of the
+      group.  This would result in all existing members of the group being
+      shifted by one position.  Instead, the algorithm skips over the existing
+      members of the group until it finds either an empty position or the
+      beginning of a later group.)
 
 4. The occupant's PSL is less than the candidate's PSL.  This indicates that
    the occupant belongs to a later bucket group than the candidate.
@@ -255,10 +256,10 @@ In other words:
 4. If the PSL of the entry at the current position is equal to the key's PSL,
    check whether the entry's key is equal to the subject key.
 
-   * If the keys are equal, stop.  The current entry is the result of the
-     search.
-   * If the keys are not equal, advance to the next position, incrementing the
-     key's PSL.
+   1. If the keys are equal, stop.  The current entry is the result of the
+      search.
+   2. If the keys are not equal, advance to the next position, incrementing the
+      key's PSL.
 
 5. If the PSL of the entry at the current position is less than the key's PSL,
    stop.  The key is not present in the table.  (The entry belongs to a later
@@ -276,7 +277,7 @@ order to maintain the bucket group structure.
    This is the first position that is either empty or contains an entry with a
    PSL of zero.
 
-2. Shift the entries that need to be moved (if any), handling wrap-around.
+2. Shift the entries that need to be moved (if any), accounting for wrap-around.
 
 3. Adjust the PSLs of the entries that were moved; each of them is now 1
    position closer to its ideal position.
