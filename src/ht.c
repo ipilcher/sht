@@ -957,8 +957,7 @@ _Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
 }
 
 /**
- * Replace the entry associated with an existing key and return the existing
- * entry.
+ * Exchange an existing entry and a new entry.
  *
  * @param	ht	The hash table.
  * @param	key	The key for which the value is to be replaced.
