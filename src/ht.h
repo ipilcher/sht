@@ -503,6 +503,44 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 	)(iter, ##__VA_ARGS__)
 
 /**
+ * Free a hash table iterator (read-only or read/write).
+ *
+ * @param	iter	The iterator.
+ *
+ * @see		sht_ro_iter_free_()
+ * @see		sht_rw_iter_free_()
+ */
+#define SHT_ITER_FREE(iter)		SHT_ITER_GENERIC(free, iter)
+
+/**
+ * Get the next entry from an iterator.
+ *
+ * @param	iter	The iterator.
+ *
+ * @returns	A pointer to the next entry, if any.  If no more entries are
+ *		available, `NULL` is returned.
+ *
+ * @see		sht_ro_iter_next_()
+ * @see		sht_rw_iter_next_()
+ */
+#define	SHT_ITER_NEXT(iter)		SHT_ITER_GENERIC(next, iter)
+
+
+/**
+ * Replace the last entry returned by an iterator.
+ *
+ * @param	iter	The iterator.
+ * @param	entry	The new entry.
+ *
+ * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
+ *		returned and the error status of the iterator is set.
+ *
+ * @see		sht_ro_iter_replace_()
+ * @see		sht_rw_iter_replace_()
+ */
+#define SHT_ITER_REPLACE(iter, entry)	SHT_ITER_GENERIC(replace, iter, entry)
+
+/**
  * Get the the error code of an iterator's last error.
  *
  * The value returned by this macro is only valid after a previous iterator
@@ -531,43 +569,6 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
  * @see		sht_rw_iter_msg_()
  */
 #define SHT_ITER_MSG(iter)		SHT_ITER_GENERIC(msg, iter)
-
-/**
- * Get the next entry from an iterator.
- *
- * @param	iter	The iterator.
- *
- * @returns	A pointer to the next entry, if any.  If no more entries are
- *		available, `NULL` is returned.
- *
- * @see		sht_ro_iter_next_()
- * @see		sht_rw_iter_next_()
- */
-#define	SHT_ITER_NEXT(iter)		SHT_ITER_GENERIC(next, iter)
-
-/**
- * Free a hash table iterator (read-only or read/write).
- *
- * @param	iter	The iterator.
- *
- * @see		sht_ro_iter_free_()
- * @see		sht_rw_iter_free_()
- */
-#define SHT_ITER_FREE(iter)		SHT_ITER_GENERIC(free, iter)
-
-/**
- * Replace the last entry returned by an iterator.
- *
- * @param	iter	The iterator.
- * @param	entry	The new entry.
- *
- * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
- *		returned and the error status of the iterator is set.
- *
- * @see		sht_ro_iter_replace_()
- * @see		sht_rw_iter_replace_()
- */
-#define SHT_ITER_REPLACE(iter, entry)	SHT_ITER_GENERIC(replace, iter, entry)
 
 
 #endif		/* STAINER_HT_H */
