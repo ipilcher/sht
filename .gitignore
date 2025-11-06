@@ -2,3 +2,4 @@ docs/internal/
 docs/public/
 tests/sht_test
 src/sht.o
+src/sht.s
