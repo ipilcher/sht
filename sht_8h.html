@@ -269,8 +269,8 @@ Variables</h2></td></tr>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Becomes ...</span></div>
 <div class="line">ht = <a class="code hl_define" href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(hashfn, eqfn, <span class="keyword">struct</span> entry);</div>
-<div class="ttc" id="asht_8h_html_a13c6debd7b2ee2b587a74957662713a7"><div class="ttname"><a href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a></div><div class="ttdeci">sht_err</div><div class="ttdoc">Error codes.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00220">sht.h:220</a></div></div>
-<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00472">sht.h:472</a></div></div>
+<div class="ttc" id="asht_8h_html_a13c6debd7b2ee2b587a74957662713a7"><div class="ttname"><a href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a></div><div class="ttdeci">sht_err</div><div class="ttdoc">Error codes.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00224">sht.h:224</a></div></div>
+<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00476">sht.h:476</a></div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">hashfn</td><td>The function that will be used to compute the hash values of keys. </td></tr>
@@ -283,7 +283,7 @@ Variables</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new hash table is returned. On error, <span class="tt">NULL</span> is returned, and an error code is returned in <code class="param">err</code> (if it is not <span class="tt">NULL</span>).</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86" title="Create a new hash table.">sht_new_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00472">472</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00476">476</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +313,7 @@ Variables</h2></td></tr>
 <dd>
 <a class="el" href="#a43a4835de587eb7a71970548ff8e4585" title="Free a read/write iterator.">sht_rw_iter_free_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00511">511</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00515">515</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -344,7 +344,7 @@ Variables</h2></td></tr>
 <dd>
 <a class="el" href="#a07cc2b8eb184f99bcc4fa5cabaaa9f36" title="Get the next entry from a read/write iterator.">sht_rw_iter_next_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00524">524</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00528">528</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -380,7 +380,7 @@ Variables</h2></td></tr>
 <dd>
 <a class="el" href="#ac5a02a924ee7341aa8c963114930c791" title="Replace the last entry returned by a read/write iterator.">sht_rw_iter_replace_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00539">539</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00543">543</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +412,7 @@ Variables</h2></td></tr>
 <dd>
 sht_rw_iter_status_() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00554">554</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00558">558</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +444,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="#a698cf6920155bca03dc60cd1ea7acffe" title="Get a description of a read/write iterator&#39;s last error.">sht_rw_iter_msg_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00569">569</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00573">573</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +488,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The hash value of the key. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00131">131</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00135">135</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +529,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A boolean value that indicates whether <code class="param">key</code> is equal to the key in <code class="param">entry</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00165">165</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00169">169</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -565,7 +565,7 @@ sht_rw_iter_status_() </dd></dl>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00190">190</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00194">194</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -604,7 +604,7 @@ sht_rw_iter_status_() </dd></dl>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00220">220</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00224">224</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -1693,49 +1693,60 @@ sht_rw_iter_status_() </dd></dl>
 </div><div class="memdoc">
 
 <p>Critical error printing function. </p>
-<p>If certain program logic errors occur, this library will issue an error message and abort the calling program.</p>
-<ul>
-<li>An invalid value is passed to <a class="el" href="#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>.</li>
-<li>A <span class="tt">NULL</span> function pointer is passed to <a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86" title="Create a new hash table.">sht_new_()</a>.</li>
-<li>An invalid load factor threshold is passed to <a class="el" href="#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>.</li>
-<li>One of the following functions is called on a table that has been initialized:<ul>
-<li><a class="el" href="#a45747c22ee2656dcd16d86ce74ea5ec8" title="Set the &quot;context&quot; for a table&#39;s hash function.">sht_set_hash_ctx()</a></li>
-<li><a class="el" href="#a9d385ed61d95d30e63344ebe6aa522a3" title="Set the &quot;context&quot; for a table&#39;s equality function.">sht_set_eq_ctx()</a></li>
-<li><a class="el" href="#ab6ac49df5028772a25b41c2c509ecced" title="Set the optional entry resource free function for a table.">sht_set_freefn()</a></li>
-<li><a class="el" href="#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a></li>
-<li><a class="el" href="#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a></li>
-</ul>
-</li>
-<li>One of the following functions is called on a table that has not been initialized:<ul>
-<li><a class="el" href="#a82e02f941cacb73ed15c616bfe268985" title="Get the number of entries in a table.">sht_size()</a></li>
-<li><a class="el" href="#a2865bd37b19b90cb3dd3c01aebec7b35" title="Determine whether a table is empty.">sht_empty()</a></li>
-<li><a class="el" href="#a0dd66cb8cf354a570429662675bc6485" title="Lookup an entry in a table.">sht_get()</a></li>
-<li><a class="el" href="#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a></li>
-<li><a class="el" href="#a44c78b1e70265deda028ec34f6c2ecbd" title="Unconditionally set the value associated with a key.">sht_set()</a></li>
-<li><a class="el" href="#a774ddeec974dc6616b06c65e01078a15" title="Replace the entry associated with an existing key.">sht_replace()</a></li>
-<li><a class="el" href="#af2fcd39aa951331b8dc042238c05eee6" title="Exchange an existing entry and a new entry.">sht_swap()</a></li>
-<li><a class="el" href="#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a></li>
-<li><a class="el" href="#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a></li>
-<li><a class="el" href="#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a></li>
-<li><a class="el" href="#a1810fbf97bb175be26189efa8023d0b4" title="Create a new read/write iterator.">sht_rw_iter()</a></li>
-</ul>
-</li>
-<li>One of the following functions is called on a table that has one or more iterators:<ul>
-<li><a class="el" href="#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a></li>
-<li><a class="el" href="#a44c78b1e70265deda028ec34f6c2ecbd" title="Unconditionally set the value associated with a key.">sht_set()</a></li>
-<li><a class="el" href="#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a></li>
-<li><a class="el" href="#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a></li>
-<li><a class="el" href="#ae36e072969cef119b1176887dcdc8623" title="Free the resources used by a hash table.">sht_free()</a></li>
-</ul>
-</li>
-</ul>
+<p>If the calling program violates this library's contract, the library will print an error message and abort the program. This variable can be set to customize how the error message is printed or logged.</p>
 <div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> log_sht_err(<span class="keyword">const</span> <span class="keywordtype">char</span> *msg)</div>
 <div class="line">{</div>
 <div class="line">    syslog(LOG_CRIT, <span class="stringliteral">&quot;SHT library error: %s&quot;</span>, msg);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line">sht_abort_print = log_sht_err;</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><p>The library will abort the program if any of the following occur.</p>
+<ul>
+<li>An invalid value is passed to <a class="el" href="#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>.</li>
+<li>A <span class="tt">NULL</span> function pointer is passed to <a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86" title="Create a new hash table.">sht_new_()</a>.</li>
+<li>An invalid load factor threshold is passed to <a class="el" href="#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>.</li>
+<li>One of the functions in the table below is called on a table that is in an inappropriate state.</li>
+</ul>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Function  </th><th class="markdownTableHeadCenter">Uninitialized  </th><th class="markdownTableHeadCenter">Initialized  </th><th class="markdownTableHeadCenter">Iterator(s) exist  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a45747c22ee2656dcd16d86ce74ea5ec8" title="Set the &quot;context&quot; for a table&#39;s hash function.">sht_set_hash_ctx()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a9d385ed61d95d30e63344ebe6aa522a3" title="Set the &quot;context&quot; for a table&#39;s equality function.">sht_set_eq_ctx()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#ab6ac49df5028772a25b41c2c509ecced" title="Set the optional entry resource free function for a table.">sht_set_freefn()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#ae36e072969cef119b1176887dcdc8623" title="Free the resources used by a hash table.">sht_free()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a44c78b1e70265deda028ec34f6c2ecbd" title="Unconditionally set the value associated with a key.">sht_set()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a0dd66cb8cf354a570429662675bc6485" title="Lookup an entry in a table.">sht_get()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a82e02f941cacb73ed15c616bfe268985" title="Get the number of entries in a table.">sht_size()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a2865bd37b19b90cb3dd3c01aebec7b35" title="Determine whether a table is empty.">sht_empty()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a774ddeec974dc6616b06c65e01078a15" title="Replace the entry associated with an existing key.">sht_replace()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#af2fcd39aa951331b8dc042238c05eee6" title="Exchange an existing entry and a new entry.">sht_swap()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#a1810fbf97bb175be26189efa8023d0b4" title="Create a new read/write iterator.">sht_rw_iter()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+</table>
+<p>† Abort implied. (An iterator cannot be created on an uninitialized table.)</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">msg</td><td>The error message (not newline terminated). </td></tr>
   </table>
