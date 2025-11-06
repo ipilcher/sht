@@ -157,7 +157,7 @@ Example 1</h3>
 <div class="line">    <a class="code hl_function" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a>(ht, 0);  <span class="comment">// default initial capacity</span></div>
 <div class="line">    <span class="keywordflow">return</span> ht;</div>
 <div class="line">}</div>
-<div class="ttc" id="asht_8c_html_ab6a5c760d62564b28208f9cd780da00f"><div class="ttname"><a href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a></div><div class="ttdeci">_Bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00497">sht.c:497</a></div></div>
+<div class="ttc" id="asht_8c_html_ab6a5c760d62564b28208f9cd780da00f"><div class="ttname"><a href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a></div><div class="ttdeci">_Bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00501">sht.c:501</a></div></div>
 <div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00476">sht.h:476</a></div></div>
 </div><!-- fragment --><p>Note the following.</p>
 <ul>
@@ -199,7 +199,7 @@ Example 2</h3>
 <div class="line">    <a class="code hl_function" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a>(ht, 20);</div>
 <div class="line">    <span class="keywordflow">return</span> ht;</div>
 <div class="line">}</div>
-<div class="ttc" id="asht_8c_html_ab6ac49df5028772a25b41c2c509ecced"><div class="ttname"><a href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a></div><div class="ttdeci">void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)</div><div class="ttdoc">Set the optional entry resource free function for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00386">sht.c:386</a></div></div>
+<div class="ttc" id="asht_8c_html_ab6ac49df5028772a25b41c2c509ecced"><div class="ttname"><a href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a></div><div class="ttdeci">void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)</div><div class="ttdoc">Set the optional entry resource free function for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00390">sht.c:390</a></div></div>
 </div><!-- fragment --><ul>
 <li>This hash table requires a "free function," in order to avoid leaking memory (host names) when entries are deleted.</li>
 <li>The free function is one of several hash table attributes that can be set before the table is initialized. Attempting to set any of these attributes on a table that has been initialized will cause the program to abort.</li>
