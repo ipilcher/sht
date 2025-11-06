@@ -2,9 +2,7 @@
 
 /*
  *
- *	STainers - Simple (con)Tainers
- *
- * 	Stainer Hash Table (SHT) - hash table with "Robin Hood" probing
+ * 	SHT - hash table with "Robin Hood" probing
  *
  *	Copyright 2025 Ian Pilcher <arequipeno@gmail.com>
  *
@@ -14,8 +12,8 @@
 /** @file */
 
 
-#ifndef STAINER_HT_H
-#define STAINER_HT_H
+#ifndef SHT_H
+#define SHT_H
 
 
 #include <stddef.h>
@@ -571,4 +569,4 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 #define SHT_ITER_MSG(iter)		SHT_ITER_GENERIC(msg, iter)
 
 
-#endif		/* STAINER_HT_H */
+#endif		/* SHT_H */

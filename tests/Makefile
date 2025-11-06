@@ -8,20 +8,20 @@ CFLAGS = -std=c23 -Wall -Wextra -Wpedantic -O2 -g
 LDFLAGS = -lxxhash
 
 # Source files
-HT_SRC = ht.c
-HT_HDR = ht.h
-TEST_SRC = ht_test.c
+SHT_SRC = ../src/sht.c
+SHT_HDR = ../src/sht.h
+TEST_SRC = sht_test.c
 
 # Targets
 .PHONY: all clean test
 
-all: ht_test
+all: sht_test
 
-ht_test: $(TEST_SRC) $(HT_SRC) $(HT_HDR)
-	$(CC) $(CFLAGS) -DSHT_DOXYGEN -o $@ $(TEST_SRC) $(HT_SRC) $(LDFLAGS)
+sht_test: $(TEST_SRC) $(SHT_SRC) $(SHT_HDR)
+	$(CC) $(CFLAGS) -o $@ $(TEST_SRC) $(SHT_SRC) $(LDFLAGS)
 
-test: ht_test
-	./ht_test
+test: sht_test
+	./sht_test
 
 clean:
-	rm -f ht_test
+	rm -f sht_test

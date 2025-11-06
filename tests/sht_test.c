@@ -2,7 +2,7 @@
 
 /*
  *
- *	STainers - Simple (con)Tainers
+ * 	SHT - hash table with "Robin Hood" probing
  *
  * 	Hash table comprehensive test suite
  *
@@ -13,7 +13,7 @@
  *
  */
 
-#include "ht.h"
+#include "../src/sht.h"
 
 #include <assert.h>
 #include <inttypes.h>

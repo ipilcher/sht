@@ -2,9 +2,7 @@
 
 /*
  *
- *	STainers - Simple (con)Tainers
- *
- * 	Hash table with "Robin Hood" probing
+ * 	SHT - hash table with "Robin Hood" probing
  *
  *	Copyright 2025 Ian Pilcher <arequipeno@gmail.com>
  *
@@ -14,7 +12,7 @@
 /** @file */
 
 
-#include "ht.h"
+#include "sht.h"
 
 #include <assert.h>
 #include <limits.h>

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Comprehensive test suite for the Stainer Hash Table (SHT) library. The test suite contains 79 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
+Comprehensive test suite for the SHT hash table library. The test suite contains 79 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
 
 ## Building and Running
 
@@ -15,8 +15,8 @@ make test
 Or separately:
 
 ```bash
-make ht_test
-./ht_test
+make sht_test
+./sht_test
 ```
 
 ## Test Coverage
@@ -221,7 +221,6 @@ The test suite uses multiple entry types to verify flexibility:
 - All tests use assertions for validation
 - Memory leaks are prevented through proper cleanup
 - Tests are independent and can run in any order
-- The `-DSHT_DOXYGEN` flag excludes the old test code in ht.c
 - Abort conditions are tested using `setjmp`/`longjmp` to recover from `abort()` calls:
   - Custom abort handler captures error message via `sht_abort_print` callback
   - Uses `longjmp()` to return control to test instead of terminating program
