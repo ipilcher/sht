@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "SHT Hash Table", "index.html", [
+    [ "Simple Hash Table", "index.html", "index" ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [

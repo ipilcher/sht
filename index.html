@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.15.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SHT Hash Table: Main Page</title>
+<title>SHT Hash Table: Simple Hash Table</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -94,10 +94,121 @@ $(function(){initNavTree('index.html','',''); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">SHT Hash Table Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">Simple Hash Table </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="md_README"></a></p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
+Overview</h1>
+<p>This library implements a simple hash table that can be used as a dictionary or set implementation in C programs.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
+Design philosophy</h1>
+<p>This library aims to provide a straightforward hash table implementation that is both readily understandable and suitable for most hash table use cases. Maximum possible performance and scabability are not design goals.</p>
+<p>Contract violations by the calling program will cause the library to call <span class="tt">abort()</span>.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+Limits</h1>
+<p>The library imposes a number of limits.</p>
+<ul>
+<li>The absolute maximum number of buckets in a table is 2^24 (16,777,216). At the default load factor threshold (LFT) of 85%, this results in a maximum usable capacity of 14,260,633 entries.</li>
+<li>The maximum size of an entry is 16 KiB (16,384 bytes).</li>
+<li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="docs/robin-hood.md#probe-sequence-length"><em>Robin Hood hashing</em></a> for a discussion of PSLs.) A PSL value anywhere close to 127 indicates that the table's hash function is pathologically bad.</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+Usage</h1>
+<p>The basic usage pattern is:</p>
+<ul>
+<li>Create a table &mdash; <span class="tt"><a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a></span>,</li>
+<li>If necessary, set any non-default table attributes &mdash; <span class="tt"><a class="el" href="sht_8c.html#a9d385ed61d95d30e63344ebe6aa522a3" title="Set the &quot;context&quot; for a table&#39;s equality function.">sht_set_eq_ctx()</a></span>, <span class="tt"><a class="el" href="sht_8c.html#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a></span>, <span class="tt"><a class="el" href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced" title="Set the optional entry resource free function for a table.">sht_set_freefn()</a></span>, etc.,</li>
+<li>Initialize the table &mdash; <span class="tt"><a class="el" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a></span>,</li>
+<li>Use the table &mdash; <span class="tt"><a class="el" href="sht_8c.html#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a></span>, <span class="tt"><a class="el" href="sht_8c.html#a0dd66cb8cf354a570429662675bc6485" title="Lookup an entry in a table.">sht_get()</a></span>, <span class="tt"><a class="el" href="sht_8c.html#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a></span>, etc., and</li>
+<li>Free the table &mdash; <span class="tt"><a class="el" href="sht_8c.html#ae36e072969cef119b1176887dcdc8623" title="Free the resources used by a hash table.">sht_free()</a></span>.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+Examples</h2>
+<p><b>NOTE:</b> The examples in this section omit error checking.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
+Example 1</h3>
+<p>This example shows the simplest possible usage &mdash; a set of integers.</p>
+<ul>
+<li>The keys are integers (type <span class="tt">int</span>).</li>
+<li>This is a set, rather than a dictionary, so there are no values.</li>
+<li>Thus each entry is simply an <span class="tt">int</span>; no structure type is required.</li>
+</ul>
+<div class="fragment"><div class="line">uint32_t int_hash(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key, <span class="keywordtype">void</span> *restrict)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> *i = key;</div>
+<div class="line">    <span class="keywordflow">return</span> (uint32_t)XXH3_64bits(i, <span class="keyword">sizeof</span> *i);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">_Bool int_eq(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key, <span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry,</div>
+<div class="line">             <span class="keywordtype">void</span> *restrict)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> *i1 = key;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">int</span> *i2 = entry;</div>
+<div class="line">    <span class="keywordflow">return</span> *i1 == *i2;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>sht_ht *int_set(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">struct </span>sht_ht *ht;</div>
+<div class="line"> </div>
+<div class="line">    ht = <a class="code hl_define" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(int_hash, int_eq, <span class="keywordtype">int</span>);</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a>(ht, 0);  <span class="comment">// default initial capacity</span></div>
+<div class="line">    <span class="keywordflow">return</span> ht;</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_ab6a5c760d62564b28208f9cd780da00f"><div class="ttname"><a href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a></div><div class="ttdeci">_Bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00497">sht.c:497</a></div></div>
+<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00476">sht.h:476</a></div></div>
+</div><!-- fragment --><p>Note the following.</p>
+<ul>
+<li>The hash function used (<span class="tt">XXH3_64bits()</span>) returns a 64-bit hash value, but the upper 32 bits are discarded. In fact, the library will only use the lower 24 bits of the hash value. It is imperative that the hash function used performs adequate bit mixing.</li>
+<li>A hash table must be initialized (<span class="tt"><a class="el" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a></span>) before it can be used.</li>
+</ul>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
+Example 2</h3>
+<p>This example creates a dictionary that maps host names to IP addresses.</p>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>dict_entry {</div>
+<div class="line">    <span class="keywordtype">char</span>            *hostname;</div>
+<div class="line">    <span class="keyword">struct </span>in_addr  addr;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line">uint32_t dict_hash(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key, <span class="keywordtype">void</span> *restrict)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (uint32_t)XXH3_64bits(key, strlen(key));</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">_Bool dict_eq(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key, <span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry,</div>
+<div class="line">            <span class="keywordtype">void</span> *restrict)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">struct </span>my_entry *e = entry;</div>
+<div class="line">    <span class="keywordflow">return</span> strcmp(key, e-&gt;hostname) == 0;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> dict_free(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry, <span class="keywordtype">void</span> *restrict)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">struct </span>my_entry *e = entry;</div>
+<div class="line">    free(e-&gt;hostname);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>sht_ht *dict(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">struct </span>sht_ht *ht;</div>
+<div class="line"> </div>
+<div class="line">    ht = <a class="code hl_define" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(dict_hash, dict_eq, <span class="keyword">struct</span> dict_entry);</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a>(ht, dict_free, NULL);</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a>(ht, 20);</div>
+<div class="line">    <span class="keywordflow">return</span> ht;</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_ab6ac49df5028772a25b41c2c509ecced"><div class="ttname"><a href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a></div><div class="ttdeci">void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)</div><div class="ttdoc">Set the optional entry resource free function for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00386">sht.c:386</a></div></div>
+</div><!-- fragment --><ul>
+<li>This hash table requires a "free function," in order to avoid leaking memory (host names) when entries are deleted.</li>
+<li>The free function is one of several hash table attributes that can be set before the table is initialized. Attempting to set any of these attributes on a table that has been initialized will cause the program to abort.</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
+Memory management</h1>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
+Iterators</h1>
+</div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>
 </div><!-- contents -->
 </div><!-- doc-content -->
