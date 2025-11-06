@@ -9,38 +9,53 @@ determine that the key is not present in the table.
 
 Probe sequence length (PSL) is a core concept of Robin Hood hashing.
 
-The probe sequence length of an entry stored in the table is the distance
-between the entry's ideal position in the table and its actual position.  For
-example, consider an entry whose hash value is `0x81f62af3`.  If that entry is
-stored in a hash table with 16 buckets, its ideal position is 3, where it would
-have a PSL of 0.  If it is actually stored at position 5, because of hashing
-collisions¹, its PSL is 2.
+In an open-addressing hash table, the PSL of an entry is the number of probes &mdash;
+in addition to the initial probe of its ideal position &mdash; required to locate an
+entry in the table.  For example, an entry with a hash value of `0x81f62af3`,
+stored in a hash table with 16 buckets, has an ideal position of 3
+(`0x81f62af3 % 16 = 3)`.  At that position, its PSL is 0, because no additional
+probes are required to locate it in the table.  If it were instead stored at
+position 7, it would have a PSL of 4, because because 4 additional probes would
+be required to locate it (3 → 4 → 5 → 6 → 7).
 
-The PSL concept is also applied when searching the table &mdash; either to
-retrieve the value associated with a key or to find a position at which  a new
-key can be added to the table.  The hypothetical PSL of the key is 0 when its
-ideal position is being checked, and it is incremented each time that the search
-algorithm advances to the next position.  Thus, when considering a particular
-position within the table, the hypothetical PSL of the key is equal to the
-(possibly hypothetical) PSL of an entry storing that key at that position.
+PSL can also be thought of as the distance between an entry's actual and ideal
+positions, but the wrap-around behavior of hash tables must be accounted for.
+Consider an entry with a hash value of `0x49a338ff` stored at position 1 in a
+table with 16 buckets.  The entry's ideal position is 15, and its PSL is 2
+(15 → 0 → 1).  Simple subtraction will not yield the correct result
+(`1 - 15 = -14`).  To account for potential wrap-around, the following formula
+can be used.
+
+*PSL = (actual_position - ideal_position + table_size) mod table_size*
+
+This formula can also  be used to calculate a **hypothetical**
+PSL value for any key (whether present in the table or not) at
+any position.  I.e., what would the PSL of this key be if it were stored
+at that position.
+
+*PSL_h = (hypothetical_position - ideal_position + table_size) mod table_size*
+
+The Robin Hood insertion and search algorithms depend heavily on PSLs (actual
+and hypothetical), although they are calculated with addition rather than the
+formulas above.
 
 ## Insertion algorithm
 
 The insertion algorithm operates as follows.
 
 1. The ideal position of the key to be inserted (the "candidate key") is
-   computed, and the search for a position at which the key can be stored
-   begins at that position.  At its ideal position, the candidate's PSL is 0.
+   computed, and the search for a suitable storage position begins there.  At
+   its ideal position, the candidate's (hypothetical) PSL is 0.
 
 2. If the position being examined (the current position) is empty, store the
-   key at that position and stop.
+   candidate at that position and stop.
 
 3. If the PSL of the entry at the current position is equal to the
-   candidate's PSL, check whether the entry's key is equal to the candidate's
+   candidate's PSL, check whether the entry's key is equal to the candidate
    key.
 
-   This check can be skipped if it is known that the candidate key is not
-   present in the table.
+   **This check can be skipped if it is known that the candidate key is not
+   present in the table.**
 
    If the keys are equal, then the candidate key is already present in the
    hash table at the current position.  Update the value associated with the
@@ -49,269 +64,219 @@ The insertion algorithm operates as follows.
 4. If the PSL of the entry at the current position is less than the candidate's
    PSL, the candidate is stored at the current position, displacing its current
    occupant.  The term "Robin Hood" hashing derives from the fact that the
-   poorer (farther from its ideal position) candidate is said to "steal" the
-   position for the richer (closer to its ideal position) occupant.
+   poorer (farther from its ideal position) candidate "steals" the position from
+   the richer (closer to its ideal position) occupant.
 
    1. The occupant of the current position is copied to a temporary location.
    2. The candidate is copied to the current position.
    3. The former occupant of the current position (in its temporary location)
       becomes the new candidate.
-   4. The new candidate PSL value is simply the PSL value that the (newly
-      displaced) candidate had when it was stored at the current position.
+   4. The new candidate PSL value is simply the PSL value of the (newly
+      displaced) candidate at the current position.  (It is now hypothetical
+      rather than actual.)
 
    Continue with the next step, but skip the check for duplicate keys (step
-   3) until the insertion completes.
+   3) for the remainder of the insertion process.
 
-5. Advance to the next position in the table and increment the candidate PSL.
+5. Advance to the next position in the table, incrementing the candidate PSL.
+   (If the current position is the last position in the table, advance to the
+   first position.)
 
 6. Return to step 2.
 
-## Invariants
-
-### Notation
-
-This analysis of the behavior of Robin Hood hash table will use the following
-notation.
-
-| Symbol|                     Meaning                         |
-|:-----:|-----------------------------------------------------|
-|   *c* |The candidate (a new or displaced entry)             |
-|   *p* |The current position of the search                   |
-|   *o* |The occupant of the current position                 |
-| *h(x)*|The hash value of *x*                                |
-| *i(x)*|The ideal position of *x*                            |
-| *d(x)*|The distance of *x* from its ideal position (its PSL)|
-
-## Table rotation
-
-Analysis of the search and insertion properties of Robin Hood hash tables is
-simplified if the "wrap around" aspect of their operation can be ignored.  This
-can be achieved through a technique called "table rotation."
-
-Consider this table, which uses the standard calculation to derive each entry's
-ideal position:
-
-* *i(x) = h(x) mod table_size*
-
-|Position [*p]|Hash [*h(o)*]|Ideal position [*i(o)*]|PSL [*d(o)*]|   Key  |
-|:-----------:|:-----------:|:---------------------:|:----------:|--------|
-|      0      |  `f5940e9f` |            7          |      1     |Ross    |
-|      1      |  `5e4138f0` |            0          |      1     |Alice   |
-|      2      |  `d5718291` |            1          |      1     |Bob     |
-|      3      |  `9f98979a` |            2          |      1     |Susan   |
-|      4      |  `e15086ec` |            4          |      0     |Frank   |
-|      5      |             |                       |            |        |
-|      6      |             |                       |            |        |
-|      7      |  `4837b98f` |            7          |      0     |Steve   |
-
-Now consider the following table.  It is functionally equivalent to the previous
-table, but the ideal position calculation has been changed slightly.
-
-* *i(x) = [h(x) + 1] mod table_size*
-
-|Position [*p]|Hash [*h(o)*]|Ideal position [*i(o)*]|PSL [*d(o)*]|  Key   |
-|:-----------:|:-----------:|:---------------------:|:----------:|--------|
-|      0      |  `4837b98f` |            0          |      0     |Steve   |
-|      1      |  `f5940e9f` |            0          |      1     |Ross    |
-|      2      |  `5e4138f0` |            1          |      1     |Alice   |
-|      3      |  `d5718291` |            2          |      1     |Bob     |
-|      4      |  `9f98979a` |            3          |      1     |Susan   |
-|      5      |  `e15086ec` |            5          |      0     |Frank   |
-|      6      |             |                       |            |        |
-|      7      |             |                       |            |        |
-
-Assume that one wishes to understand the search or insertion behavior for a key
-whose hash value is `b081fd57`.  In the first table, that key's ideal position
-will be 7, which will immediately wrap around to position 0.  In the second
-table, the key's ideal position is 0, and the search proceeds from there without
-wrapping around, making the analysis simpler.
-
-This can be generalized to any ideal position calculation which adjusts the
-hash value by some constant value (*A*).
-
-* *i(x) = [h(x) + A] mod table_size*
-
-This allows a hash table to be rotated by whatever number of positions is most
-convenient for a given analysis.  The rotated table can then be treated as a
-continuous, sequential buffer, **as long as the operation being analyzed can be
-guaranteed not to wrap around the rotated table**.
-
-Note that this library never actually performs bucket rotation, nor is it
-explicitly used in this analysis.  Instead, this section shows that a hash table
-can be treated as a sequential buffer, beginning at any position (subject to the
-no wrap-around restriction).
+> **NOTE**
+>
+> Once the ideal position of a key has been determined, the Robin Hood algorithm
+> no longer relies on absolute positions of entries.  Instead it advances one
+> position at a time &mdash; wrapping around as needed &mdash; while considering
+> only the PSLs of the current candidate and the entries that it encounters.
+>
+> It effectively treats the table as a circular buffer, where the PSLs represent
+> differences in relative positions.
 
 ## Bucket groups
 
-The Robin Hood insertion algorithm has the effect of grouping entries with
-equal ideal positions together.  These groupings are called "bucket groups," and
-each bucket group within a table is identified by its common ideal position.
+The algorithm has the effect of grouping entries with equal ideal positions
+together.  These groupings are called "bucket groups," and each bucket group
+within a table is defined by the common ideal position of its members.
 
-Consider this table.
+Consider this table (which has a very load factor in order to better illustrate
+the bucket group concept).
 
-|Position [*p]|Hash [*h(o)*]|Ideal position [*i(o)*]|PSL [*d(o)*]|  Key   |
-|:-----------:|:-----------:|:---------------------:|:----------:|--------|
-|      0      |  `4837b98f` |           15          |      1     |Steve   |
-|      1      |  `49a338ff` |           15          |      2     |Chandler|
-|      2      |  `5e4138f0` |            0          |      2     |Alice   |
-|      3      |  `d5718291` |            1          |      2     |Bob     |
-|      4      |  `77924041` |            1          |      3     |Ian     |
-|      5      |  `81f62af3` |            3          |      2     |Karen   |
-|      6      |             |                       |            |        |
-|      7      |             |                       |            |        |
-|      8      |             |                       |            |        |
-|      9      |  `1111f939` |            9          |      0     |Monica  |
-|     10      |  `9f98979a` |           10          |      0     |Susan   |
-|     11      |  `0ef1713b` |           11          |      0     |Phoebe  |
-|     12      |  `01d0f9eb` |           11          |      1     |Joey    |
-|     13      |  `e15086ec` |           12          |      1     |Frank   |
-|     14      |  `75bb7c3c` |           12          |      2     |Rachel  |
-|     15      |  `f5940e9f` |           15          |      0     |Ross    |
+|Position|   Hash   |Ideal position|PSL|  Key |
+|:------:|:--------:|:------------:|:-:|------|
+|    0   |`6bf0ba1c`|      12      | 4 |Maria |
+|    1   |`f5940e9f`|      15      | 2 |Ross  |
+|    2   |`4837b98f`|      15      | 3 |Steve |
+|    3   |`5e4138f0`|       0      | 3 |Alice |
+|    4   |`0a240e30`|       0      | 4 |Alvaro|
+|    5   |`d5718291`|       1      | 4 |Bob   |
+|    6   |`77924041`|       1      | 5 |Ian   |
+|    7   |`81f62af3`|       3      | 4 |Karen |
+|    8   |          |              |   |      |
+|    9   |`1111f939`|       9      | 0 |Monica|
+|   10   |`9f98979a`|      10      | 0 |Susan |
+|   11   |`0ef1713b`|      11      | 0 |Phoebe|
+|   12   |`01d0f9eb`|      11      | 1 |Joey  |
+|   13   |`8dfaf8ec`|      12      | 1 |Paul  |
+|   14   |`e15086ec`|      12      | 2 |Frank |
+|   15   |`75bb7c3c`|      12      | 3 |Rachel|
 
-This table contains 8 bucket groups:
+This table contains 8 bucket groups.
 
-* Bucket group 0 (identified by the ideal position of its sole member) &mdash;
-  Alice,
-* Bucket group 1 &mdash; Bob and Ian,
-* Bucket group 3 &mdash; Karen,
-* Bucket group 9 &mdash; Monica,
-* Bucket group 10 &mdash; Susan,
-* Bucket group 11 &mdash; Phoebe and Joey,
-* Bucket group 12 &mdash; Frank and Rachel, and
-* Bucket group 15 &mdash; Ross, Steve, and Chandler.
+* Group 0 &mdash; Alice and Alvaro,
+* Group 1 &mdash; Bob and Ian,
+* Group 3 &mdash; Karen,
+* Group 9 &mdash; Monica,
+* Group 10 &mdash; Susan,
+* Group 11 &mdash; Phoebe and Joey,
+* Group 12 &mdash; Paul, Frank, Rachel, and Maria, and
+* Group 15 &mdash; Ross and Steve.
 
-(But recall that the table could be rotated to make analysis easier.  Rotating
-the table by 7 positions would change the groups' ideal positions and
-identifiers as follows: 0 → 7, 3 → 10, 9 → 0, 10 → 1, 11 → 2, 12 → 3, and
-15 → 6.)
+Note that many of the groups have been shifted, so that even the first member of
+those groups is not at its ideal position.
 
-## Insertion
+* Group 12 has been pushed to position 13, to make room the second member of
+  group 11.
+* Group 12 also has 4 members, pushing group 15 all the way to position 1.
+* Groups 0, 1, and 3 have been pushed to positions 3, 5, and 7.
 
-Consider the insertion algorithm in light of table rotation and bucket groups.
+Despite the shifts, the bucket groups are still ordered within the table.
 
-The following are known.
+* Begin at the group with the lowest ideal position, group 0 at position 3.
+* Group 1 begins at position 5, and group 3 begins at position 7.
+* Groups 9, 10, and 11 all begin at their respective ideal positions.
+* Group 12 begins at position 13.
+* Group 15 begins at position 1 (which is after position 13 when advancing
+  through the table and wrapping around).
 
-* *i(x) = h(x) mod table_size + A*
-* *d(o) = p - i(o)* ²
+A number of patterns can be observed in the PSLs of the group members.
 
-Now consider the case of inserting a new key (*k*).
+* Every entry is stored as closely as possible to its ideal position (in the
+  forward direction).  Entries are only shifted away from their ideal position
+  in order to accomodate entries from earlier bucket groups or other entries
+  from their own group.
 
-1. The initial candidate is the new key, and the search begins at its ideal
+* For entries within the same bucket group, the PSL of each member after the
+  first is 1 greater than the PSL of the preceding member.  This reflects the
+  fact that each successive member is 1 position farther away from its ideal
+  position, so 1 more probe is required in order to locate it.
+
+* If the PSL does not increase by 1 when advancing from one occupied position to
+  another, it indicates that the entry at the new position belongs to a later
+  bucket group (a group with a later ideal position) than the entry in the
+  preceding position.
+
+* The PSL cannot increase by more than one when advancing.  If it did, it would
+  mean that the entry in the later position was a member of an earlier bucket
+  group.
+
+## Insertion revisited
+
+The Robin Hood insertion algorithm described above ensures that this bucket
+group structure is maintained.
+
+Insertion always starts at an entry's ideal position and proceeds forward from
+there.  Thus, entries are always inserted at or after their ideal position.
+(An entry cannot have a negative PSL.)
+
+When the algorithm considers the current position, there are 5 possibilities.
+
+1. The position is unoccupied.  The candidate will be stored at the current
    position.
 
-   * *c := k*
-   * *p := i(k)*
+2. The occupant's PSL is greater than the candidate's PSL (at that position).
+   The occupant's larger PSL indicates that it belongs to an earlier bucket
+   group than the candidate.
 
-   Because the search for an appropriate position will proceed forward from this
-   point, *i(k)* is the earliest position in the table at which *k* can be
-   stored.²
+   The algorithm will skip the current position and advance to the next
+   position.  The candidate is pushed away from its ideal position in order to
+   maintain the continuity of the earlier bucket group.
 
-2. At each position, there are multiple possibilities.
+3. The occupant's PSL is equal to that of the candidate.  The equal PSLs
+   indicate that the candidate and the occupant are members of the same bucket
+   group.
 
-   1. The position may be empty.  The candidate will be placed in the current
-      position, and the search will stop.
+   * If the keys of the candidate and the occupant are also equal, then the key
+     was already stored in the table at the current position.  The value
+     associated with the key may or may not be updated; either way, the
+     structure of the table is unaffected.
 
-      * *o := c*
-      * (stop)
+   * If the keys of the candidate and the occupant are not equal, the algorithm
+     will skip the current position and advance to the next position.
 
-   2. The position may be occupied by an entry whose PSL is greater than the
-      candidate's PSL.
+     (This behavior is not strictly required.  Entries within the same bucket
+     group could displace one another without affecting the continuity of the
+     group.  This would result in all existing members of the group being
+     shifted by one position.  Instead, the algorithm skips over the existing
+     members of the group until it finds either an empty position or the
+     beginning of a later group.)
 
-      * *d(o) > d(c)*
+4. The occupant's PSL is less than the candidate's PSL.  This indicates that
+   the occupant belongs to a later bucket group than the candidate.
 
-      The position will be skipped.  The entry that occupies the position is a
-      member of a bucket group with an **earlier** ideal position.²
+   The candidate will be stored at the current position, and the current
+   occupant will be displaced, becoming the new candidate.  The result is that
+   the former candidate has been stored at the end of its bucket group.  The
+   displaced former occupant will eventually be stored at the end of its own
+   group.
 
-      * *d(o) = p - i(o)* and *d(c) = p - i(c)*
-      * *p - i(o) > p - i(c)*
-      * *-i(o) > -i(c)*
-      * *i(o) < i(c)*
+Thus, a candidate is always stored at the end of its bucket group (which may
+also be the beginning), displacing the first member of the next bucket group if
+necessary.
 
-   3. The position may be occupied by an entry whose PSL is equal to the
-      candidate's PSL.
+> **NOTE**
+>
+> As described, the insertion algorithm will loop forever if the table is
+> completely full and the key to be inserted is not a duplicate.  It will keep
+> wrapping around, searching for an empty bucket in which to store either the
+> new entry or a displaced entry.
+>
+> In practice, the table should never be allowed to become completely full.
+> (I.e., its load factor threshold should never be set to 100%.)
 
-      * *d(o) = d(c)*
+## Searching
 
-      1. If the candidate is a new entry (not an entry that was displaced during
-         the current insertion), and its key is be equal to that of the
-         position's occupant, the occupant may or may not be replaced by the
-         candidate.  Either way, the search will stop.
+Searching for an existing key is performed just like any other linear probing
+hash table, except that the search can end as soon as it encounters an entry
+from a later bucket group than that of the key for which it is searching.
 
-         * *o := c* (maybe)
-         * (stop)
+In other words:
 
-      2. Otherwise, the position will be skipped.  The entry that occupies the
-         position is a member of the same bucket group as the candidate.
+1. Start at the ideal position of the subject key.  The key's hypothetical PSL
+   is 0 at this position.
 
-         * *d(o) = p - i(o)* and *d(c) = p - i(c)*
-         * *p - i(o) = p - i(c)*
-         * *-i(o) = -i(c)*
-         * *i(o) = i(c)*
+2. If the current position is empty, stop.  The key is not present in the table.
 
-   4. The position may be occupied by an entry whose PSL is less than the
-      candidate's PSL.
+3. If the PSL of the entry at the current position is greater than the key's
+   PSL, advance to the next position, incrementing the key's PSL.  (The entry
+   belongs to an earlier bucket group than the subject key.)
 
-      * *d(o) < d(c)*
+4. If the PSL of the entry at the current position is equal to the key's PSL,
+   check whether the entry's key is equal to the subject key.
 
-      The occupant is a member of a bucket group with a **later** ideal
-      position.²
+   * If the keys are equal, stop.  The current entry is the result of the
+     search.
+   * If the keys are not equal, advance to the next position, incrementing the
+     key's PSL.
 
-      * *d(o) = p - i(o)* and *d(c) = p - i(c)*
-      * *p - i(o) < p - i(c)*
-      * *-i(o) < -i(c)*
-      * *i(o) > i(c)*
+5. If the PSL of the entry at the current position is less than the key's PSL,
+   stop.  The key is not present in the table.  (The entry belongs to a later
+   bucket group than the subject key.  If the subject key were present in the
+   table, the search would have already found it.)
 
-      The candidate will "steal" the position from its occupant.
+## Deletion
 
-      * *temp := o*
-      * *o := c*
-      * *c := temp*
+The deletion algorithm is straightforward.  After an entry is removed from the
+table, it may be necessary to shift some entries "down" by one position in
+order to maintain the bucket group structure.
 
-3. The search will advance to next position and continue at step 2.
+1. Starting at the first position after the position of the deleted entry, scan
+   forward (wrapping around) until a position that should not be moved is found.
+   This is the first position that is either empty or contains an entry with a
+   PSL of zero.
 
-**Observations**
+2. Shift the entries that need to be moved (if any), handling wrap-around.
 
-* A boundary between adjacent bucket groups (groups with no empty positions
-  separating them) is identified by the fact that the PSL of the occupants
-  does not increase by 1 when moving from one position to the next.
-
-  * If *d(x+1) = d(x) + 1*, then *x* and *x+1* are members of the same bucket
-    group.
-  * If *d(x+1) < d(x) + 1*, then *x+1* is a member of a **later** bucket group.
-    (The PSL of *x+1* is not greater than the PSL of *x*, because
-    *i(x+1) > i(x)*.)
-
-  *d(x+1) > d(x) + 1* cannot occur.  It would mean that *x+1* was a member of an
-  **earlier** bucket group than *x*, but a candidate from an earlier bucket
-  group would never be placed after a later group; the insertion algorithm will
-  (if necessary) displace a member of the later group, because a member of a
-  later group will always have a lower PSL than a member of an earlier group,
-  when the two are being considered for the same position.  For the same reason,
-  if the entry from an earlier group were stored first, the algorithm will not
-  steal is position for a candidate from a later group.
-
-* Entries are always inserted into the table at the end of their bucket group,
-  either:
-
-  * When an empty bucket is found, or
-  * When an occupant's PSL is less than the PSL of the candidate at that
-    position.
-
-  The transition from *d(o) = d(c)* to *d(o) < d(c)* marks the pre-insertion
-  boundary between the candidate's bucket group and a later bucket group.  See
-  2(iv) above.
-
-
-
-## Notes
-
-1. A "hashing collision" refers to a situation in which the hash values of two
-   or more keys, **modulo the size of the hash table**, are equal.  It is
-   distinct from a hash collision, in which the hash values themselves are
-   equal.  (All hash collisions are hashing collisions, but not all hashing
-   collisions are hash collisions.)
-
-2. Wrap-around ignored.  See [Table rotation](#table-rotation).
-
-
-
+3. Adjust the PSLs of the entries that were moved; each of them is now 1
+   position closer to its ideal position.
