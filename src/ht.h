@@ -248,123 +248,160 @@ _Static_assert(sizeof(enum sht_err) == 1, "sht_err size");
 
 
 /*
- * Functions that should be called directly
+ * Table lifecycle - create, configure, initialize & free
  */
 
-const char *sht_msg(enum sht_err err);
+// Create a new hash table.
+SHT_FNATTR(nonnull(1, 2))
+struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
+			size_t ealign, enum sht_err *err);
 
+// Set the "context" for a table's hash function.
 SHT_FNATTR(nonnull(1))
 void sht_set_hash_ctx(struct sht_ht *ht, void *context);
 
+// Set the "context" for a table's equality function.
 SHT_FNATTR(nonnull(1))
 void sht_set_eq_ctx(struct sht_ht *ht, void *context);
 
+// Set the optional entry resource free function for a table.
+SHT_FNATTR(nonnull(1))
+void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context);
+
+// Set the load factor threshold for a table.
 SHT_FNATTR(nonnull)
 void sht_set_lft(struct sht_ht *ht, uint8_t lft);
 
-SHT_FNATTR(nonnull(1))
-void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn,
-		    void *context);
-
+// Initialize a hash table.
 SHT_FNATTR(nonnull)
 _Bool sht_init(struct sht_ht *ht, uint32_t capacity);
 
-SHT_FNATTR(nonnull)
-uint32_t sht_size(const struct sht_ht *ht);
-
-SHT_FNATTR(nonnull)
-_Bool sht_empty(const struct sht_ht *ht);
-
-SHT_FNATTR(nonnull)
-const void *sht_get(struct sht_ht *ht,
-		    const void *restrict key);
-
-SHT_FNATTR(nonnull)
-_Bool sht_pop(struct sht_ht *ht, const void *restrict key,
-	      void *restrict out);
-
-SHT_FNATTR(nonnull)
-_Bool sht_delete(struct sht_ht *ht, const void *restrict key);
-
+// Free the resources used by a hash table.
 SHT_FNATTR(nonnull)
 void sht_free(struct sht_ht *ht);
 
-SHT_FNATTR(nonnull)
-int sht_add(struct sht_ht *ht, const void *key,
-	    const void *entry);
 
-SHT_FNATTR(nonnull)
-int sht_set(struct sht_ht *ht, const void *key,
-	    const void *entry);
+/*
+ * Table operations - get, set, delete, etc.
+ */
 
+// Add an entry to the table, if its key is not already present.
+SHT_FNATTR(nonnull)
+int sht_add(struct sht_ht *ht, const void *key, const void *entry);
+
+// Unconditionally set the value associated with a key.
+SHT_FNATTR(nonnull)
+int sht_set(struct sht_ht *ht, const void *key, const void *entry);
+
+// Lookup an entry in a table.
+SHT_FNATTR(nonnull)
+const void *sht_get(struct sht_ht *ht, const void *restrict key);
+
+// Get the number of entries in a table.
+SHT_FNATTR(nonnull)
+uint32_t sht_size(const struct sht_ht *ht);
+
+// Determine whether a table is empty.
+SHT_FNATTR(nonnull)
+_Bool sht_empty(const struct sht_ht *ht);
+
+// Remove an entry from the table.
+SHT_FNATTR(nonnull)
+_Bool sht_delete(struct sht_ht *ht, const void *restrict key);
+
+// Remove and return an entry from the table.
+SHT_FNATTR(nonnull)
+_Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out);
+
+// Replace the entry associated with an existing key.
 SHT_FNATTR(nonnull)
 _Bool sht_replace(struct sht_ht *ht, const void *key,
 		  const void *entry);
 
-SHT_FNATTR(nonnull)
-enum sht_err sht_get_err(const struct sht_ht *ht);
-
-SHT_FNATTR(nonnull)
-const char *sht_get_msg(const struct sht_ht *ht);
-
-SHT_FNATTR(nonnull)
-struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht);
-
-SHT_FNATTR(nonnull)
-struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht);
-
+// Exchange an existing entry and a new entry.
 SHT_FNATTR(nonnull)
 _Bool sht_swap(struct sht_ht *ht, const void *key,
 	       const void *entry, void *out);
 
-SHT_FNATTR(nonnull)
-_Bool sht_iter_delete(struct sht_rw_iter *iter);
-
 
 /*
- * Functions that should be called through helper macros
+ * Iterator lifecycle - create & free
  */
 
-SHT_FNATTR(nonnull(1, 2))
-struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
-			size_t esize, size_t ealign,
-			enum sht_err *err);
-
+// Create a new read-only iterator.
 SHT_FNATTR(nonnull)
-enum sht_err sht_ro_iter_err_(const struct sht_ro_iter *iter);
+struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht);
 
-
+// Create a new read/write iterator.
 SHT_FNATTR(nonnull)
-enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter);
+struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht);
 
-SHT_FNATTR(nonnull)
-const char *sht_ro_iter_msg_(const struct sht_ro_iter *iter);
-
-SHT_FNATTR(nonnull)
-const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
-
-SHT_FNATTR(nonnull)
-const void *sht_ro_iter_next_(struct sht_ro_iter *iter);
-
-
-SHT_FNATTR(nonnull)
-void *sht_rw_iter_next_(struct sht_rw_iter *iter);
-
-
+// Free a read-only iterator.
 SHT_FNATTR(nonnull)
 void sht_ro_iter_free_(struct sht_ro_iter *iter);
 
-
+// Free a read/write iterator.
 SHT_FNATTR(nonnull)
 void sht_rw_iter_free_(struct sht_rw_iter *iter);
 
+
+/*
+ * Iterator operations - next, delete & replace
+ */
+
+// Get the next entry from a read-only iterator.
+SHT_FNATTR(nonnull)
+const void *sht_ro_iter_next_(struct sht_ro_iter *iter);
+
+// Get the next entry from a read/write iterator.
+SHT_FNATTR(nonnull)
+void *sht_rw_iter_next_(struct sht_rw_iter *iter);
+
+// Remove the last entry returned by a read/write iterator.
+SHT_FNATTR(nonnull)
+_Bool sht_iter_delete(struct sht_rw_iter *iter);
+
+// Replace the last entry returned by a read-only iterator.
 SHT_FNATTR(nonnull)
 _Bool sht_ro_iter_replace_(struct sht_ro_iter *iter,
 			   const void *restrict entry);
 
+// Replace the last entry returned by a read/write iterator.
 SHT_FNATTR(nonnull)
 _Bool sht_rw_iter_replace_(struct sht_rw_iter *iter,
 			   const void *restrict entry);
+
+
+/*
+ * Error reporting
+ */
+
+// Get the error code of a table's last error.
+SHT_FNATTR(nonnull)
+enum sht_err sht_get_err(const struct sht_ht *ht);
+
+// Get the error code of a read-only iterator's last error.
+SHT_FNATTR(nonnull)
+enum sht_err sht_ro_iter_err_(const struct sht_ro_iter *iter);
+
+// Get the error code of a read/write iterator's last error.
+SHT_FNATTR(nonnull)
+enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter);
+
+// Get the description for an error code.
+const char *sht_msg(enum sht_err err);
+
+// Get a description of a table's last error.
+SHT_FNATTR(nonnull)
+const char *sht_get_msg(const struct sht_ht *ht);
+
+// Get a description of a read-only iterator's last error.
+SHT_FNATTR(nonnull)
+const char *sht_ro_iter_msg_(const struct sht_ro_iter *iter);
+
+// Get a description of a read/write iterator's last error.
+SHT_FNATTR(nonnull)
+const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 
 
 /*******************************************************************************
