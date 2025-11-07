@@ -58,12 +58,6 @@
 #define SHT_MAX_ITERS	UINT16_C(0x7fff)
 
 /**
- * @internal
- * Maximum entry size.
- */
-#define SHT_MAX_ESIZE	16384
-
-/**
  * @private
  * Hash table bucket structure ("SHT bucket").
  */

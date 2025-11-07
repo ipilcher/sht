@@ -22,6 +22,12 @@
 
 /**
  * @internal
+ * Maximum entry size.
+ */
+#define SHT_MAX_ESIZE		16384
+
+/**
+ * @internal
  * Set function attributes without confusing Doxygen.
  */
 #ifndef SHT_DOXYGEN
@@ -442,10 +448,13 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
  *
  * @see		sht_new_()
  */
-#define SHT_NEW(hashfn, eqfn, etype, ...)			\
-	sht_new_(hashfn, eqfn, sizeof(etype), _Alignof(etype),	\
-		 SHT_ARG2(_, ##__VA_ARGS__, NULL))
-
+#define SHT_NEW(hashfn, eqfn, etype, ...)				\
+	({								\
+		_Static_assert(sizeof(etype) <= SHT_MAX_ESIZE,		\
+			       "Entry type (" #etype ") too large");	\
+		sht_new_(hashfn, eqfn, sizeof(etype), _Alignof(etype),	\
+			SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
+	})
 
 /*
  * Iterator generics
