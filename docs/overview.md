@@ -36,6 +36,8 @@ The library imposes a number of limits.
   [*Robin Hood hashing*][1] for a discussion of PSLs.)  A PSL value anywhere
   close to 127 will only occur if the hash function is pathologically bad.
 
+* The maximum number of read-only iterators an a table is 32,767.
+
 In addition to the limits imposed by the library, the total size of a table is
 limited by the amount of memory available to the application.  A table's total
 memory footprint scales with the product of the number of buckets and the entry
@@ -180,6 +182,19 @@ Note:
   any of these attributes on a table that has been initialized is an API
   contract violation that will cause the program to abort.
 
+### Helper macros
+
+Some of the library's API functions are intended to be called via helper macros.
+The names of these functions end in an underscore (`_`), and their short
+descriptions in the API documentation are enclosed in parentheses.
+
+* SHT_NEW() wraps sht_new_().
+* SHT_ITER_FREE() wraps sht_ro_iter_free_() and sht_rw_iter_free_().
+* SHT_ITER_NEXT() wraps sht_ro_iter_next_() and sht_rw_iter_next_().
+* SHT_ITER_REPLACE() wraps sht_ro_iter_replace_() and sht_rw_iter_replace_().
+* SHT_ITER_ERR() wraps sht_ro_iter_err_() and sht_rw_iter_err_().
+* SHT_ITER_MSG() wraps sht_ro_iter_msg_() and sht_rw_iter_msg_().
+
 ## Memory management
 
 Table entries may contain pointers to other objects.  (See `dict_entry.hostname`
@@ -231,7 +246,49 @@ Calling a function that may modify the structure of the table while any
 iterators (read-only or read/write) exist on the table will cause the library to
 abort the program.  (See [Abort conditions](#abort-conditions) below.)
 
-## Abort conditions
+## Error handling
+
+### Non-fatal errors
+
+Some of the functions (and macros) in this library return an error indication in
+some circumstances.
+
+|Function |Error return|Error info|Error codes                                               |
+|----------------------|:----:|:-:|----------------------------------------------------------|
+|SHT_NEW()               |`NULL`|1|`SHT_ERR_ALLOC`†                                          |
+|- sht_new_()            |`NULL`|1|`SHT_ERR_BAD_ESIZE`, `SHT_ERR_ALLOC`                      |
+|sht_init()              |  `0` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`                         |
+|sht_add()               | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
+|sht_set()               | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
+|sht_ro_iter()           |`NULL`|2|`SHT_ERR_ITER_LOCK`, `SHT_ERR_ITER_COUNT`, `SHT_ERR_ALLOC`|
+|sht_rw_iter()           |`NULL`|2|`SHT_ERR_ITER_LOCK`, `SHT_ERR_ALLOC`                      |
+|sht_iter_delete()       |  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+|SHT_ITER_REPLACE()      |  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+|- sht_ro_iter_replace_()|  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+|- sht_rw_iter_replace_()|  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+
+† SHT_NEW() checks the entry size during compilation.
+
+1. If an error occurs, sht_new_() stores an error code in the variable
+   referenced by its `err` argument, provided that the value of `err` is not
+   `NULL`.  A description of the error can be retrieved with sht_msg().
+
+   SHT_NEW() can be called with either 3 or 4 arguments.  If a fourth argument
+   is provided, it is used as the `err` argument in the internal call to
+   sht_new_().  Otherwise, sht_new_() is called with its `err` argument set to
+   `NULL`.
+
+2. If an error occurs in a "table operation" function (a function that takes a
+   pointer to a table as its first argument), the error code can be retrieved
+   with sht_get_err() (and passed to sht_msg()), or an error description can be
+   retrieved directly with sht_get_msg().
+
+3.  If an error occurs in an "iterator operator" function (a function that takes
+    a pointer to an iterator as its first argument), the error code can be
+    retrieved with SHT_ITER_ERR() (and passed to sht_msg()), or an error
+    description can be retrieved directly with SHT_ITER_MSG().
+
+### Abort conditions
 
 As mentioned [above](#design-philosophy), the library takes a "fail fast"
 approach to API contract violations by the calling program.  The library will
