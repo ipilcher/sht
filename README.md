@@ -1,9 +1,10 @@
-# Simple Hash Table
+# SHT Hash Table
 
 ## Overview
 
 This library implements a simple hash table that can be used as a dictionary or
-set implementation in C programs.
+set implementation in C programs.  It uses a "Robin Hood" probing algorithm,
+which is described [here][1].
 
 ## Design philosophy
 
@@ -11,23 +12,35 @@ This library aims to provide a straightforward hash table implementation that is
 both readily understandable and suitable for most hash table use cases.  Maximum
 possible performance and scabability are not design goals.
 
-Contract violations by the calling program will cause the library to call
-`abort()`.
+The library also takes a "fail fast" approach to logic errors in the calling
+program.  The calling program will be aborted if it violates the library's API
+contract.  See [Abort conditions](#abort-conditions) below.  This frees the
+calling program from the need to check for and react to unrecoverable
+programming errors.
 
-## Limits
+## Limits and assumptions
+
+This library is developed on Linux with GCC (15.2.1 as of this writing).  It
+makes use of a number of GCC builtins and C23 features.  It should also work
+with Clang.
 
 The library imposes a number of limits.
 
-* The absolute maximum number of buckets in a table is 2^24 (16,777,216).  At
+* The absolute maximum number of buckets in a table is 2²⁴ (16,777,216).  At
   the default load factor threshold (LFT) of 85%, this results in a maximum
   usable capacity of 14,260,633 entries.
 
 * The maximum size of an entry is 16 KiB (16,384 bytes).
 
 * The maximum probe sequence length (PSL) of an entry is 127.  (See
-  [*Robin Hood hashing*](docs/robin-hood.md#probe-sequence-length) for a
-  discussion of PSLs.)  A PSL value anywhere close to 127 indicates that the
-  table's hash function is pathologically bad.
+  [*Robin Hood hashing*][1] for a discussion of PSLs.)  A PSL value anywhere
+  close to 127 will only occur if the hash function is pathologically bad.
+
+In addition to the limits imposed by the library, the total size of a table is
+limited by the amount of memory available to the application.  A table's total
+memory footprint scales with the product of the number of buckets and the entry
+size (i.e. `total_size ∝ buckets × entry_size`), so the largest possible table
+will not fit in the 4 GiB address space of a 32-bit system.
 
 ## Usage
 
@@ -40,9 +53,29 @@ The basic usage pattern is:
 * Use the table &mdash; `sht_add()`, `sht_get()`, `sht_ro_iter()`, etc., and
 * Free the table &mdash; `sht_free()`.
 
-### Examples
+### Table examples
 
-**NOTE:**  The examples in this section omit error checking.
+To create a hash table, the following are required.
+
+* An entry type to be stored in the table.  This will usually be a data
+  structure that contains both a key and a value.  If the table will be used as
+  a set rather than a dictionary, an entry will only contain a key, so it may be
+  a primitive type.
+
+* A function that calculates the hash value of a key &mdash; the "hash
+  function."
+
+* A function that compares two keys (one of which is inside an entry) for
+  equality &mdash; the "equality function."
+
+* In some cases, a "free function" is required.  The library calls the free
+  function to release the resources associated with an entry that is being
+  deleted from the table.  (See [Memory management](#memory-management)
+  below.)
+
+> **NOTE**
+>
+> The examples in this section omit error checking.
 
 #### Example 1
 
@@ -50,7 +83,7 @@ This example shows the simplest possible usage &mdash; a set of integers.
 
 * The keys are integers (type `int`).
 * This is a set, rather than a dictionary, so there are no values.
-* Thus each entry is simply an `int`; no structure type is required.
+* Thus, each entry is simply an `int`; no structure is required.
 
 ```c
 uint32_t int_hash(const void *restrict key, void *restrict)
@@ -79,10 +112,13 @@ struct sht_ht *int_set(void)
 
 Note the following.
 
-* The hash function used (`XXH3_64bits()`) returns a 64-bit hash value, but the
-  upper 32 bits are discarded.  In fact, the library will only use the lower 24
-  bits of the hash value.  It is imperative that the hash function used performs
-  adequate bit mixing.
+* This example uses[`XXH3_64bits()`][2] as its underlying hash function.
+  [`XXH3_64bits()`][2] returns a 64-bit hash value,  but the upper 32 bits are
+  discarded.  In fact, the library will only use the lower 24 bits of the hash
+  value, so it is imperative that the hash function   performs adequate bit
+  mixing.
+
+* Neither the hash function or the equality function makes use of any context.
 
 * A hash table must be initialized (`sht_init()`) before it can be used.
 
@@ -91,14 +127,17 @@ Note the following.
 This example creates a dictionary that maps host names to IP addresses.
 
 ```c
+static XXH32_hash_t hash_seed;
+
 struct dict_entry {
     char            *hostname;
     struct in_addr  addr;
 };
 
-uint32_t dict_hash(const void *restrict key, void *restrict)
+uint32_t dict_hash(const void *restrict key, void *restrict context)
 {
-    return (uint32_t)XXH3_64bits(key, strlen(key));
+    const XXH32_hash_t *seed = context;
+    return XXH32(key, strlen(key), *context);
 }
 
 _Bool dict_eq(const void *restrict key, const void *restrict entry,
@@ -118,20 +157,118 @@ struct sht_ht *dict(void)
 {
     struct sht_ht *ht;
 
+    getrandom(&hash_seed, sizeof hash_seed, 0);
     ht = SHT_NEW(dict_hash, dict_eq, struct dict_entry);
+    sht_set_hash_ctx(ht, &hash_seed);
     sht_set_freefn(ht, dict_free, NULL);
     sht_init(ht, 20);
     return ht;
 }
 ```
 
-* This hash table requires a "free function," in order to avoid leaking memory
-  (host names) when entries are deleted.
+Note:
 
-* The free function is one of several hash table attributes that can be set
-  before the table is initialized.  Attempting to set any of these attributes
-  on a table that has been initialized will cause the program to abort.
+* This example uses [`XXH32()`][3], which  requires a seed value.  The hash
+  function context is used to pass the seed to the hash function.
+
+* This hash table requires a "free function," in order to avoid leaking memory
+  (host names) when entries are deleted.  (See
+  [Memory management](#memory-management) below.)
+
+* The hash function context and the free function are two of several hash table
+  attributes that can be set before the table is initialized.  Attempting to set
+  any of these attributes on a table that has been initialized is an API
+  contract violation that will cause the program to abort.
 
 ## Memory management
 
+Table entries may contain pointers to other objects.  (See `dict_entry.hostname`
+in the example above.)  If such an entry is deleted from a table without freeing
+these objects, memory leaks can occur.  If a table has a free function set, that
+function will be called whenever an entry is deleted from that table, in order
+to free that entry's associated resources.
+
+The following operations can cause entries to be deleted.
+
+* sht_set()
+* sht_replace()
+* sht_delete()
+* sht_free()
+* sht_iter_delete()
+* SHT_ITER_REPLACE()
+
+(Operations such as sht_swap(), that return the entry being removed from the
+table, will not call the free function.)
+
+Note that entry resources should not be automatically freed if they are still
+referenced elsewhere.  Users of the library must take care to avoid both memory
+leaks and use-after-free bugs.
+
 ## Iterators
+
+The library supports 2 iterator variations &mdash; read-only and read/write.
+
+* Multiple read-only iterators can be exist on a table simultaneously, as long
+  as no read-only iterator exists.
+
+* Only a single read-only iterator can exist on a table, and no read-only
+  iterators can exist at the same time.
+
+* A read-only iterator cannot be used to delete entries from a table, but it can
+  be used to replace entries (with other entries that have equal keys).
+
+* A read/write iterator can be used to replace or delete entries from a table.
+
+The table below summarizes these differences.
+
+|                   |Read-only|Read/write|
+|-------------------|:-------:|:--------:|
+|Multiple iterators?|   YES   |    NO    |
+|Replace entries?   |   YES   |    YES   |
+|Delete entries?    |    NO   |    YES   |
+
+Calling a function that may modify the structure of the table while any
+iterators (read-only or read/write) exist on the table will cause the library to
+abort the program.  See [Abort conditions](#abort-conditions) below.
+
+## Abort conditions
+
+As mentioned [above](#design-philosophy), the library takes a "fail fast"
+approach to API contract violations by the calling program.  The library will
+`abort()` the calling program if any of the following occur.
+
+* An invalid value is passed to sht_msg().
+
+* A `NULL` function pointer is passed to sht_new_().
+
+* An invalid load factor threshold is passed to sht_set_lft().
+
+* One of the functions in the table below is called on a table that is in an
+  inappropriate state.
+
+  | Function             | Uninitialized | Initialized | Iterator(s) exist |
+  |----------------------|:-------------:|:-----------:|:-----------------:|
+  |sht_set_hash_ctx()    |               |  **ABORT**  |         †         |
+  |sht_set_eq_ctx()      |               |  **ABORT**  |         †         |
+  |sht_set_freefn()      |               |  **ABORT**  |         †         |
+  |sht_set_lft()         |               |  **ABORT**  |         †         |
+  |sht_init()            |               |  **ABORT**  |         †         |
+  |sht_free()            |               |             |     **ABORT**     |
+  |sht_add()             |   **ABORT**   |             |     **ABORT**     |
+  |sht_set()             |   **ABORT**   |             |     **ABORT**     |
+  |sht_get()             |   **ABORT**   |             |                   |
+  |sht_size()            |   **ABORT**   |             |                   |
+  |sht_empty()           |   **ABORT**   |             |                   |
+  |sht_delete()          |   **ABORT**   |             |     **ABORT**     |
+  |sht_pop()             |   **ABORT**   |             |     **ABORT**     |
+  |sht_replace()         |   **ABORT**   |             |                   |
+  |sht_swap()            |   **ABORT**   |             |                   |
+  |sht_ro_iter()         |   **ABORT**   |             |                   |
+  |sht_rw_iter()         |   **ABORT**   |             |                   |
+
+  † Abort implied.  (An iterator cannot be created on an uninitialized
+    table.)
+
+[1]: https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md
+[2]: https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html
+[3]: https://xxhash.com/doc/v0.8.3/group___x_x_h32__family.html
