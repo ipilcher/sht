@@ -25,7 +25,18 @@
 var NAVTREE =
 [
   [ "SHT Hash Table", "index.html", [
-    [ "Simple Hash Table", "index.html", "index" ],
+    [ "Overview", "index.html#overview", null ],
+    [ "Design philosophy", "index.html#design-philosophy", null ],
+    [ "Limits and assumptions", "index.html#limits-and-assumptions", null ],
+    [ "Usage", "index.html#usage", [
+      [ "Table examples", "index.html#table-examples", [
+        [ "Example 1", "index.html#example-1", null ],
+        [ "Example 2", "index.html#example-2", null ]
+      ] ]
+    ] ],
+    [ "Memory management", "index.html#memory-management", null ],
+    [ "Iterators", "index.html#iterators", null ],
+    [ "Abort conditions", "index.html#abort-conditions", null ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [

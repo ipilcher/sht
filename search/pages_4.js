@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hash_20table_0',['Simple Hash Table',['../index.html',1,'']]]
+  ['design_20philosophy_0',['Design philosophy',['../index.html#design-philosophy',1,'']]]
 ];

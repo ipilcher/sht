@@ -368,6 +368,10 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Replace the last entry returned by an iterator. </p>
+<blockquote class="doxtable">
+<p><b>WARNING</b></p>
+<p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
+</blockquote>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
@@ -380,7 +384,7 @@ Variables</h2></td></tr>
 <dd>
 <a class="el" href="#ac5a02a924ee7341aa8c963114930c791" title="Replace the last entry returned by a read/write iterator.">sht_rw_iter_replace_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00543">543</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00549">549</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +416,7 @@ Variables</h2></td></tr>
 <dd>
 sht_rw_iter_status_() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00558">558</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00564">564</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +448,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="#a698cf6920155bca03dc60cd1ea7acffe" title="Get a description of a read/write iterator&#39;s last error.">sht_rw_iter_msg_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00573">573</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00579">579</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -864,7 +868,7 @@ sht_rw_iter_status_() </dd></dl>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01151">1151</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01158">1158</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -968,6 +972,10 @@ sht_rw_iter_status_() </dd></dl>
 </div><div class="memdoc">
 
 <p>Lookup an entry in a table. </p>
+<blockquote class="doxtable">
+<p><b>WARNING</b></p>
+<p>The pointer returned by this function is only valid until the next time the table is changed. Structural changes to the table (adding or removing keys) can cause other entries to be moved within the table, making pointers to those entries invalid. </p>
+</blockquote>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ht</td><td>The hash table. </td></tr>
@@ -977,7 +985,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the the key is present in the table, a pointer to the key's entry is returned. Otherwise, <span class="tt">NULL</span> is returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00851">851</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00858">858</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1067,7 +1075,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned. Otherwise, false (<span class="tt">0</span>) is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="sht_8c.html#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01141">1141</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01148">1148</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1107,7 +1115,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, and its entry is stored in <code class="param">out</code>. Otherwise, false (<span class="tt">0</span>) is returned (and the contents of <code class="param">out</code> are unchanged).</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="sht_8c.html#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01125">1125</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01132">1132</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1146,7 +1154,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, and the entry associated with the key is replaced with the new entry. Otherwise, false (<span class="tt">0</span>) is returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00956">956</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00963">963</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1191,7 +1199,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, the entry associated with the key is replaced with the new entry, and the previous entry is copied to <code class="param">out</code>. Otherwise, false (<span class="tt">0</span>) is returned, and the contents of <code class="param">out</code> are unchanged. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00976">976</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00983">983</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1219,7 +1227,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If an error occurs, <span class="tt">NULL</span> is returned, and the error status of the table is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01241">1241</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01248">1248</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1247,7 +1255,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If an error occurs, <span class="tt">NULL</span> is returned, and the error status of the table is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01255">1255</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01262">1262</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1275,7 +1283,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator (read-only or read/write).">SHT_ITER_FREE()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01520">1520</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01545">1545</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1303,7 +1311,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator (read-only or read/write).">SHT_ITER_FREE()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01532">1532</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01557">1557</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1332,7 +1340,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01377">1377</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01384">1384</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1361,7 +1369,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01392">1392</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01399">1399</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1389,7 +1397,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01405">1405</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01412">1412</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1413,6 +1421,10 @@ sht_rw_iter_status_() </dd></dl>
 </div><div class="memdoc">
 
 <p>Replace the last entry returned by a read-only iterator. </p>
+<blockquote class="doxtable">
+<p><b>WARNING</b></p>
+<p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
+</blockquote>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
@@ -1423,7 +1435,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01463">1463</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01482">1482</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1447,6 +1459,10 @@ sht_rw_iter_status_() </dd></dl>
 </div><div class="memdoc">
 
 <p>Replace the last entry returned by a read/write iterator. </p>
+<blockquote class="doxtable">
+<p><b>WARNING</b></p>
+<p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
+</blockquote>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
@@ -1457,7 +1473,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01480">1480</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01505">1505</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1516,7 +1532,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A code that describes the error.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd>SHT_ITER_STATUS() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01272">1272</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01279">1279</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1546,7 +1562,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A code that describes the error.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd>SHT_ITER_STATUS() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01289">1289</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01296">1296</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1634,7 +1650,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A string that describes the error.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01306">1306</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01313">1313</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1664,7 +1680,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A string that describes the error.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01323">1323</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01330">1330</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>

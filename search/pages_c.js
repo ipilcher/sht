@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['usage_0',['Usage',['../index.html#autotoc_md4',1,'']]]
+  ['sht_20hash_20table_0',['SHT Hash Table',['../index.html',1,'']]]
 ];
