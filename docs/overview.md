@@ -224,7 +224,7 @@ leaks and use-after-free bugs.
 The library supports 2 iterator variations &mdash; read-only and read/write.
 
 * Multiple read-only iterators can be exist on a table simultaneously, as long
-  as no read-only iterator exists.
+  as no read/write iterator exists.
 
 * Only a single read/write iterator can exist on a table, and no read-only
   iterators can exist at the same time.
