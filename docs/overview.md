@@ -14,7 +14,7 @@ possible performance and scabability are not design goals.
 
 The library also takes a "fail fast" approach to logic errors in the calling
 program.  The calling program will be aborted if it violates the library's API
-contract.  See [Abort conditions](#abort-conditions) below.  This frees the
+contract.  (See [Abort conditions](#abort-conditions) below.)  This frees the
 calling program from the need to check for and react to unrecoverable
 programming errors.
 
@@ -211,7 +211,7 @@ The library supports 2 iterator variations &mdash; read-only and read/write.
 * Multiple read-only iterators can be exist on a table simultaneously, as long
   as no read-only iterator exists.
 
-* Only a single read-only iterator can exist on a table, and no read-only
+* Only a single read/write iterator can exist on a table, and no read-only
   iterators can exist at the same time.
 
 * A read-only iterator cannot be used to delete entries from a table, but it can
@@ -229,7 +229,7 @@ The table below summarizes these differences.
 
 Calling a function that may modify the structure of the table while any
 iterators (read-only or read/write) exist on the table will cause the library to
-abort the program.  See [Abort conditions](#abort-conditions) below.
+abort the program.  (See [Abort conditions](#abort-conditions) below.)
 
 ## Abort conditions
 
