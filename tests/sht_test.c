@@ -259,7 +259,10 @@ TEST(entry_size_too_large)
 	struct sht_ht *ht;
 	enum sht_err err = SHT_ERR_OK;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct oversized_entry, &err);
+	/* Call sht_new_() directly to test runtime validation.
+	   (SHT_NEW() has compile-time validation that would fail here.) */
+	ht = sht_new_(int_hashfn, int_eqfn, sizeof(struct oversized_entry),
+		      _Alignof(struct oversized_entry), &err);
 	ASSERT(ht == NULL);
 	ASSERT(err == SHT_ERR_BAD_ESIZE);
 	ASSERT(strcmp(sht_msg(err), "Entry size too large (> 16KiB)") == 0);

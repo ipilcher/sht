@@ -25,7 +25,7 @@ make sht_test
 - ✓ Create and free table
 - ✓ Create without error pointer
 - ✓ Create with initial capacity
-- ✓ Entry size validation (too large)
+- ✓ Entry size validation (too large) - uses `sht_new_()` to test runtime validation
 - ✓ Entry size at maximum (16KiB)
 - ✓ Capacity validation (too large)
 - ✓ Unusual alignment requirements
@@ -226,3 +226,7 @@ The test suite uses multiple entry types to verify flexibility:
   - Uses `longjmp()` to return control to test instead of terminating program
   - Validates that correct error message was generated before abort
   - Properly restores original abort handler after each test
+- The `entry_size_too_large` test calls `sht_new_()` directly instead of using the `SHT_NEW()` macro:
+  - The `SHT_NEW()` macro includes a compile-time `_Static_assert()` check for entry size
+  - To test the runtime validation path, the test bypasses the macro and calls the underlying function
+  - This ensures both compile-time and runtime validation are available and tested
