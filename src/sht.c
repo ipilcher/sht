@@ -280,7 +280,11 @@ static void sht_assert_nonnull(const void *p, const char *msg)
 }
 
 /**
- * Create a new hash table.
+ * (Create a new hash table.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_NEW().
  *
  * A table returned by this function cannot be used until it has been
  * initialized.
@@ -340,12 +344,16 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
  * Sets the value of the @p context argument for all calls to the table's hash
  * function.
  *
- * This function cannot be called after the table has been initialized.
+ * > **NOTE**
+ * >
+ * > This function cannot be called after the table has been initialized.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
  * @param	context	The function-specific context.
  *
  * @see		sht_hashfn_t
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 void sht_set_hash_ctx(struct sht_ht *ht, void *context)
 {
@@ -360,12 +368,16 @@ void sht_set_hash_ctx(struct sht_ht *ht, void *context)
  * Sets the value of the @p context argument for all calls to the table's
  * equality function.
  *
- * This function cannot be called after the table has been initialized.
+ * > **NOTE**
+ * >
+ * > This function cannot be called after the table has been initialized.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
  * @param	context	The function-specific context.
  *
  * @see		sht_eqfn_t
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 void sht_set_eq_ctx(struct sht_ht *ht, void *context)
 {
@@ -381,11 +393,17 @@ void sht_set_eq_ctx(struct sht_ht *ht, void *context)
  * with table entries.  It is not required in order to free the entries
  * themselves.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called after the table has been initialized.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	freefn	The function to be used to free entry resources.
  * @param	context	Optional function-specific context.
  *
  * @see		sht_freefn_t
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)
 {
@@ -405,10 +423,15 @@ void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)
  * 100, although values much different from the default (85) are unlikely to be
  * very useful.
  *
- * This function cannot be called after the table has been initialized.
+ * > **NOTE**
+ * >
+ * > This function cannot be called after the table has been initialized.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
  * @param	lft	The load factor threshold.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 void sht_set_lft(struct sht_ht *ht, uint8_t lft)
 {
@@ -492,11 +515,18 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
  *
  * If @p capacity is `0`, a default initial capacity (currently `6`) is used.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called more than once on a table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht		The hash table to be initialized.
  * @param	capacity	The initial capacity of the hash table (or `0`).
  *
  * @returns	On success, true (`1`) is returned.  On failure, false (`0`) is
  *		returned, and the table's error status is set.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_init(struct sht_ht *ht, uint32_t capacity)
 {
@@ -530,9 +560,16 @@ _Bool sht_init(struct sht_ht *ht, uint32_t capacity)
 /**
  * Get the number of entries in a table.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  *
  * @returns	The number of entries in the table.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 uint32_t sht_size(const struct sht_ht *ht)
 {
@@ -544,10 +581,17 @@ uint32_t sht_size(const struct sht_ht *ht)
 /**
  * Determine whether a table is empty.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  *
  * @returns	True (`1`) if the table is empty; false (`0`) if it has at least
  *		one entry.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_empty(const struct sht_ht *ht)
 {
@@ -800,6 +844,12 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 /**
  * Add an entry to the table, if its key is not already present.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table or a table that has
+ * > one or more iterators.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	key	The key of the new entry.
  * @param	entry	The new entry.
@@ -812,6 +862,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
  *		the table is unchanged.
  *
  * @see		sht_set()
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 int sht_add(struct sht_ht *ht, const void *key, const void *entry)
 {
@@ -820,6 +871,12 @@ int sht_add(struct sht_ht *ht, const void *key, const void *entry)
 
 /**
  * Unconditionally set the value associated with a key.
+ *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table or a table that has
+ * > one or more iterators.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
  * @param	key	The key of the new entry.
@@ -833,6 +890,7 @@ int sht_add(struct sht_ht *ht, const void *key, const void *entry)
  *		has replaced it.
  *
  * @see		sht_add()
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 int sht_set(struct sht_ht *ht, const void *key, const void *entry)
 {
@@ -849,11 +907,18 @@ int sht_set(struct sht_ht *ht, const void *key, const void *entry)
  * > keys) can cause other entries to be moved within the table, making pointers
  * > to those entries invalid.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	key	The key for which the entry is to be retrieved.
  *
  * @returns	If the the key is present in the table, a pointer to the key's
  *		entry is returned.  Otherwise, `NULL` is returned.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 const void *sht_get(struct sht_ht *ht, const void *restrict key)
 {
@@ -952,6 +1017,11 @@ static _Bool sht_change(struct sht_ht *ht, const void *key,
 /**
  * Replace the entry associated with an existing key.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	key	The key for which the value is to be replaced.
  * @param	entry	The new entry for the key.
@@ -959,6 +1029,8 @@ static _Bool sht_change(struct sht_ht *ht, const void *key,
  * @returns	If the key was present in the table, true (`1`) is returned, and
  *		the entry associated with the key is replaced with the new
  *		entry.  Otherwise, false (`0`) is returned.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
 {
@@ -967,6 +1039,11 @@ _Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
 
 /**
  * Exchange an existing entry and a new entry.
+ *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
  * @param	key	The key for which the value is to be replaced.
@@ -979,6 +1056,8 @@ _Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
  *		entry associated with the key is replaced with the new entry,
  *		and the previous entry is copied to @p out.  Otherwise, false
  *		(`0`) is returned, and the contents of @p out are unchanged.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_swap(struct sht_ht *ht, const void *key, const void *entry, void *out)
 {
@@ -1119,6 +1198,12 @@ static _Bool sht_remove(struct sht_ht *ht, const void *restrict key,
 /**
  * Remove and return an entry from the table.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table or a table that has
+ * > one or more iterators.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	key	The key for which the entry is to be "popped."
  * @param[out]	out	Entry output buffer.  Must be large enough to hold an
@@ -1128,6 +1213,7 @@ static _Bool sht_remove(struct sht_ht *ht, const void *restrict key,
  *		returned (and the contents of @p out are unchanged).
  *
  * @see		sht_delete()
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
 {
@@ -1137,6 +1223,12 @@ _Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
 /**
  * Remove an entry from the table.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table or a table that has
+ * > one or more iterators.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  * @param	key	The key for which the entry is to be removed.
  *
@@ -1144,6 +1236,7 @@ _Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
  *		Otherwise, false (`0`) is returned.
  *
  * @see		sht_pop()
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 _Bool sht_delete(struct sht_ht *ht, const void *restrict key)
 {
@@ -1153,7 +1246,14 @@ _Bool sht_delete(struct sht_ht *ht, const void *restrict key)
 /**
  * Free the resources used by a hash table.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on a table that has one or more iterators.
+ * > (See [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 void sht_free(struct sht_ht *ht)
 {
@@ -1239,11 +1339,18 @@ static struct sht_iter *sht_iter_new(struct sht_ht *ht,
 /**
  * Create a new read-only iterator.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  *
  * @returns	On success, a pointer to the new iterator is returned.  If an
  *		error occurs, `NULL` is returned, and the error status of the
  *		table is set.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht)
 {
@@ -1253,11 +1360,18 @@ struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht)
 /**
  * Create a new read/write iterator.
  *
+ * > **NOTE**
+ * >
+ * > This function cannot be called on an unitialized table.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
  * @param	ht	The hash table.
  *
  * @returns	On success, a pointer to the new iterator is returned.  If an
  *		error occurs, `NULL` is returned, and the error status of the
  *		table is set.
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht)
 {
@@ -1265,7 +1379,11 @@ struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht)
 }
 
 /**
- * Get the error code of a read-only iterator's last error.
+ * (Get the error code of a read-only iterator's last error.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_ERR().
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
@@ -1282,7 +1400,11 @@ enum sht_err sht_ro_iter_err_(const struct sht_ro_iter *iter)
 }
 
 /**
- * Get the error code of a read/write iterator's last error.
+ * (Get the error code of a read/write iterator's last error.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_ERR().
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
@@ -1299,7 +1421,11 @@ enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter)
 }
 
 /**
- * Get a description of a read-only iterator's last error.
+ * (Get a description of a read-only iterator's last error.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_MSG().
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
@@ -1316,7 +1442,11 @@ const char *sht_ro_iter_msg_(const struct sht_ro_iter *iter)
 }
 
 /**
- * Get a description of a read/write iterator's last error.
+ * (Get a description of a read/write iterator's last error.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_MSG().
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
@@ -1372,7 +1502,11 @@ static void *sht_iter_next(struct sht_iter *iter)
 }
 
 /**
- * Get the next entry from a read-only iterator.
+ * (Get the next entry from a read-only iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_NEXT().
  *
  * @param	iter	The iterator.
  *
@@ -1387,7 +1521,11 @@ const void *sht_ro_iter_next_(struct sht_ro_iter *iter)
 }
 
 /**
- * Get the next entry from a read/write iterator.
+ * (Get the next entry from a read/write iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_NEXT().
  *
  * @param	iter	The iterator.
  *
@@ -1463,7 +1601,11 @@ static _Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 }
 
 /**
- * Replace the last entry returned by a read-only iterator.
+ * (Replace the last entry returned by a read-only iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_REPLACE().
  *
  * > **WARNING**
  * >
@@ -1486,7 +1628,11 @@ _Bool sht_ro_iter_replace_(struct sht_ro_iter *iter,
 }
 
 /**
- * Replace the last entry returned by a read/write iterator.
+ * (Replace the last entry returned by a read/write iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_REPLACE().
  *
  * > **WARNING**
  * >
@@ -1536,7 +1682,11 @@ static void sht_iter_free(struct sht_iter *iter)
 }
 
 /**
- * Free a read-only iterator.
+ * (Free a read-only iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_FREE().
  *
  * @param	iter	The iterator.
  *
@@ -1548,7 +1698,11 @@ void sht_ro_iter_free_(struct sht_ro_iter *iter)
 }
 
 /**
- * Free a read/write iterator.
+ * (Free a read/write iterator.)
+ *
+ * > **NOTE**
+ * >
+ * > Do not call this function directly.  Use SHT_ITER_FREE().
  *
  * @param	iter	The iterator.
  *

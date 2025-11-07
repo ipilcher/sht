@@ -35,8 +35,9 @@
  * Critical error printing function.
  *
  * If the calling program violates this library's contract, the library will
- * print an error message and abort the program.  This variable can be set to
- * customize how the error message is printed or logged.
+ * print an error message and abort the program.  (See
+ * [Abort conditions](index.html#abort-conditions).)  This variable can be set
+ * to customize how the error message is printed or logged.
  *
  * ```c
  * static void log_sht_err(const char *msg)
@@ -47,41 +48,9 @@
  * sht_abort_print = log_sht_err;
  * ```
  *
- * The library will abort the program if any of the following occur.
- *
- * * An invalid value is passed to sht_msg().
- *
- * * A `NULL` function pointer is passed to sht_new_().
- *
- * * An invalid load factor threshold is passed to sht_set_lft().
- *
- * * One of the functions in the table below is called on a table that is in an
- *   inappropriate state.
- *
- *   | Function             | Uninitialized | Initialized | Iterator(s) exist |
- *   |----------------------|:-------------:|:-----------:|:-----------------:|
- *   |sht_set_hash_ctx()    |               |  **ABORT**  |         †         |
- *   |sht_set_eq_ctx()      |               |  **ABORT**  |         †         |
- *   |sht_set_freefn()      |               |  **ABORT**  |         †         |
- *   |sht_set_lft()         |               |  **ABORT**  |         †         |
- *   |sht_init()            |               |  **ABORT**  |         †         |
- *   |sht_free()            |               |             |     **ABORT**     |
- *   |sht_add()             |   **ABORT**   |             |     **ABORT**     |
- *   |sht_set()             |   **ABORT**   |             |     **ABORT**     |
- *   |sht_get()             |   **ABORT**   |             |                   |
- *   |sht_size()            |   **ABORT**   |             |                   |
- *   |sht_empty()           |   **ABORT**   |             |                   |
- *   |sht_delete()          |   **ABORT**   |             |     **ABORT**     |
- *   |sht_pop()             |   **ABORT**   |             |     **ABORT**     |
- *   |sht_replace()         |   **ABORT**   |             |                   |
- *   |sht_swap()            |   **ABORT**   |             |                   |
- *   |sht_ro_iter()         |   **ABORT**   |             |                   |
- *   |sht_rw_iter()         |   **ABORT**   |             |                   |
- *
- *   † Abort implied.  (An iterator cannot be created on an uninitialized
- *     table.)
- *
  * @param	msg	The error message (not newline terminated).
+ *
+ * @see		[Abort conditions](index.html#abort-conditions)
  */
 extern void (*sht_abort_print)(const char *msg);
 
@@ -139,8 +108,8 @@ typedef uint32_t (*sht_hashfn_t)(const void *restrict key,
  * Equality comparison function type.
  *
  * Callback function type used to compare a key with the key of an existing
- * bucket.  This function is only called when the full hash values of the two
- * keys are equal.
+ * bucket.  This function is only called when the lower 24 bits of the hash
+ * values of the two keys are equal.
  *
  * ```c
  * struct my_entry {
@@ -173,7 +142,7 @@ typedef _Bool (*sht_eqfn_t)(const void *restrict key,
 /**
  * Free function type.
  *
- * Callback function type used to free entry resources..  For example:
+ * Callback function type used to free entry resources.  For example:
  *
  * ```c
  * struct my_entry {
@@ -505,7 +474,7 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 	)(iter, ##__VA_ARGS__)
 
 /**
- * Free a hash table iterator (read-only or read/write).
+ * Free a hash table iterator.
  *
  * @param	iter	The iterator.
  *
