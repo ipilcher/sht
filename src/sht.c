@@ -511,7 +511,8 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
  *
  * > **NOTE**
  * >
- * > This function cannot be called more than once on a table.  (See
+ * > If this function succeeds, it must not be called again on the same table.
+ * > A failed call may be retried, possibly with a lower @p capacity.  (See
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht		The hash table to be initialized.
