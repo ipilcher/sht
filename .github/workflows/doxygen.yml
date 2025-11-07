@@ -6,12 +6,12 @@ on:
     paths:
       - "src/**"
       - "docs/Doxyfile-public"
-      - "README.md"
+      - "docs/overview.md"
   pull_request:
     paths:
       - "src/**"
       - "docs/Doxyfile-public"
-      - "README.md"
+      - "docs/overview.md"
 
 permissions:
   contents: write
