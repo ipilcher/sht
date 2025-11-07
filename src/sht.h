@@ -531,6 +531,12 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 /**
  * Replace the last entry returned by an iterator.
  *
+ * > **WARNING**
+ * >
+ * > The new entry **must** have the same key as the entry being replaced.
+ * > Replacing an entry with an entry that contains a different key will corrupt
+ * > the table.
+ *
  * @param	iter	The iterator.
  * @param	entry	The new entry.
  *

@@ -842,6 +842,13 @@ int sht_set(struct sht_ht *ht, const void *key, const void *entry)
 /**
  * Lookup an entry in a table.
  *
+ * > **WARNING**
+ * >
+ * > The pointer returned by this function is only valid until the next time the
+ * > table is changed.  Structural changes to the table (adding or removing
+ * > keys) can cause other entries to be moved within the table, making pointers
+ * > to those entries invalid.
+ *
  * @param	ht	The hash table.
  * @param	key	The key for which the entry is to be retrieved.
  *
@@ -1424,6 +1431,12 @@ _Bool sht_iter_delete(struct sht_rw_iter *iter)
 /**
  * Replace the last entry returned by an iterator.
  *
+ * > **WARNING**
+ * >
+ * > The new entry **must** have the same key as the entry being replaced.
+ * > Replacing an entry with an entry that contains a different key will corrupt
+ * > the table.
+ *
  * @param	iter	The iterator.
  * @param	entry	The new entry.
  *
@@ -1452,6 +1465,12 @@ static _Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 /**
  * Replace the last entry returned by a read-only iterator.
  *
+ * > **WARNING**
+ * >
+ * > The new entry **must** have the same key as the entry being replaced.
+ * > Replacing an entry with an entry that contains a different key will corrupt
+ * > the table.
+ *
  * @param	iter	The iterator.
  * @param	entry	The new entry.
  *
@@ -1468,6 +1487,12 @@ _Bool sht_ro_iter_replace_(struct sht_ro_iter *iter,
 
 /**
  * Replace the last entry returned by a read/write iterator.
+ *
+ * > **WARNING**
+ * >
+ * > The new entry **must** have the same key as the entry being replaced.
+ * > Replacing an entry with an entry that contains a different key will corrupt
+ * > the table.
  *
  * @param	iter	The iterator.
  * @param	entry	The new entry.
