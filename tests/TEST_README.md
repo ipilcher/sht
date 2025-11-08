@@ -4,7 +4,7 @@
 
 ## Overview
 
-Comprehensive test suite for the SHT hash table library. The test suite contains 79 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
+Comprehensive test suite for the SHT hash table library. The test suite contains 86 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
 
 ## Building and Running
 
@@ -38,11 +38,12 @@ make sht_test
 - ✓ Empty status with entries
 - ✓ Empty status after clearing all entries
 
-### 3. Context and Configuration (4 tests)
+### 3. Context and Configuration (5 tests)
 - ✓ Hash function context
 - ✓ Equality function context
 - ✓ Free function context
 - ✓ Load factor threshold configuration
+- ✓ PSL threshold configuration
 
 ### 4. Add Operations (3 tests)
 - ✓ Add new entry
@@ -73,10 +74,14 @@ make sht_test
 - ✓ Pop existing entry (return value)
 - ✓ Pop nonexistent entry
 
-### 10. Table Growth and Collision Handling (3 tests)
+### 10. Table Growth and Collision Handling (7 tests)
 - ✓ Automatic table growth and rehashing
 - ✓ Collision handling with Robin Hood probing
-- ✓ Excessive collisions (PSL limit)
+- ✓ Excessive collisions (default PSL threshold of 127) - verifies SHT_ERR_BAD_HASH is returned
+- ✓ Excessive collisions with PSL threshold of 10 - verifies SHT_ERR_BAD_HASH is returned
+- ✓ Excessive collisions with PSL threshold of 50 - verifies SHT_ERR_BAD_HASH is returned
+- ✓ Excessive collisions with PSL threshold of 1 - verifies SHT_ERR_BAD_HASH is returned
+- ✓ PSL tracking after deletions - verifies psl_maxxed flag is correctly maintained
 
 ### 11. Read-Only Iterators (5 tests)
 - ✓ Iterate over empty table
@@ -100,21 +105,24 @@ make sht_test
 - ✓ Wraparound deletion (circular buffer)
 - ✓ String keys with dynamic allocation
 
-### 14. Abort Conditions (26 tests)
+### 14. Abort Conditions (28 tests)
 These tests use `setjmp`/`longjmp` to verify that the library correctly aborts on programming errors:
 - ✓ Invalid error code to `sht_msg()`
 - ✓ Invalid entry alignment parameters to `sht_new_()` (2 tests):
   - `ealign` not a power of 2
   - `esize` not a multiple of `ealign`
-- ✓ Configuration functions called after initialization (5 tests):
+- ✓ Configuration functions called after initialization (6 tests):
   - `sht_set_hash_ctx()`
   - `sht_set_eq_ctx()`
   - `sht_set_freefn()`
   - `sht_set_lft()`
+  - `sht_set_psl_thold()`
   - `sht_init()` (double initialization)
 - ✓ Invalid load factor threshold (2 tests):
   - Too low (< 1)
   - Too high (> 100)
+- ✓ Invalid PSL threshold (1 test):
+  - Too high (> 127)
 - ✓ Operations on uninitialized table (11 tests):
   - `sht_size()`
   - `sht_empty()`
@@ -153,10 +161,11 @@ All programming errors that trigger `abort()` are tested using `setjmp`/`longjmp
 
 1. Invalid error code to `sht_msg()`
 2. Invalid entry alignment parameters to `sht_new_()` (2 conditions)
-3. Configuration after initialization (5 conditions)
+3. Configuration after initialization (6 conditions)
 4. Invalid load factor threshold (2 conditions)
-5. Operations on uninitialized table (9 conditions)
-6. Modification operations with active iterators (5 conditions)
+5. Invalid PSL threshold (1 condition)
+6. Operations on uninitialized table (9 conditions)
+7. Modification operations with active iterators (5 conditions)
 
 ## API Coverage
 
@@ -170,6 +179,7 @@ Every public API function is tested with multiple scenarios:
 - `sht_set_eq_ctx()`
 - `sht_set_freefn()`
 - `sht_set_lft()`
+- `sht_set_psl_thold()`
 - `sht_size()`
 - `sht_empty()`
 - `sht_add()`

@@ -504,6 +504,17 @@ TEST(load_factor_threshold)
 	sht_free(ht);
 }
 
+TEST(psl_threshold)
+{
+	struct sht_ht *ht;
+
+	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	sht_set_psl_thold(ht, 100);  /* PSL threshold of 100 */
+	ASSERT(sht_init(ht, 0));
+	sht_free(ht);
+}
+
 /*******************************************************************************
  *
  *	Tests: Add operations
@@ -964,7 +975,8 @@ TEST(excessive_collisions)
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
 	ASSERT(sht_init(ht, 128));
 
-	/* Try to add enough entries to exceed max PSL (127) */
+	/* Add entries until we exceed max PSL (127) - this MUST happen
+	   because bad_hashfn forces all entries to the same bucket */
 	for (i = 0; i < 200; i++) {
 		e.key = i;
 		e.value = i * 10;
@@ -976,8 +988,153 @@ TEST(excessive_collisions)
 		}
 	}
 
-	/* If we got here without error, that's also acceptable
-	   (rehashing may have prevented PSL from getting too high) */
+	/* Should never get here - bad_hashfn forces PSL limit */
+	ASSERT(0 && "Should have hit SHT_ERR_BAD_HASH");
+	sht_free(ht);
+}
+
+TEST(excessive_collisions_psl_10)
+{
+	struct sht_ht *ht;
+	struct int_entry e;
+	int i;
+	int result;
+
+	/* Use pathological hash function with low PSL threshold */
+	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	sht_set_lft(ht, 95);  /* High load factor to delay growth */
+	sht_set_psl_thold(ht, 10);  /* Low PSL threshold */
+	ASSERT(sht_init(ht, 32));
+
+	/* Add entries until we hit the PSL limit - this MUST happen
+	   because bad_hashfn forces all entries to the same bucket */
+	for (i = 0; i < 50; i++) {
+		e.key = i;
+		e.value = i * 10;
+		result = sht_add(ht, &e.key, &e);
+		if (result == -1) {
+			ASSERT(sht_get_err(ht) == SHT_ERR_BAD_HASH);
+			sht_free(ht);
+			return;
+		}
+	}
+
+	/* Should never get here - bad_hashfn forces PSL limit */
+	ASSERT(0 && "Should have hit SHT_ERR_BAD_HASH");
+	sht_free(ht);
+}
+
+TEST(excessive_collisions_psl_50)
+{
+	struct sht_ht *ht;
+	struct int_entry e;
+	int i;
+	int result;
+
+	/* Use pathological hash function with medium PSL threshold */
+	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	sht_set_lft(ht, 95);  /* High load factor to delay growth */
+	sht_set_psl_thold(ht, 50);  /* Medium PSL threshold */
+	ASSERT(sht_init(ht, 64));
+
+	/* Add entries until we hit the PSL limit - this MUST happen
+	   because bad_hashfn forces all entries to the same bucket */
+	for (i = 0; i < 100; i++) {
+		e.key = i;
+		e.value = i * 10;
+		result = sht_add(ht, &e.key, &e);
+		if (result == -1) {
+			ASSERT(sht_get_err(ht) == SHT_ERR_BAD_HASH);
+			sht_free(ht);
+			return;
+		}
+	}
+
+	/* Should never get here - bad_hashfn forces PSL limit */
+	ASSERT(0 && "Should have hit SHT_ERR_BAD_HASH");
+	sht_free(ht);
+}
+
+TEST(excessive_collisions_psl_1)
+{
+	struct sht_ht *ht;
+	struct int_entry e;
+	int i;
+	int result;
+
+	/* Use pathological hash function with minimal PSL threshold */
+	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	sht_set_lft(ht, 95);  /* High load factor to delay growth */
+	sht_set_psl_thold(ht, 1);  /* Minimal PSL threshold */
+	ASSERT(sht_init(ht, 16));
+
+	/* Add entries until we hit the PSL limit - this MUST happen
+	   because bad_hashfn forces all entries to the same bucket */
+	for (i = 0; i < 20; i++) {
+		e.key = i;
+		e.value = i * 10;
+		result = sht_add(ht, &e.key, &e);
+		if (result == -1) {
+			ASSERT(sht_get_err(ht) == SHT_ERR_BAD_HASH);
+			sht_free(ht);
+			return;
+		}
+	}
+
+	/* Should never get here - bad_hashfn forces PSL limit */
+	ASSERT(0 && "Should have hit SHT_ERR_BAD_HASH");
+	sht_free(ht);
+}
+
+TEST(psl_tracking_after_delete)
+{
+	struct sht_ht *ht;
+	struct int_entry e;
+	int keys[20];
+	int i;
+	int result;
+
+	/* Use pathological hash with very low PSL threshold */
+	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	sht_set_lft(ht, 95);  /* High load factor to prevent growth */
+	sht_set_psl_thold(ht, 3);  /* Very low PSL threshold */
+	ASSERT(sht_init(ht, 16));
+
+	/* Add entries to create a chain up to PSL threshold */
+	for (i = 0; i < 10; i++) {
+		keys[i] = i;
+		e.key = i;
+		e.value = i * 10;
+		result = sht_add(ht, &keys[i], &e);
+		if (result == -1) {
+			ASSERT(sht_get_err(ht) == SHT_ERR_BAD_HASH);
+			break;
+		}
+	}
+
+	/* If we successfully added entries, try deleting and re-adding
+	   to test psl_maxxed tracking after deletions */
+	if (i > 0) {
+		/* Delete the last entry added */
+		sht_delete(ht, &keys[i - 1]);
+
+		/* Try to add more entries - should still respect PSL limit */
+		for (; i < 20; i++) {
+			keys[i] = i;
+			e.key = i;
+			e.value = i * 10;
+			result = sht_add(ht, &keys[i], &e);
+			if (result == -1) {
+				ASSERT(sht_get_err(ht) == SHT_ERR_BAD_HASH);
+				break;
+			}
+		}
+	}
+
 	sht_free(ht);
 }
 
@@ -1614,6 +1771,31 @@ TEST(abort_set_lft_invalid_high)
 	free(ht);
 }
 
+TEST(abort_set_psl_thold_after_init)
+{
+	struct sht_ht *ht;
+
+	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+	ASSERT(sht_init(ht, 0));
+
+	ASSERT_ABORTS(sht_set_psl_thold(ht, 100), "already initialized");
+
+	sht_free(ht);
+}
+
+TEST(abort_set_psl_thold_invalid)
+{
+	struct sht_ht *ht;
+
+	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+
+	ASSERT_ABORTS(sht_set_psl_thold(ht, 128), "Invalid PSL threshold");
+
+	free(ht);
+}
+
 TEST(abort_init_twice)
 {
 	struct sht_ht *ht;
@@ -1911,6 +2093,7 @@ int main(void)
 	RUN_TEST(eq_context);
 	RUN_TEST(free_context);
 	RUN_TEST(load_factor_threshold);
+	RUN_TEST(psl_threshold);
 
 	/* Add operations */
 	RUN_TEST(add_new_entry);
@@ -1945,6 +2128,10 @@ int main(void)
 	RUN_TEST(table_growth);
 	RUN_TEST(collision_handling);
 	RUN_TEST(excessive_collisions);
+	RUN_TEST(excessive_collisions_psl_10);
+	RUN_TEST(excessive_collisions_psl_50);
+	RUN_TEST(excessive_collisions_psl_1);
+	RUN_TEST(psl_tracking_after_delete);
 
 	/* Read-only iterators */
 	RUN_TEST(ro_iterator_empty_table);
@@ -1978,6 +2165,8 @@ int main(void)
 	RUN_TEST(abort_set_lft_after_init);
 	RUN_TEST(abort_set_lft_invalid_low);
 	RUN_TEST(abort_set_lft_invalid_high);
+	RUN_TEST(abort_set_psl_thold_after_init);
+	RUN_TEST(abort_set_psl_thold_invalid);
 	RUN_TEST(abort_init_twice);
 	RUN_TEST(abort_size_not_initialized);
 	RUN_TEST(abort_empty_not_initialized);
