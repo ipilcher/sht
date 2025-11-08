@@ -436,33 +436,33 @@ void sht_set_lft(struct sht_ht *ht, uint8_t lft)
 }
 
 /**
- * Set the PSL threshold of a table.
+ * Set the PSL limit of a table.
  *
- * If an entry in the table has a PSL equal to the table's PSL threshold, no
+ * If an entry in the table has a PSL equal to the table's PSL limit, no
  * further entries will be allowed until 1 or more entries that hash to the same
  * "ideal" position are removed.  (See [Limits and assumptions][1].)
  *
  * > **NOTE**
  * >
  * > This function cannot be called after the table has been initialized, nor
- * > can it be called with an invalid @p thold value.  (See
+ * > can it be called with an invalid @p limit value.  (See
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
- * @param	thold	The PSL threshold (`1` - `127`).
+ * @param	limit	The PSL limit (`1` - `127`).
  *
  * @see		[Limits and assumptions][1]
  * @see		[Abort conditions](index.html#abort-conditions)
  *
  * [1]: index.html#limits-and-assumptions
  */
-void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold)
+void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit)
 {
 	if (ht->tsize != 0)
 		sht_abort("sht_set_psl_limit: Table already initialized");
-	if (thold < 1 || thold > 127)
+	if (limit < 1 || limit > 127)
 		sht_abort("sht_set_psl_limit: Invalid PSL threshold");
-	ht->psl_limit = thold;
+	ht->psl_limit = limit;
 }
 
 /**
