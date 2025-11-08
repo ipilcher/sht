@@ -12,11 +12,14 @@ This library aims to provide a straightforward hash table implementation that is
 both readily understandable and suitable for most hash table use cases.  Maximum
 possible performance and scabability are not design goals.
 
-The library also takes a "fail fast" approach to logic errors in the calling
-program.  The calling program will be aborted if it violates the library's API
-contract.  (See [Abort conditions](#abort-conditions) below.)  This frees the
-calling program from the need to check for and react to unrecoverable
-programming errors.
+Also, the library provides no explicit support for concurrency.  Any use of the
+library in a multi-threaded application will require external synchronization.
+
+The library takes a "fail fast" approach to logic errors in the calling program.
+The calling program will be aborted if it violates the library's API contract.
+(See [Abort conditions](#abort-conditions) below.)  This frees the calling
+program from the need to check for and react to unrecoverable programming
+errors.
 
 ## Limits and assumptions
 
@@ -33,8 +36,7 @@ The library imposes a number of limits.
 * The maximum size of an entry is 16 KiB (16,384 bytes).
 
 * The maximum probe sequence length (PSL) of an entry is 127.  (See
-  [*Robin Hood hashing*][1] for a discussion of PSLs.)  A PSL value anywhere
-  close to 127 will only occur if the hash function is pathologically bad.
+  [*Robin Hood hashing*][1] and [*PSL Limits][4] for a discussion of PSLs.)
 
 * The maximum number of read-only iterators an a table is 32,767.
 
@@ -246,6 +248,11 @@ Calling a function that may modify the structure of the table while any
 iterators (read-only or read/write) exist on the table will cause the library to
 abort the program.  (See [Abort conditions](#abort-conditions) below.)
 
+> **NOTE**
+>
+> The order in which an iterator returns the items in the table is effectively
+> random, and it may change as entries are added to and removed from the table.
+
 ## Error handling
 
 ### Non-fatal errors
@@ -298,7 +305,15 @@ approach to API contract violations by the calling program.  The library will
 
 * A `NULL` function pointer is passed to sht_new_().
 
+* sht_new_() is called with an invalid `esize` or `ealign` argument.  (This
+  cannot occur if sht_new_() is called via SHT_NEW().)
+
+  * `ealign` must be a power of 2.
+  * `esize` must be a multiple of `ealign`.
+
 * An invalid load factor threshold is passed to sht_set_lft().
+
+* An invalid PSL limit is passed to sht_set_psl_limit().
 
 * One of the functions in the table below is called on a table that is in an
   inappropriate state.
@@ -309,6 +324,7 @@ approach to API contract violations by the calling program.  The library will
   |sht_set_eq_ctx()      |               |  **ABORT**  |         †         |
   |sht_set_freefn()      |               |  **ABORT**  |         †         |
   |sht_set_lft()         |               |  **ABORT**  |         †         |
+  |sht_set_psl_limit()   |               |  **ABORT**  |         †         |
   |sht_init()            |               |  **ABORT**  |         †         |
   |sht_free()            |               |             |     **ABORT**     |
   |sht_add()             |   **ABORT**   |             |     **ABORT**     |
