@@ -105,7 +105,8 @@ Overview</h1>
 <h1 class="doxsection"><a class="anchor" id="design-philosophy"></a>
 Design philosophy</h1>
 <p>This library aims to provide a straightforward hash table implementation that is both readily understandable and suitable for most hash table use cases. Maximum possible performance and scabability are not design goals.</p>
-<p>The library also takes a "fail fast" approach to logic errors in the calling program. The calling program will be aborted if it violates the library's API contract. (See <a class="el" href="#abort-conditions">Abort conditions</a> below.) This frees the calling program from the need to check for and react to unrecoverable programming errors.</p>
+<p>Also, the library provides no explicit support for concurrency. Any use of the library in a multi-threaded application will require external synchronization.</p>
+<p>The library takes a "fail fast" approach to logic errors in the calling program. The calling program will be aborted if it violates the library's API contract. (See <a class="el" href="#abort-conditions">Abort conditions</a> below.) This frees the calling program from the need to check for and react to unrecoverable programming errors.</p>
 <h1 class="doxsection"><a class="anchor" id="limits-and-assumptions"></a>
 Limits and assumptions</h1>
 <p>This library is developed on Linux with GCC (15.2.1 as of this writing). It makes use of a number of GCC builtins and C23 features. It should also work with Clang.</p>
@@ -113,7 +114,7 @@ Limits and assumptions</h1>
 <ul>
 <li>The absolute maximum number of buckets in a table is 2²⁴ (16,777,216). At the default load factor threshold (LFT) of 85%, this results in a maximum usable capacity of 14,260,633 entries.</li>
 <li>The maximum size of an entry is 16 KiB (16,384 bytes).</li>
-<li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md"><em>Robin Hood hashing</em></a> for a discussion of PSLs.) A PSL value anywhere close to 127 will only occur if the hash function is pathologically bad.</li>
+<li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md"><em>Robin Hood hashing</em></a> and [*PSL Limits][4] for a discussion of PSLs.)</li>
 <li>The maximum number of read-only iterators an a table is 32,767.</li>
 </ul>
 <p>In addition to the limits imposed by the library, the total size of a table is limited by the amount of memory available to the application. A table's total memory footprint scales with the product of the number of buckets and the entry size (i.e. <span class="tt">total_size ∝ buckets × entry_size</span>), so the largest possible table will not fit in the 4 GiB address space of a 32-bit system.</p>
@@ -273,6 +274,10 @@ Iterators</h1>
 <td class="markdownTableBodyNone">Delete entries?  </td><td class="markdownTableBodyCenter">NO  </td><td class="markdownTableBodyCenter">YES  </td></tr>
 </table>
 <p>Calling a function that may modify the structure of the table while any iterators (read-only or read/write) exist on the table will cause the library to abort the program. (See <a class="el" href="#abort-conditions">Abort conditions</a> below.)</p>
+<blockquote class="doxtable">
+<p><b>NOTE</b></p>
+<p>The order in which an iterator returns the items in the table is effectively random, and it may change as entries are added to and removed from the table. </p>
+</blockquote>
 <h1 class="doxsection"><a class="anchor" id="error-handling"></a>
 Error handling</h1>
 <h2 class="doxsection"><a class="anchor" id="non-fatal-errors"></a>
@@ -318,7 +323,13 @@ Abort conditions</h2>
 <ul>
 <li>An invalid value is passed to <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>.</li>
 <li>A <span class="tt">NULL</span> function pointer is passed to <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>.</li>
+<li><a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a> is called with an invalid <span class="tt">esize</span> or <span class="tt">ealign</span> argument. (This cannot occur if <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a> is called via <a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a>.)<ul>
+<li><span class="tt">ealign</span> must be a power of 2.</li>
+<li><span class="tt">esize</span> must be a multiple of <span class="tt">ealign</span>.</li>
+</ul>
+</li>
 <li>An invalid load factor threshold is passed to <a class="el" href="sht_8c.html#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>.</li>
+<li>An invalid PSL limit is passed to <a class="el" href="sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62" title="Set the PSL limit of a table.">sht_set_psl_limit()</a>.</li>
 <li>One of the functions in the table below is called on a table that is in an inappropriate state.</li>
 </ul>
 <table class="markdownTable">
@@ -333,30 +344,32 @@ Abort conditions</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62" title="Set the PSL limit of a table.">sht_set_psl_limit()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter">†  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#ae36e072969cef119b1176887dcdc8623" title="Free the resources used by a hash table.">sht_free()</a>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd" title="Unconditionally set the value associated with a key.">sht_set()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a0dd66cb8cf354a570429662675bc6485" title="Lookup an entry in a table.">sht_get()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a82e02f941cacb73ed15c616bfe268985" title="Get the number of entries in a table.">sht_size()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a2865bd37b19b90cb3dd3c01aebec7b35" title="Determine whether a table is empty.">sht_empty()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a774ddeec974dc6616b06c65e01078a15" title="Replace the entry associated with an existing key.">sht_replace()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#af2fcd39aa951331b8dc042238c05eee6" title="Exchange an existing entry and a new entry.">sht_swap()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#af2fcd39aa951331b8dc042238c05eee6" title="Exchange an existing entry and a new entry.">sht_swap()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a1810fbf97bb175be26189efa8023d0b4" title="Create a new read/write iterator.">sht_rw_iter()</a>  </td><td class="markdownTableBodyCenter"><b>ABORT</b>  </td><td class="markdownTableBodyCenter"></td><td class="markdownTableBodyCenter"></td></tr>
 </table>
 <p>† Abort implied. (An iterator cannot be created on an uninitialized table.) </p>
