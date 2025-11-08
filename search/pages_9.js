@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['management_0',['Memory management',['../index.html#memory-management',1,'']]],
-  ['memory_20management_1',['Memory management',['../index.html#memory-management',1,'']]]
+  ['limits_20and_20assumptions_0',['Limits and assumptions',['../index.html#limits-and-assumptions',1,'']]]
 ];

@@ -8,6 +8,7 @@ var sht_8c =
     [ "sht_set_eq_ctx", "sht_8c.html#a9d385ed61d95d30e63344ebe6aa522a3", null ],
     [ "sht_set_freefn", "sht_8c.html#ab6ac49df5028772a25b41c2c509ecced", null ],
     [ "sht_set_lft", "sht_8c.html#a99d607b370024be6526a17863ee62145", null ],
+    [ "sht_set_psl_limit", "sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62", null ],
     [ "sht_init", "sht_8c.html#ab6a5c760d62564b28208f9cd780da00f", null ],
     [ "sht_size", "sht_8c.html#a82e02f941cacb73ed15c616bfe268985", null ],
     [ "sht_empty", "sht_8c.html#a2865bd37b19b90cb3dd3c01aebec7b35", null ],

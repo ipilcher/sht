@@ -105,7 +105,7 @@ Overview</h1>
 <h1 class="doxsection"><a class="anchor" id="design-philosophy"></a>
 Design philosophy</h1>
 <p>This library aims to provide a straightforward hash table implementation that is both readily understandable and suitable for most hash table use cases. Maximum possible performance and scabability are not design goals.</p>
-<p>The library also takes a "fail fast" approach to logic errors in the calling program. The calling program will be aborted if it violates the library's API contract. See <a class="el" href="#abort-conditions">Abort conditions</a> below. This frees the calling program from the need to check for and react to unrecoverable programming errors.</p>
+<p>The library also takes a "fail fast" approach to logic errors in the calling program. The calling program will be aborted if it violates the library's API contract. (See <a class="el" href="#abort-conditions">Abort conditions</a> below.) This frees the calling program from the need to check for and react to unrecoverable programming errors.</p>
 <h1 class="doxsection"><a class="anchor" id="limits-and-assumptions"></a>
 Limits and assumptions</h1>
 <p>This library is developed on Linux with GCC (15.2.1 as of this writing). It makes use of a number of GCC builtins and C23 features. It should also work with Clang.</p>
@@ -114,6 +114,7 @@ Limits and assumptions</h1>
 <li>The absolute maximum number of buckets in a table is 2²⁴ (16,777,216). At the default load factor threshold (LFT) of 85%, this results in a maximum usable capacity of 14,260,633 entries.</li>
 <li>The maximum size of an entry is 16 KiB (16,384 bytes).</li>
 <li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md"><em>Robin Hood hashing</em></a> for a discussion of PSLs.) A PSL value anywhere close to 127 will only occur if the hash function is pathologically bad.</li>
+<li>The maximum number of read-only iterators an a table is 32,767.</li>
 </ul>
 <p>In addition to the limits imposed by the library, the total size of a table is limited by the amount of memory available to the application. A table's total memory footprint scales with the product of the number of buckets and the entry size (i.e. <span class="tt">total_size ∝ buckets × entry_size</span>), so the largest possible table will not fit in the 4 GiB address space of a 32-bit system.</p>
 <h1 class="doxsection"><a class="anchor" id="usage"></a>
@@ -170,8 +171,8 @@ Example 1</h3>
 <div class="line">    <a class="code hl_function" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a>(ht, 0);  <span class="comment">// default initial capacity</span></div>
 <div class="line">    <span class="keywordflow">return</span> ht;</div>
 <div class="line">}</div>
-<div class="ttc" id="asht_8c_html_ab6a5c760d62564b28208f9cd780da00f"><div class="ttname"><a href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a></div><div class="ttdeci">_Bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00501">sht.c:501</a></div></div>
-<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00476">sht.h:476</a></div></div>
+<div class="ttc" id="asht_8c_html_ab6a5c760d62564b28208f9cd780da00f"><div class="ttname"><a href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f">sht_init</a></div><div class="ttdeci">_Bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00558">sht.c:558</a></div></div>
+<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00455">sht.h:455</a></div></div>
 </div><!-- fragment --><p>Note the following.</p>
 <ul>
 <li>This example uses<a href="https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html"><span class="tt">XXH3_64bits()</span></a> as its underlying hash function. <a href="https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html"><span class="tt">XXH3_64bits()</span></a> returns a 64-bit hash value, but the upper 32 bits are discarded. In fact, the library will only use the lower 24 bits of the hash value, so it is imperative that the hash function performs adequate bit mixing.</li>
@@ -219,12 +220,23 @@ Example 2</h3>
 <div class="line">    <span class="keywordflow">return</span> ht;</div>
 <div class="line">}</div>
 <div class="ttc" id="asht_8c_html_a45747c22ee2656dcd16d86ce74ea5ec8"><div class="ttname"><a href="sht_8c.html#a45747c22ee2656dcd16d86ce74ea5ec8">sht_set_hash_ctx</a></div><div class="ttdeci">void sht_set_hash_ctx(struct sht_ht *ht, void *context)</div><div class="ttdoc">Set the &quot;context&quot; for a table&#39;s hash function.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00350">sht.c:350</a></div></div>
-<div class="ttc" id="asht_8c_html_ab6ac49df5028772a25b41c2c509ecced"><div class="ttname"><a href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a></div><div class="ttdeci">void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)</div><div class="ttdoc">Set the optional entry resource free function for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00390">sht.c:390</a></div></div>
+<div class="ttc" id="asht_8c_html_ab6ac49df5028772a25b41c2c509ecced"><div class="ttname"><a href="sht_8c.html#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a></div><div class="ttdeci">void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)</div><div class="ttdoc">Set the optional entry resource free function for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00400">sht.c:400</a></div></div>
 </div><!-- fragment --><p>Note:</p>
 <ul>
 <li>This example uses <a href="https://xxhash.com/doc/v0.8.3/group___x_x_h32__family.html"><span class="tt">XXH32()</span></a>, which requires a seed value. The hash function context is used to pass the seed to the hash function.</li>
 <li>This hash table requires a "free function," in order to avoid leaking memory (host names) when entries are deleted. (See <a class="el" href="#memory-management">Memory management</a> below.)</li>
 <li>The hash function context and the free function are two of several hash table attributes that can be set before the table is initialized. Attempting to set any of these attributes on a table that has been initialized is an API contract violation that will cause the program to abort.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="helper-macros"></a>
+Helper macros</h2>
+<p>Some of the library's API functions are intended to be called via helper macros. The names of these functions end in an underscore (<span class="tt">_</span>), and their short descriptions in the API documentation are enclosed in parentheses.</p>
+<ul>
+<li><a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a> wraps <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>.</li>
+<li><a class="el" href="sht_8h.html#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator.">SHT_ITER_FREE()</a> wraps <a class="el" href="sht_8c.html#aacf17f485a20817ff310e5519307c9a1" title="(Free a read-only iterator.)">sht_ro_iter_free_()</a> and <a class="el" href="sht_8c.html#a43a4835de587eb7a71970548ff8e4585" title="(Free a read/write iterator.)">sht_rw_iter_free_()</a>.</li>
+<li><a class="el" href="sht_8h.html#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a> wraps <a class="el" href="sht_8c.html#a63fee9174bb5ef422d18756f712d7b87" title="(Get the next entry from a read-only iterator.)">sht_ro_iter_next_()</a> and <a class="el" href="sht_8c.html#a07cc2b8eb184f99bcc4fa5cabaaa9f36" title="(Get the next entry from a read/write iterator.)">sht_rw_iter_next_()</a>.</li>
+<li><a class="el" href="sht_8h.html#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a> wraps <a class="el" href="sht_8c.html#a72a691fe8646d9bd2f2bdce4c637ce15" title="(Replace the last entry returned by a read-only iterator.)">sht_ro_iter_replace_()</a> and <a class="el" href="sht_8c.html#ac5a02a924ee7341aa8c963114930c791" title="(Replace the last entry returned by a read/write iterator.)">sht_rw_iter_replace_()</a>.</li>
+<li><a class="el" href="sht_8h.html#ab33eebaeeeac9f58e2fd7638b1df9e89" title="Get the the error code of an iterator&#39;s last error.">SHT_ITER_ERR()</a> wraps <a class="el" href="sht_8c.html#a8eae4cade96128f6bfc8fdfc20feb1c9" title="(Get the error code of a read-only iterator&#39;s last error.)">sht_ro_iter_err_()</a> and <a class="el" href="sht_8c.html#a9784abbc72986ebb457ebc3d8fafc34b" title="(Get the error code of a read/write iterator&#39;s last error.)">sht_rw_iter_err_()</a>.</li>
+<li><a class="el" href="sht_8h.html#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a> wraps <a class="el" href="sht_8c.html#af7d396fce715de8f325d10fa92cad91c" title="(Get a description of a read-only iterator&#39;s last error.)">sht_ro_iter_msg_()</a> and <a class="el" href="sht_8c.html#a698cf6920155bca03dc60cd1ea7acffe" title="(Get a description of a read/write iterator&#39;s last error.)">sht_rw_iter_msg_()</a>.</li>
 </ul>
 <h1 class="doxsection"><a class="anchor" id="memory-management"></a>
 Memory management</h1>
@@ -244,8 +256,8 @@ Memory management</h1>
 Iterators</h1>
 <p>The library supports 2 iterator variations &mdash; read-only and read/write.</p>
 <ul>
-<li>Multiple read-only iterators can be exist on a table simultaneously, as long as no read-only iterator exists.</li>
-<li>Only a single read-only iterator can exist on a table, and no read-only iterators can exist at the same time.</li>
+<li>Multiple read-only iterators can be exist on a table simultaneously, as long as no read/write iterator exists.</li>
+<li>Only a single read/write iterator can exist on a table, and no read-only iterators can exist at the same time.</li>
 <li>A read-only iterator cannot be used to delete entries from a table, but it can be used to replace entries (with other entries that have equal keys).</li>
 <li>A read/write iterator can be used to replace or delete entries from a table.</li>
 </ul>
@@ -260,13 +272,52 @@ Iterators</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">Delete entries?  </td><td class="markdownTableBodyCenter">NO  </td><td class="markdownTableBodyCenter">YES  </td></tr>
 </table>
-<p>Calling a function that may modify the structure of the table while any iterators (read-only or read/write) exist on the table will cause the library to abort the program. See <a class="el" href="#abort-conditions">Abort conditions</a> below.</p>
-<h1 class="doxsection"><a class="anchor" id="abort-conditions"></a>
-Abort conditions</h1>
+<p>Calling a function that may modify the structure of the table while any iterators (read-only or read/write) exist on the table will cause the library to abort the program. (See <a class="el" href="#abort-conditions">Abort conditions</a> below.)</p>
+<h1 class="doxsection"><a class="anchor" id="error-handling"></a>
+Error handling</h1>
+<h2 class="doxsection"><a class="anchor" id="non-fatal-errors"></a>
+Non-fatal errors</h2>
+<p>Some of the functions (and macros) in this library return an error indication in some circumstances.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Function  </th><th class="markdownTableHeadCenter">Error return  </th><th class="markdownTableHeadCenter">Error info  </th><th class="markdownTableHeadNone">Error codes  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">NULL</span>  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>†  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">- <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">NULL</span>  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a53990568ace3dc2c06336b660e2ed76a" title="Entry size too large (&gt; 16KiB).">SHT_ERR_BAD_ESIZE</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#ab6a5c760d62564b28208f9cd780da00f" title="Initialize a hash table.">sht_init()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">0</span>  </td><td class="markdownTableBodyCenter">2  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a37247eba50bd8bcf928a3c658a70b858" title="Requested table size too large.">SHT_ERR_TOOBIG</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a5cd47d066198640b242e7a1ecebab92e" title="Add an entry to the table, if its key is not already present.">sht_add()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">-1</span>  </td><td class="markdownTableBodyCenter">2  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a37247eba50bd8bcf928a3c658a70b858" title="Requested table size too large.">SHT_ERR_TOOBIG</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7ab78a1ae652df8f6f7238d794c8d0ab51" title="Too many hash collisions.">SHT_ERR_BAD_HASH</a></span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd" title="Unconditionally set the value associated with a key.">sht_set()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">-1</span>  </td><td class="markdownTableBodyCenter">2  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a37247eba50bd8bcf928a3c658a70b858" title="Requested table size too large.">SHT_ERR_TOOBIG</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7ab78a1ae652df8f6f7238d794c8d0ab51" title="Too many hash collisions.">SHT_ERR_BAD_HASH</a></span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a5a76bce06872aedf3253f85a453cf059" title="Create a new read-only iterator.">sht_ro_iter()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">NULL</span>  </td><td class="markdownTableBodyCenter">2  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7ad64bd244886d31dd83f3d2900b3c082f" title="Can&#39;t acquire iterator lock.">SHT_ERR_ITER_LOCK</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a517a0ad602a27a475cc5cebc8f483a2a" title="Table has too many iterators.">SHT_ERR_ITER_COUNT</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a1810fbf97bb175be26189efa8023d0b4" title="Create a new read/write iterator.">sht_rw_iter()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">NULL</span>  </td><td class="markdownTableBodyCenter">2  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7ad64bd244886d31dd83f3d2900b3c082f" title="Can&#39;t acquire iterator lock.">SHT_ERR_ITER_LOCK</a></span>, <span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a></span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8c.html#a92921f9869d9305278c7f2d352bf0b70" title="Remove the last entry returned by a read/write iterator.">sht_iter_delete()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">0</span>  </td><td class="markdownTableBodyCenter">3  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7abda0c65003c89740342a338a36b07663" title="Iterator at beginning or end.">SHT_ERR_ITER_NO_LAST</a></span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="sht_8h.html#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">0</span>  </td><td class="markdownTableBodyCenter">3  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7abda0c65003c89740342a338a36b07663" title="Iterator at beginning or end.">SHT_ERR_ITER_NO_LAST</a></span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">- <a class="el" href="sht_8c.html#a72a691fe8646d9bd2f2bdce4c637ce15" title="(Replace the last entry returned by a read-only iterator.)">sht_ro_iter_replace_()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">0</span>  </td><td class="markdownTableBodyCenter">3  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7abda0c65003c89740342a338a36b07663" title="Iterator at beginning or end.">SHT_ERR_ITER_NO_LAST</a></span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">- <a class="el" href="sht_8c.html#ac5a02a924ee7341aa8c963114930c791" title="(Replace the last entry returned by a read/write iterator.)">sht_rw_iter_replace_()</a>  </td><td class="markdownTableBodyCenter"><span class="tt">0</span>  </td><td class="markdownTableBodyCenter">3  </td><td class="markdownTableBodyNone"><span class="tt"><a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7abda0c65003c89740342a338a36b07663" title="Iterator at beginning or end.">SHT_ERR_ITER_NO_LAST</a></span>  </td></tr>
+</table>
+<p>† <a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a> checks the entry size during compilation.</p>
+<ol type="1">
+<li><p class="startli">If an error occurs, <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a> stores an error code in the variable referenced by its <span class="tt">err</span> argument, provided that the value of <span class="tt">err</span> is not <span class="tt">NULL</span>. A description of the error can be retrieved with <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>.</p>
+<p class="startli"><a class="el" href="sht_8h.html#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a> can be called with either 3 or 4 arguments. If a fourth argument is provided, it is used as the <span class="tt">err</span> argument in the internal call to <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>. Otherwise, <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a> is called with its <span class="tt">err</span> argument set to <span class="tt">NULL</span>.</p>
+</li>
+<li>If an error occurs in a "table operation" function (a function that takes a pointer to a table as its first argument), the error code can be retrieved with <a class="el" href="sht_8c.html#a8a0fc3959fa6efaa802eeb84eab95c44" title="Get the error code of a table&#39;s last error.">sht_get_err()</a> (and passed to <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>), or an error description can be retrieved directly with <a class="el" href="sht_8c.html#aae2db74c56749b52273a6e6212d63a0c" title="Get a description of a table&#39;s last error.">sht_get_msg()</a>.</li>
+<li>If an error occurs in an "iterator operator" function (a function that takes a pointer to an iterator as its first argument), the error code can be retrieved with <a class="el" href="sht_8h.html#ab33eebaeeeac9f58e2fd7638b1df9e89" title="Get the the error code of an iterator&#39;s last error.">SHT_ITER_ERR()</a> (and passed to <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>), or an error description can be retrieved directly with <a class="el" href="sht_8h.html#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a>.</li>
+</ol>
+<h2 class="doxsection"><a class="anchor" id="abort-conditions"></a>
+Abort conditions</h2>
 <p>As mentioned <a class="el" href="#design-philosophy">above</a>, the library takes a "fail fast" approach to API contract violations by the calling program. The library will <span class="tt">abort()</span> the calling program if any of the following occur.</p>
 <ul>
 <li>An invalid value is passed to <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>.</li>
-<li>A <span class="tt">NULL</span> function pointer is passed to <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="Create a new hash table.">sht_new_()</a>.</li>
+<li>A <span class="tt">NULL</span> function pointer is passed to <a class="el" href="sht_8c.html#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>.</li>
 <li>An invalid load factor threshold is passed to <a class="el" href="sht_8c.html#a99d607b370024be6526a17863ee62145" title="Set the load factor threshold for a table.">sht_set_lft()</a>.</li>
 <li>One of the functions in the table below is called on a table that is in an inappropriate state.</li>
 </ul>

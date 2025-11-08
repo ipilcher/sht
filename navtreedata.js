@@ -32,11 +32,15 @@ var NAVTREE =
       [ "Table examples", "index.html#table-examples", [
         [ "Example 1", "index.html#example-1", null ],
         [ "Example 2", "index.html#example-2", null ]
-      ] ]
+      ] ],
+      [ "Helper macros", "index.html#helper-macros", null ]
     ] ],
     [ "Memory management", "index.html#memory-management", null ],
     [ "Iterators", "index.html#iterators", null ],
-    [ "Abort conditions", "index.html#abort-conditions", null ],
+    [ "Error handling", "index.html#error-handling", [
+      [ "Non-fatal errors", "index.html#non-fatal-errors", null ],
+      [ "Abort conditions", "index.html#abort-conditions", null ]
+    ] ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [

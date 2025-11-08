@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['philosophy_0',['Design philosophy',['../index.html#design-philosophy',1,'']]]
+  ['non_20fatal_20errors_0',['Non-fatal errors',['../index.html#non-fatal-errors',1,'']]]
 ];

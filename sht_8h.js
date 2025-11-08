@@ -25,6 +25,7 @@ var sht_8h =
     [ "sht_set_eq_ctx", "sht_8h.html#a9d385ed61d95d30e63344ebe6aa522a3", null ],
     [ "sht_set_freefn", "sht_8h.html#ab6ac49df5028772a25b41c2c509ecced", null ],
     [ "sht_set_lft", "sht_8h.html#a99d607b370024be6526a17863ee62145", null ],
+    [ "sht_set_psl_limit", "sht_8h.html#a85cf673284879f8339015347edde362d", null ],
     [ "sht_init", "sht_8h.html#ab6a5c760d62564b28208f9cd780da00f", null ],
     [ "sht_free", "sht_8h.html#ae36e072969cef119b1176887dcdc8623", null ],
     [ "sht_add", "sht_8h.html#a5cd47d066198640b242e7a1ecebab92e", null ],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hash_20table_0',['SHT Hash Table',['../index.html',1,'']]]
+  ['fatal_20errors_0',['Non-fatal errors',['../index.html#non-fatal-errors',1,'']]]
 ];
