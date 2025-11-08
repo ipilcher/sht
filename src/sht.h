@@ -249,6 +249,10 @@ void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context);
 SHT_FNATTR(nonnull)
 void sht_set_lft(struct sht_ht *ht, uint8_t lft);
 
+// Set the PSL threshold of a table.
+SHT_FNATTR(nonnull)
+void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold);
+
 // Initialize a hash table.
 SHT_FNATTR(nonnull)
 _Bool sht_init(struct sht_ht *ht, uint32_t capacity);

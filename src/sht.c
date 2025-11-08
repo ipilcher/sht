@@ -25,37 +25,31 @@
  * @internal
  * Default initial capacity.
  */
-#define SHT_DEF_CAPCITY	6
+#define SHT_DEF_CAPCITY		6
 
 /**
  * @internal
  * Default load factor threshold.
  */
-#define SHT_DEF_LFT	85
+#define SHT_DEF_LFT		85
+
+/**
+ * @internal
+ * Default maximum PSL.
+ */
+#define SHT_DEF_MAX_PSL		UINT8_C(127)
 
 /**
  * @internal
  * Maximum table size (16,777,216).
  */
-#define SHT_MAX_TSIZE	(UINT32_C(1) << 24)
-
-/**
- * @internal
- * Maximum PSL.
- */
-#define SHT_MAX_PSL	UINT8_C(127)
-
-/**
- * @internal
- * Flag value that marks a bucket as empty.
- */
-#define SHT_PSL_EMPTY	UINT8_C(0xff)
+#define SHT_MAX_TSIZE		(UINT32_C(1) << 24)
 
 /**
  * @internal
  * Maximum number of read-only iterators on a table.
  */
-#define SHT_MAX_ITERS	UINT16_C(0x7fff)
+#define SHT_MAX_ITERS		UINT16_C(0x7fff)
 
 /**
  * @private
@@ -64,7 +58,8 @@
 union sht_bckt {
 	struct {
 		uint32_t	hash:24;	/**< Hash (low 24 bits). */
-		uint32_t	psl:8;		/**< Probe sequence length. */
+		uint32_t	psl:7;		/**< Probe sequence length. */
+		uint32_t	empty:1;	/**< Is this bucket empty? */
 	};
 	uint32_t		all;		/**< All 32 bits. */
 };
@@ -91,6 +86,7 @@ struct sht_ht {
 	uint32_t	esize;		/**< Size of each entry in the table. */
 	uint32_t	ealign;		/**< Alignment of table entries. */
 	uint32_t	lft;		/**< Load factor threshold * 100. */
+	uint8_t		psl_thold;	/**< Maximum allowed PSL. */
 	//
 	// The next 3 members change whenever the arrays are (re)allocated.
 	//
@@ -98,12 +94,13 @@ struct sht_ht {
 	uint32_t	mask;		/**< Hash -> index bitmask. */
 	uint32_t	thold;		/**< Expansion threshold. */
 	//
-	// The final 5 members change as entries are added and removed.
+	// These 6 members change as entries are added and removed.
 	//
 	uint32_t	count;		/**< Number of occupied buckets. */
 	uint32_t	psl_sum;	/**< Sum of all PSLs. */
 	enum sht_err	err;		/**< Last error. */
-	uint8_t		max_psl;	/**< Largest PSL in table. */
+	uint8_t		max_psl:7;	/**< Largest PSL in table. */
+	uint8_t		psl_maxxed:1;	/**< Maximum allowed PSL present? */
 	//
 	// Iterator reference count or r/w lock status
 	//
@@ -242,7 +239,7 @@ const char *sht_get_msg(const struct sht_ht *ht)
 /**
  * Check that a `nonnull` pointer really isn't `NULL`.
  *
- * The public API (`ht.h`) declares most pointer arguments to be non-`NULL`
+ * The public API (`sht.h`) declares most pointer arguments to be non-`NULL`
  * (using the `nonnull` function attribute).  This causes GCC to issue a warning
  * when it determines that one of these function arguments is `NULL`, which is a
  * very desirable behavior.
@@ -328,6 +325,7 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
 	ht->esize = esize;
 	ht->ealign = ealign;
 	ht->lft = SHT_DEF_LFT;
+	ht->psl_thold = SHT_DEF_MAX_PSL;
 
 	return ht;
 }
@@ -419,7 +417,8 @@ void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)
  *
  * > **NOTE**
  * >
- * > This function cannot be called after the table has been initialized.  (See
+ * > This function cannot be called after the table has been initialized, nor
+ * > can it be called with an invalid @p lft value.  (See
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
@@ -434,6 +433,36 @@ void sht_set_lft(struct sht_ht *ht, uint8_t lft)
 	if (lft < 1 || lft > 100)
 		sht_abort("sht_set_lft: Invalid load factor threshold");
 	ht->lft = lft;
+}
+
+/**
+ * Set the PSL threshold of a table.
+ *
+ * If an entry in the table has a PSL equal to the table's PSL threshold, no
+ * further entries will be allowed until 1 or more entries that hash to the same
+ * "ideal" position are removed.  (See [Limits and assumptions][1].)
+ *
+ * > **NOTE**
+ * >
+ * > This function cannot be called after the table has been initialized, nor
+ * > can it be called with an invalid @p thold value.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
+ *
+ * @param	ht	The hash table.
+ * @param	thold	The PSL threshold.
+ *
+ * @see		[Limits and assumptions][1]
+ * @see		[Abort conditions](index.html#abort-conditions)
+ *
+ * [1]: index.html#limits-and-assumptions
+ */
+void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold)
+{
+	if (ht->tsize != 0)
+		sht_abort("sht_set_psl_thold: Table already initialized");
+	if (thold > 127)
+		sht_abort("sht_set_psl_thold: Invalid PSL threshold");
+	ht->psl_thold = thold;
 }
 
 /**
@@ -484,7 +513,8 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 		return 0;
 	}
 
-	memset(new, SHT_PSL_EMPTY, b_size);
+	// Mark all of the newly allocated buckets as empty.
+	memset(new, 0xff, b_size);
 
 	ht->buckets = (union sht_bckt *)(void *)new;
 	ht->entries = new + b_size + pad;
@@ -494,6 +524,7 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 	ht->count = 0;
 	ht->psl_sum = 0;
 	ht->max_psl = 0;
+	ht->psl_maxxed = 0;
 
 	return 1;
 }
@@ -619,6 +650,38 @@ static void sht_set_entry(struct sht_ht *ht, const uint8_t *restrict c_entry,
 
 	if (c_bckt->psl > ht->max_psl)
 		ht->max_psl = c_bckt->psl;
+
+	if (c_bckt->psl == ht->psl_thold) {
+		assert(!ht->psl_maxxed);
+		ht->psl_maxxed = 1;
+	}
+}
+
+/**
+ * Low level remove function.
+ *
+ * Copies entry & bucket from table to temporary storage and updates table
+ * statistics.
+ *
+ * @param	ht	The hash table.
+ * @param	o_entry	The entry to be removed.
+ * @param	o_bckt	The bucket to be removed.
+ * @param	t_entry	Destination for @p o_entry.
+ * @param	t_bckt	Destination for @p o_bckt.
+ */
+static void sht_remove_entry(struct sht_ht *ht, const uint8_t *restrict o_entry,
+			     const union sht_bckt *restrict o_bckt,
+			     uint8_t *restrict t_entry,
+			     union sht_bckt *restrict t_bckt)
+{
+	*t_bckt = *o_bckt;
+	memcpy(t_entry, o_entry, ht->esize);
+
+	ht->count--;
+	ht->psl_sum -= o_bckt->psl;
+
+	if (o_bckt->psl == ht->psl_thold)
+		ht->psl_maxxed = 0;
 }
 
 /**
@@ -671,6 +734,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 	cb = b_tmp;  // Initial candidate bucket goes in b_tmp[0]
 	cb->hash = hash;
 	cb->psl = 0;
+	cb->empty = 0;
 	ti = 1;  // so 1st displacement doesn't overwrite the candidate bucket
 
 	p = hash;  // masked to table size in loop
@@ -682,7 +746,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 		oe = ht->entries + p * ht->esize;
 
 		// Empty position?
-		if (ob->psl == SHT_PSL_EMPTY) {
+		if (ob->empty) {
 			if (ce != NULL) {
 				if (ht->count == ht->thold)  // rehash needed?
 					return -2;
@@ -708,10 +772,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 			if (!c_uniq && ht->count == ht->thold)
 				return -2;
 			// Move occupant to temp slot & adjust table stats
-			b_tmp[ti] = *ob;
-			memcpy(e_tmp[ti], oe, ht->esize);
-			ht->psl_sum -= ob->psl;
-			ht->count--;
+			sht_remove_entry(ht, oe, ob, e_tmp[ti], b_tmp + ti);
 			// Move candidate to current pos'n & adjust table stats
 			sht_set_entry(ht, ce, cb, oe, ob);
 			// Old occupant (in temp slot) is new candidate
@@ -723,6 +784,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 			c_uniq = 1;
 		}
 
+		assert(cb->psl < ht->psl_thold);
 		cb->psl++;
 		p++;
 	}
@@ -758,7 +820,7 @@ static _Bool sht_ht_grow(struct sht_ht *ht)
 		return 0;
 
 	for (i = 0; i < ht->tsize / 2; ++i, ++b, e += ht->esize) {
-		if (b->psl != SHT_PSL_EMPTY) {
+		if (!b->empty) {
 			result = sht_probe(ht, b->hash, NULL, e, 1);
 			assert(result == -1);
 		}
@@ -804,7 +866,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 
 	assert(key != NULL && entry != NULL);
 
-	if (ht->max_psl >= SHT_MAX_PSL) {
+	if (ht->psl_maxxed) {
 		ht->err = SHT_ERR_BAD_HASH;
 		return -1;
 	}
@@ -1085,8 +1147,11 @@ static void sht_shift(struct sht_ht *ht, uint32_t dest, uint32_t count)
 		count * sizeof(union sht_bckt));
 
 	// Every moved entry is now 1 position closer to its ideal position
-	for (i = dest; i < dest + count; ++i)
+	for (i = dest; i < dest + count; ++i) {
+		if (ht->buckets[i].psl == ht->psl_thold)
+			ht->psl_maxxed = 0;
 		ht->buckets[i].psl--;
+	}
 
 	// PSL total decreased by 1x number of moved entries
 	ht->psl_sum -= count;
@@ -1103,7 +1168,7 @@ static void sht_shift(struct sht_ht *ht, uint32_t dest, uint32_t count)
  */
 static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
 {
-	uint32_t end, next, psl;
+	uint32_t end, next;
 
 	// Copy entry to output buffer or free its resources
 	if (out != NULL) {
@@ -1120,7 +1185,7 @@ static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
 	// Find range to shift (if any)
 	end = pos;
 	next = (pos + 1) & ht->mask;
-	while (psl = ht->buckets[next].psl, psl != 0 && psl != SHT_PSL_EMPTY) {
+	while (!ht->buckets[next].empty && ht->buckets[next].psl != 0) {
 		end = next;
 		next = (next + 1) & ht->mask;
 	}
@@ -1134,19 +1199,26 @@ static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
 		sht_shift(ht, pos, end - pos);
 	}
 	else {
+		// Shift entries up to end of table (if any)
 		if ((uint32_t)pos < ht->mask)	// mask is also max index
 			sht_shift(ht, pos, ht->mask - pos);
+
+		// Shift entry from position 0 "down" to the end of table
 		memcpy(ht->entries + ht->mask * ht->esize,	// last entry
 		       ht->entries,				// first entry
 		       ht->esize);
 		ht->buckets[ht->mask] = ht->buckets[0];
+		if (ht->buckets[ht->mask].psl == ht->psl_thold)
+			ht->psl_maxxed = 0;
 		ht->buckets[ht->mask].psl--;
 		ht->psl_sum--;
+
+		// Shift entries at the beginning of the table
 		sht_shift(ht, 0, end);
 	}
 
 	// Mark position at end of range as empty
-	ht->buckets[end].psl = SHT_PSL_EMPTY;
+	ht->buckets[end].empty = 1;
 }
 
 /**
@@ -1263,7 +1335,7 @@ void sht_free(struct sht_ht *ht)
 
 		for (i = 0, b = ht->buckets; i < ht->tsize; ++i, ++b) {
 
-			if (b->psl != SHT_PSL_EMPTY) {
+			if (!b->empty) {
 				e = ht->entries + i * ht->esize;
 				ht->freefn(e, ht->free_ctx);
 			}
@@ -1486,7 +1558,7 @@ static void *sht_iter_next(struct sht_iter *iter)
 
 	for (ht = iter->ht; next < ht->tsize; ++next) {
 
-		if (ht->buckets[next].psl != SHT_PSL_EMPTY) {
+		if (!ht->buckets[next].empty) {
 			iter->last = next;
 			return ht->entries + next * ht->esize;
 		}
@@ -1550,7 +1622,7 @@ _Bool sht_iter_delete(struct sht_rw_iter *iter)
 	}
 
 	assert(iter->i.last >= 0 && (uint32_t)iter->i.last < iter->i.ht->tsize);
-	assert(iter->i.ht->buckets[iter->i.last].psl != SHT_PSL_EMPTY);
+	assert(!iter->i.ht->buckets[iter->i.last].empty);
 
 	sht_remove_at(iter->i.ht, iter->i.last, NULL);
 
@@ -1588,7 +1660,7 @@ static _Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 	}
 
 	assert(iter->last >= 0 && (uint32_t)iter->last < iter->ht->tsize);
-	assert(iter->ht->buckets[iter->last].psl != SHT_PSL_EMPTY);
+	assert(!iter->ht->buckets[iter->last].empty);
 
 	sht_change_at(iter->ht, iter->last, entry, NULL);
 
