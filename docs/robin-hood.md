@@ -9,10 +9,10 @@ determine that the key is not present in the table.
 
 Probe sequence length (PSL) is a core concept of Robin Hood hashing.
 
-In an open-addressing hash table, the PSL of an entry is the number of probes &mdash;
-in addition to the initial probe of its ideal position &mdash; required to locate an
-entry in the table.  For example, an entry with a hash value of `0x81f62af3`,
-stored in a hash table with 16 buckets, has an ideal position of 3
+In an open-addressing hash table, the PSL of an entry is the number of probes
+&mdash; in addition to the initial probe of its ideal position &mdash; required
+to locate an entry in the table.  For example, an entry with a hash value of
+`0x81f62af3`, stored in a hash table with 16 buckets, has an ideal position of 3
 (`0x81f62af3 % 16 = 3)`.  At that position, its PSL is 0, because no additional
 probes are required to locate it in the table.  If it were instead stored at
 position 7, it would have a PSL of 4, because because 4 additional probes would
