@@ -98,9 +98,9 @@ struct sht_ht {
 	//
 	uint32_t	count;		/**< Number of occupied buckets. */
 	uint32_t	psl_sum;	/**< Sum of all PSLs. */
+	uint32_t	max_psl_ct;	/**< Number of entries with max PSL. */
 	enum sht_err	err;		/**< Last error. */
-	uint8_t		max_psl:7;	/**< Largest PSL in table. */
-	uint8_t		psl_maxxed:1;	/**< Maximum allowed PSL present? */
+	uint8_t		biggest_psl;	/**< Largest PSL in table. */
 	//
 	// Iterator reference count or r/w lock status
 	//
@@ -470,8 +470,9 @@ void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold)
  *
  * Allocates memory for a table's `buckets` and `entries` arrays.  If allocation
  * is successful, `ht->tsize`, `ht->mask`, and `ht->thold` are updated for the
- * new size, and `ht->count`, `ht->psl_sum`, and `ht->max_psl` are reset to 0.
- * If an error occurs, the state of the table is unchanged.
+ * new size, and `ht->count`, `ht->psl_sum`, `ht->biggest_psl`, and
+ * `ht->max_psl_ct` are reset to 0. If an error occurs, the state of the table
+ *  is unchanged.
  *
  * @param	ht	The hash table.
  * @param	tsize	The new size (total number of buckets) of the table.
@@ -523,8 +524,8 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 	ht->thold = tsize * ht->lft / 100;	// 2^24 * 100 < 2^32
 	ht->count = 0;
 	ht->psl_sum = 0;
-	ht->max_psl = 0;
-	ht->psl_maxxed = 0;
+	ht->biggest_psl = 0;
+	ht->max_psl_ct = 0;
 
 	return 1;
 }
@@ -648,13 +649,11 @@ static void sht_set_entry(struct sht_ht *ht, const uint8_t *restrict c_entry,
 	ht->count++;
 	ht->psl_sum += c_bckt->psl;
 
-	if (c_bckt->psl > ht->max_psl)
-		ht->max_psl = c_bckt->psl;
+	if (c_bckt->psl > ht->biggest_psl)
+		ht->biggest_psl = c_bckt->psl;
 
-	if (c_bckt->psl == ht->psl_thold) {
-		assert(!ht->psl_maxxed);
-		ht->psl_maxxed = 1;
-	}
+	if (c_bckt->psl == ht->psl_thold)
+		ht->max_psl_ct++;
 }
 
 /**
@@ -680,8 +679,10 @@ static void sht_remove_entry(struct sht_ht *ht, const uint8_t *restrict o_entry,
 	ht->count--;
 	ht->psl_sum -= o_bckt->psl;
 
-	if (o_bckt->psl == ht->psl_thold)
-		ht->psl_maxxed = 0;
+	if (o_bckt->psl == ht->psl_thold) {
+		assert(ht->max_psl_ct > 0);
+		ht->max_psl_ct--;
+	}
 }
 
 /**
@@ -866,7 +867,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 
 	assert(key != NULL && entry != NULL);
 
-	if (ht->psl_maxxed) {
+	if (ht->max_psl_ct != 0) {
 		ht->err = SHT_ERR_BAD_HASH;
 		return -1;
 	}
@@ -1146,15 +1147,44 @@ static void sht_shift(struct sht_ht *ht, uint32_t dest, uint32_t count)
 		ht->buckets + dest + 1,
 		count * sizeof(union sht_bckt));
 
-	// Every moved entry is now 1 position closer to its ideal position
+	// Every shifted entry is now 1 position closer to its ideal position
 	for (i = dest; i < dest + count; ++i) {
-		if (ht->buckets[i].psl == ht->psl_thold)
-			ht->psl_maxxed = 0;
+
+		if (ht->buckets[i].psl == ht->psl_thold) {
+			assert(ht->max_psl_ct > 0);
+			ht->max_psl_ct--;
+		}
+
 		ht->buckets[i].psl--;
 	}
 
 	// PSL total decreased by 1x number of moved entries
 	ht->psl_sum -= count;
+}
+
+/**
+ * Shift the entry at position 0 "down" to the last position in the table.
+ *
+ * @param	ht	The hash table.
+ */
+static void sht_shift_wrap(struct sht_ht *ht)
+{
+	// ht->mask is also index of last position
+
+	// Move entry
+	memcpy(ht->entries + ht->mask * ht->esize, ht->entries, ht->esize);
+
+	// Move bucket
+	ht->buckets[ht->mask] = ht->buckets[0];
+
+	// Entry is now 1 position closer to its ideal position
+	if (ht->buckets[ht->mask].psl == ht->psl_thold) {
+		assert(ht->max_psl_ct > 0);
+		ht->max_psl_ct--;
+	}
+
+	ht->buckets[ht->mask].psl--;
+	ht->psl_sum--;
 }
 
 /**
@@ -1204,14 +1234,7 @@ static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
 			sht_shift(ht, pos, ht->mask - pos);
 
 		// Shift entry from position 0 "down" to the end of table
-		memcpy(ht->entries + ht->mask * ht->esize,	// last entry
-		       ht->entries,				// first entry
-		       ht->esize);
-		ht->buckets[ht->mask] = ht->buckets[0];
-		if (ht->buckets[ht->mask].psl == ht->psl_thold)
-			ht->psl_maxxed = 0;
-		ht->buckets[ht->mask].psl--;
-		ht->psl_sum--;
+		sht_shift_wrap(ht);
 
 		// Shift entries at the beginning of the table
 		sht_shift(ht, 0, end);
