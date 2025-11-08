@@ -510,7 +510,7 @@ TEST(psl_threshold)
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
-	sht_set_psl_thold(ht, 100);  /* PSL threshold of 100 */
+	sht_set_psl_limit(ht, 100);  /* PSL threshold of 100 */
 	ASSERT(sht_init(ht, 0));
 	sht_free(ht);
 }
@@ -1004,7 +1004,7 @@ TEST(excessive_collisions_psl_10)
 	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
-	sht_set_psl_thold(ht, 10);  /* Low PSL threshold */
+	sht_set_psl_limit(ht, 10);  /* Low PSL threshold */
 	ASSERT(sht_init(ht, 32));
 
 	/* Add entries until we hit the PSL limit - this MUST happen
@@ -1036,7 +1036,7 @@ TEST(excessive_collisions_psl_50)
 	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
-	sht_set_psl_thold(ht, 50);  /* Medium PSL threshold */
+	sht_set_psl_limit(ht, 50);  /* Medium PSL threshold */
 	ASSERT(sht_init(ht, 64));
 
 	/* Add entries until we hit the PSL limit - this MUST happen
@@ -1068,7 +1068,7 @@ TEST(excessive_collisions_psl_1)
 	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
-	sht_set_psl_thold(ht, 1);  /* Minimal PSL threshold */
+	sht_set_psl_limit(ht, 1);  /* Minimal PSL threshold */
 	ASSERT(sht_init(ht, 16));
 
 	/* Add entries until we hit the PSL limit - this MUST happen
@@ -1101,7 +1101,7 @@ TEST(psl_tracking_after_delete)
 	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to prevent growth */
-	sht_set_psl_thold(ht, 3);  /* Very low PSL threshold */
+	sht_set_psl_limit(ht, 3);  /* Very low PSL threshold */
 	ASSERT(sht_init(ht, 16));
 
 	/* Add entries to create a chain up to PSL threshold */
@@ -1779,19 +1779,31 @@ TEST(abort_set_psl_thold_after_init)
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
-	ASSERT_ABORTS(sht_set_psl_thold(ht, 100), "already initialized");
+	ASSERT_ABORTS(sht_set_psl_limit(ht, 100), "already initialized");
 
 	sht_free(ht);
 }
 
-TEST(abort_set_psl_thold_invalid)
+TEST(abort_set_psl_thold_invalid_low)
 {
 	struct sht_ht *ht;
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
 	ASSERT(ht != NULL);
 
-	ASSERT_ABORTS(sht_set_psl_thold(ht, 128), "Invalid PSL threshold");
+	ASSERT_ABORTS(sht_set_psl_limit(ht, 0), "Invalid PSL threshold");
+
+	free(ht);
+}
+
+TEST(abort_set_psl_thold_invalid_high)
+{
+	struct sht_ht *ht;
+
+	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ASSERT(ht != NULL);
+
+	ASSERT_ABORTS(sht_set_psl_limit(ht, 128), "Invalid PSL threshold");
 
 	free(ht);
 }
@@ -2166,7 +2178,8 @@ int main(void)
 	RUN_TEST(abort_set_lft_invalid_low);
 	RUN_TEST(abort_set_lft_invalid_high);
 	RUN_TEST(abort_set_psl_thold_after_init);
-	RUN_TEST(abort_set_psl_thold_invalid);
+	RUN_TEST(abort_set_psl_thold_invalid_low);
+	RUN_TEST(abort_set_psl_thold_invalid_high);
 	RUN_TEST(abort_init_twice);
 	RUN_TEST(abort_size_not_initialized);
 	RUN_TEST(abort_empty_not_initialized);

@@ -4,7 +4,7 @@
 
 ## Overview
 
-Comprehensive test suite for the SHT hash table library. The test suite contains 86 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
+Comprehensive test suite for the SHT hash table library. The test suite contains 87 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
 
 ## Building and Running
 
@@ -105,7 +105,7 @@ make sht_test
 - ✓ Wraparound deletion (circular buffer)
 - ✓ String keys with dynamic allocation
 
-### 14. Abort Conditions (28 tests)
+### 14. Abort Conditions (29 tests)
 These tests use `setjmp`/`longjmp` to verify that the library correctly aborts on programming errors:
 - ✓ Invalid error code to `sht_msg()`
 - ✓ Invalid entry alignment parameters to `sht_new_()` (2 tests):
@@ -116,12 +116,13 @@ These tests use `setjmp`/`longjmp` to verify that the library correctly aborts o
   - `sht_set_eq_ctx()`
   - `sht_set_freefn()`
   - `sht_set_lft()`
-  - `sht_set_psl_thold()`
+  - `sht_set_psl_limit()`
   - `sht_init()` (double initialization)
 - ✓ Invalid load factor threshold (2 tests):
   - Too low (< 1)
   - Too high (> 100)
-- ✓ Invalid PSL threshold (1 test):
+- ✓ Invalid PSL threshold (2 tests):
+  - Too low (< 1)
   - Too high (> 127)
 - ✓ Operations on uninitialized table (11 tests):
   - `sht_size()`
@@ -163,7 +164,7 @@ All programming errors that trigger `abort()` are tested using `setjmp`/`longjmp
 2. Invalid entry alignment parameters to `sht_new_()` (2 conditions)
 3. Configuration after initialization (6 conditions)
 4. Invalid load factor threshold (2 conditions)
-5. Invalid PSL threshold (1 condition)
+5. Invalid PSL threshold (2 conditions)
 6. Operations on uninitialized table (9 conditions)
 7. Modification operations with active iterators (5 conditions)
 
@@ -179,7 +180,7 @@ Every public API function is tested with multiple scenarios:
 - `sht_set_eq_ctx()`
 - `sht_set_freefn()`
 - `sht_set_lft()`
-- `sht_set_psl_thold()`
+- `sht_set_psl_limit()`
 - `sht_size()`
 - `sht_empty()`
 - `sht_add()`
