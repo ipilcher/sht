@@ -37,7 +37,7 @@
  * @internal
  * Default maximum PSL.
  */
-#define SHT_DEF_MAX_PSL		UINT8_C(127)
+#define SHT_DEF_PSL_LIMIT	UINT8_C(127)
 
 /**
  * @internal
@@ -86,7 +86,7 @@ struct sht_ht {
 	uint32_t	esize;		/**< Size of each entry in the table. */
 	uint32_t	ealign;		/**< Alignment of table entries. */
 	uint32_t	lft;		/**< Load factor threshold * 100. */
-	uint8_t		psl_thold;	/**< Maximum allowed PSL. */
+	uint8_t		psl_limit;	/**< Maximum allowed PSL. */
 	//
 	// The next 3 members change whenever the arrays are (re)allocated.
 	//
@@ -100,7 +100,7 @@ struct sht_ht {
 	uint32_t	psl_sum;	/**< Sum of all PSLs. */
 	uint32_t	max_psl_ct;	/**< Number of entries with max PSL. */
 	enum sht_err	err;		/**< Last error. */
-	uint8_t		biggest_psl;	/**< Largest PSL in table. */
+	uint8_t		peak_psl;	/**< Largest PSL in table. */
 	//
 	// Iterator reference count or r/w lock status
 	//
@@ -325,7 +325,7 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
 	ht->esize = esize;
 	ht->ealign = ealign;
 	ht->lft = SHT_DEF_LFT;
-	ht->psl_thold = SHT_DEF_MAX_PSL;
+	ht->psl_limit = SHT_DEF_PSL_LIMIT;
 
 	return ht;
 }
@@ -422,7 +422,7 @@ void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
- * @param	lft	The load factor threshold.
+ * @param	lft	The load factor threshold (`1` - `100`).
  *
  * @see		[Abort conditions](index.html#abort-conditions)
  */
@@ -449,7 +449,7 @@ void sht_set_lft(struct sht_ht *ht, uint8_t lft)
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
- * @param	thold	The PSL threshold.
+ * @param	thold	The PSL threshold (`1` - `127`).
  *
  * @see		[Limits and assumptions][1]
  * @see		[Abort conditions](index.html#abort-conditions)
@@ -459,10 +459,10 @@ void sht_set_lft(struct sht_ht *ht, uint8_t lft)
 void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold)
 {
 	if (ht->tsize != 0)
-		sht_abort("sht_set_psl_thold: Table already initialized");
-	if (thold > 127)
-		sht_abort("sht_set_psl_thold: Invalid PSL threshold");
-	ht->psl_thold = thold;
+		sht_abort("sht_set_psl_limit: Table already initialized");
+	if (thold < 1 || thold > 127)
+		sht_abort("sht_set_psl_limit: Invalid PSL threshold");
+	ht->psl_limit = thold;
 }
 
 /**
@@ -470,7 +470,7 @@ void sht_set_psl_thold(struct sht_ht *ht, uint8_t thold)
  *
  * Allocates memory for a table's `buckets` and `entries` arrays.  If allocation
  * is successful, `ht->tsize`, `ht->mask`, and `ht->thold` are updated for the
- * new size, and `ht->count`, `ht->psl_sum`, `ht->biggest_psl`, and
+ * new size, and `ht->count`, `ht->psl_sum`, `ht->peak_psl`, and
  * `ht->max_psl_ct` are reset to 0. If an error occurs, the state of the table
  *  is unchanged.
  *
@@ -524,7 +524,7 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 	ht->thold = tsize * ht->lft / 100;	// 2^24 * 100 < 2^32
 	ht->count = 0;
 	ht->psl_sum = 0;
-	ht->biggest_psl = 0;
+	ht->peak_psl = 0;
 	ht->max_psl_ct = 0;
 
 	return 1;
@@ -649,11 +649,13 @@ static void sht_set_entry(struct sht_ht *ht, const uint8_t *restrict c_entry,
 	ht->count++;
 	ht->psl_sum += c_bckt->psl;
 
-	if (c_bckt->psl > ht->biggest_psl)
-		ht->biggest_psl = c_bckt->psl;
+	if (c_bckt->psl > ht->peak_psl)
+		ht->peak_psl = c_bckt->psl;
 
-	if (c_bckt->psl == ht->psl_thold)
+	if (c_bckt->psl == ht->psl_limit) {
 		ht->max_psl_ct++;
+		assert(ht->max_psl_ct < ht->thold);  // should be much lower
+	}
 }
 
 /**
@@ -679,7 +681,7 @@ static void sht_remove_entry(struct sht_ht *ht, const uint8_t *restrict o_entry,
 	ht->count--;
 	ht->psl_sum -= o_bckt->psl;
 
-	if (o_bckt->psl == ht->psl_thold) {
+	if (o_bckt->psl == ht->psl_limit) {
 		assert(ht->max_psl_ct > 0);
 		ht->max_psl_ct--;
 	}
@@ -785,7 +787,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 			c_uniq = 1;
 		}
 
-		assert(cb->psl < ht->psl_thold);
+		assert(cb->psl < ht->psl_limit);
 		cb->psl++;
 		p++;
 	}
@@ -1150,7 +1152,7 @@ static void sht_shift(struct sht_ht *ht, uint32_t dest, uint32_t count)
 	// Every shifted entry is now 1 position closer to its ideal position
 	for (i = dest; i < dest + count; ++i) {
 
-		if (ht->buckets[i].psl == ht->psl_thold) {
+		if (ht->buckets[i].psl == ht->psl_limit) {
 			assert(ht->max_psl_ct > 0);
 			ht->max_psl_ct--;
 		}
@@ -1178,7 +1180,7 @@ static void sht_shift_wrap(struct sht_ht *ht)
 	ht->buckets[ht->mask] = ht->buckets[0];
 
 	// Entry is now 1 position closer to its ideal position
-	if (ht->buckets[ht->mask].psl == ht->psl_thold) {
+	if (ht->buckets[ht->mask].psl == ht->psl_limit) {
 		assert(ht->max_psl_ct > 0);
 		ht->max_psl_ct--;
 	}
