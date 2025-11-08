@@ -787,6 +787,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 			c_uniq = 1;
 		}
 
+		// https://github.com/ipilcher/sht/blob/main/docs/psl-limits.md
 		assert(cb->psl < ht->psl_limit);
 		cb->psl++;
 		p++;
