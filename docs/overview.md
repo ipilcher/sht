@@ -36,7 +36,7 @@ The library imposes a number of limits.
 * The maximum size of an entry is 16 KiB (16,384 bytes).
 
 * The maximum probe sequence length (PSL) of an entry is 127.  (See
-  [*Robin Hood hashing*][1] and [*PSL Limits][4] for a discussion of PSLs.)
+  [*Robin Hood hashing*][1] and [*PSL Limits*][4] for a discussion of PSLs.)
 
 * The maximum number of read-only iterators an a table is 32,767.
 
@@ -345,3 +345,4 @@ approach to API contract violations by the calling program.  The library will
 [1]: https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md
 [2]: https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html
 [3]: https://xxhash.com/doc/v0.8.3/group___x_x_h32__family.html
+[4]: https://github.com/ipilcher/sht/blob/main/docs/psl-limits.md
