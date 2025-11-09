@@ -114,7 +114,7 @@ Limits and assumptions</h1>
 <ul>
 <li>The absolute maximum number of buckets in a table is 2²⁴ (16,777,216). At the default load factor threshold (LFT) of 85%, this results in a maximum usable capacity of 14,260,633 entries.</li>
 <li>The maximum size of an entry is 16 KiB (16,384 bytes).</li>
-<li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md"><em>Robin Hood hashing</em></a> and [*PSL Limits][4] for a discussion of PSLs.)</li>
+<li>The maximum probe sequence length (PSL) of an entry is 127. (See <a href="https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md"><em>Robin Hood hashing</em></a> and <a href="https://github.com/ipilcher/sht/blob/main/docs/psl-limits.md"><em>PSL Limits</em></a> for a discussion of PSLs.)</li>
 <li>The maximum number of read-only iterators an a table is 32,767.</li>
 </ul>
 <p>In addition to the limits imposed by the library, the total size of a table is limited by the amount of memory available to the application. A table's total memory footprint scales with the product of the number of buckets and the entry size (i.e. <span class="tt">total_size ∝ buckets × entry_size</span>), so the largest possible table will not fit in the 4 GiB address space of a 32-bit system.</p>
