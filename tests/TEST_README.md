@@ -4,7 +4,7 @@
 
 ## Overview
 
-Comprehensive test suite for the SHT hash table library. The test suite contains 87 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
+Comprehensive test suite for the SHT hash table library. The test suite contains 89 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
 
 ## Building and Running
 
@@ -105,9 +105,12 @@ make sht_test
 - ✓ Wraparound deletion (circular buffer)
 - ✓ String keys with dynamic allocation
 
-### 14. Abort Conditions (29 tests)
+### 14. Abort Conditions (31 tests)
 These tests use `setjmp`/`longjmp` to verify that the library correctly aborts on programming errors:
 - ✓ Invalid error code to `sht_msg()`
+- ✓ NULL function pointers to `sht_new_()` (2 tests):
+  - `hashfn` is NULL
+  - `eqfn` is NULL
 - ✓ Invalid entry alignment parameters to `sht_new_()` (2 tests):
   - `ealign` not a power of 2
   - `esize` not a multiple of `ealign`
@@ -161,12 +164,13 @@ All recoverable error conditions are tested:
 All programming errors that trigger `abort()` are tested using `setjmp`/`longjmp`:
 
 1. Invalid error code to `sht_msg()`
-2. Invalid entry alignment parameters to `sht_new_()` (2 conditions)
-3. Configuration after initialization (6 conditions)
-4. Invalid load factor threshold (2 conditions)
-5. Invalid PSL threshold (2 conditions)
-6. Operations on uninitialized table (9 conditions)
-7. Modification operations with active iterators (5 conditions)
+2. NULL function pointers to `sht_new_()` (2 conditions)
+3. Invalid entry alignment parameters to `sht_new_()` (2 conditions)
+4. Configuration after initialization (6 conditions)
+5. Invalid load factor threshold (2 conditions)
+6. Invalid PSL threshold (2 conditions)
+7. Operations on uninitialized table (11 conditions)
+8. Modification operations with active iterators (5 conditions)
 
 ## API Coverage
 

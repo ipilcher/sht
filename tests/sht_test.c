@@ -1693,6 +1693,20 @@ TEST(abort_esize_ealign_incompatible)
 		      "Incompatible values of esize and ealign");
 }
 
+TEST(abort_null_hashfn)
+{
+	ASSERT_ABORTS(sht_new_(NULL, int_eqfn, sizeof(struct int_entry),
+			       _Alignof(struct int_entry), NULL),
+		      "hashfn must not be NULL");
+}
+
+TEST(abort_null_eqfn)
+{
+	ASSERT_ABORTS(sht_new_(int_hashfn, NULL, sizeof(struct int_entry),
+			       _Alignof(struct int_entry), NULL),
+		      "eqfn must not be NULL");
+}
+
 TEST(abort_set_hash_ctx_after_init)
 {
 	struct sht_ht *ht;
@@ -2171,6 +2185,8 @@ int main(void)
 	RUN_TEST(abort_invalid_error_code);
 	RUN_TEST(abort_ealign_not_power_of_2);
 	RUN_TEST(abort_esize_ealign_incompatible);
+	RUN_TEST(abort_null_hashfn);
+	RUN_TEST(abort_null_eqfn);
 	RUN_TEST(abort_set_hash_ctx_after_init);
 	RUN_TEST(abort_set_eq_ctx_after_init);
 	RUN_TEST(abort_set_freefn_after_init);
