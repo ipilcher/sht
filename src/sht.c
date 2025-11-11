@@ -258,13 +258,13 @@ const char *sht_get_msg(const struct sht_ht *ht)
  * @see		sht_abort()
  */
 #ifdef __clang__
-SHT_FNATTR(optnone, noinline)
+SHT_FNATTR(optnone)
 #else
-SHT_FNATTR(optimize(0), noinline)
+SHT_FNATTR(optimize("-fno-delete-null-pointer-checks"))
 #endif
 static void sht_assert_nonnull(const void *p, const char *msg)
 {
-	volatile const void *vp = p;
+	const void *volatile vp = p;
 
 	if (vp == NULL)
 		sht_abort(msg);
