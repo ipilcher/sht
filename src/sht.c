@@ -23,30 +23,35 @@
 
 /**
  * @internal
+ * @brief
  * Default initial capacity.
  */
 #define SHT_DEF_CAPCITY		6
 
 /**
  * @internal
+ * @brief
  * Default load factor threshold.
  */
 #define SHT_DEF_LFT		85
 
 /**
  * @internal
+ * @brief
  * Default maximum PSL.
  */
 #define SHT_DEF_PSL_LIMIT	UINT8_C(127)
 
 /**
  * @internal
+ * @brief
  * Maximum table size (16,777,216).
  */
 #define SHT_MAX_TSIZE		(UINT32_C(1) << 24)
 
 /**
  * @internal
+ * @brief
  * Maximum number of read-only iterators on a table.
  */
 #define SHT_MAX_ITERS		UINT16_C(0x7fff)

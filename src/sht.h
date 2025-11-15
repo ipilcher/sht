@@ -22,12 +22,14 @@
 
 /**
  * @internal
+ * @brief
  * Maximum entry size.
  */
 #define SHT_MAX_ESIZE		16384
 
 /**
  * @internal
+ * @brief
  * Set function attributes without confusing Doxygen.
  */
 #ifndef SHT_DOXYGEN
@@ -399,6 +401,7 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 
 /**
  * @internal
+ * @brief
  * Macro that expands to its second argument.
  *
  * This macro is used by SHT_HT_NEW() to accept an "optional" `err` argument.
@@ -466,6 +469,7 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 
 /**
  * @internal
+ * @brief
  * Template macro for generic iterator helpers.
  *
  * @param	op	The "operation" portion of the underlying function
