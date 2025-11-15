@@ -41,7 +41,7 @@ make sht_test
 ### 3. Context and Configuration (5 tests)
 - ✓ Hash function context
 - ✓ Equality function context
-- ✓ Free function context
+- ✓ Free function context (freefn specified in SHT_NEW, context set via sht_set_free_ctx)
 - ✓ Load factor threshold configuration
 - ✓ PSL threshold configuration
 
@@ -117,7 +117,7 @@ These tests use `setjmp`/`longjmp` to verify that the library correctly aborts o
 - ✓ Configuration functions called after initialization (6 tests):
   - `sht_set_hash_ctx()`
   - `sht_set_eq_ctx()`
-  - `sht_set_freefn()`
+  - `sht_set_free_ctx()`
   - `sht_set_lft()`
   - `sht_set_psl_limit()`
   - `sht_init()` (double initialization)
@@ -182,7 +182,7 @@ Every public API function is tested with multiple scenarios:
 - `sht_init()`
 - `sht_set_hash_ctx()`
 - `sht_set_eq_ctx()`
-- `sht_set_freefn()`
+- `sht_set_free_ctx()`
 - `sht_set_lft()`
 - `sht_set_psl_limit()`
 - `sht_size()`

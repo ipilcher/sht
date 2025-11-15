@@ -227,7 +227,7 @@ TEST(create_and_free)
 	struct sht_ht *ht;
 	enum sht_err err;
 
-	ht = SHT_NEW(str_hashfn, str_eqfn, struct str_entry, &err);
+	ht = SHT_NEW(str_hashfn, str_eqfn, NULL, struct str_entry, &err);
 	ASSERT(ht != NULL);
 	ASSERT(err == SHT_ERR_OK);
 	ASSERT(sht_init(ht, 0));
@@ -238,7 +238,7 @@ TEST(create_without_err_pointer)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(str_hashfn, str_eqfn, struct str_entry);
+	ht = SHT_NEW(str_hashfn, str_eqfn, NULL, struct str_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	sht_free(ht);
@@ -248,7 +248,7 @@ TEST(create_with_capacity)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 100));
 	sht_free(ht);
@@ -261,7 +261,7 @@ TEST(entry_size_too_large)
 
 	/* Call sht_new_() directly to test runtime validation.
 	   (SHT_NEW() has compile-time validation that would fail here.) */
-	ht = sht_new_(int_hashfn, int_eqfn, sizeof(struct oversized_entry),
+	ht = sht_new_(int_hashfn, int_eqfn, NULL, sizeof(struct oversized_entry),
 		      _Alignof(struct oversized_entry), &err);
 	ASSERT(ht == NULL);
 	ASSERT(err == SHT_ERR_BAD_ESIZE);
@@ -272,7 +272,7 @@ TEST(entry_size_maximum)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct large_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct large_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	sht_free(ht);
@@ -282,7 +282,7 @@ TEST(capacity_too_large)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(!sht_init(ht, UINT32_C(1) << 25));  /* > 16,777,216 */
 	ASSERT(sht_get_err(ht) == SHT_ERR_TOOBIG);
@@ -294,7 +294,7 @@ TEST(unusual_alignment)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct aligned_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct aligned_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	sht_free(ht);
@@ -310,7 +310,7 @@ TEST(size_empty_table)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -325,7 +325,7 @@ TEST(size_with_entries)
 	struct int_entry e;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -346,7 +346,7 @@ TEST(size_after_delete)
 	struct int_entry e;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -372,7 +372,7 @@ TEST(empty_initial_table)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -387,7 +387,7 @@ TEST(empty_with_entries)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -408,7 +408,7 @@ TEST(empty_after_clear)
 	struct int_entry e;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -440,7 +440,7 @@ TEST(hash_context)
 	struct sht_ht *ht;
 	int seed = 42;
 
-	ht = SHT_NEW(ctx_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(ctx_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_hash_ctx(ht, &seed);
 	ASSERT(sht_init(ht, 0));
@@ -460,7 +460,7 @@ TEST(eq_context)
 	int ctx = 1;
 
 	eq_context_used = 0;
-	ht = SHT_NEW(int_hashfn, ctx_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, ctx_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_eq_ctx(ht, &ctx);
 	ASSERT(sht_init(ht, 0));
@@ -480,9 +480,9 @@ TEST(free_context)
 	int ctx = 1;
 
 	free_context_used = 0;
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, ctx_freefn, struct int_entry);
 	ASSERT(ht != NULL);
-	sht_set_freefn(ht, ctx_freefn, &ctx);
+	sht_set_free_ctx(ht, &ctx);
 	ASSERT(sht_init(ht, 0));
 
 	struct int_entry e = { .key = 1, .value = 100 };
@@ -497,7 +497,7 @@ TEST(load_factor_threshold)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 50);  /* 50% load factor */
 	ASSERT(sht_init(ht, 0));
@@ -508,7 +508,7 @@ TEST(psl_threshold)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_psl_limit(ht, 100);  /* PSL threshold of 100 */
 	ASSERT(sht_init(ht, 0));
@@ -527,7 +527,7 @@ TEST(add_new_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -544,7 +544,7 @@ TEST(add_duplicate_entry)
 	struct int_entry e1, e2;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -569,7 +569,7 @@ TEST(add_multiple_entries)
 	struct int_entry e;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -602,7 +602,7 @@ TEST(set_new_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -619,7 +619,7 @@ TEST(set_replace_entry)
 	struct int_entry e1, e2;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -644,9 +644,8 @@ TEST(set_with_freefn)
 	struct str_entry e1, e2;
 	const char *key = "test";
 
-	ht = SHT_NEW(str_hashfn, str_eqfn, struct str_entry);
+	ht = SHT_NEW(str_hashfn, str_eqfn, str_freefn, struct str_entry);
 	ASSERT(ht != NULL);
-	sht_set_freefn(ht, str_freefn, NULL);
 	ASSERT(sht_init(ht, 0));
 
 	e1.key = strdup("test");
@@ -672,7 +671,7 @@ TEST(get_existing_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -693,7 +692,7 @@ TEST(get_nonexistent_entry)
 	struct sht_ht *ht;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -715,7 +714,7 @@ TEST(replace_existing_entry)
 	struct int_entry e1, e2;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -740,7 +739,7 @@ TEST(replace_nonexistent_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -763,7 +762,7 @@ TEST(swap_existing_entry)
 	struct int_entry e1, e2;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -790,7 +789,7 @@ TEST(swap_nonexistent_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -807,7 +806,7 @@ TEST(swap_separate_buffers)
 	struct int_entry e1, e2, old;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -836,7 +835,7 @@ TEST(delete_existing_entry)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -854,7 +853,7 @@ TEST(delete_nonexistent_entry)
 	struct sht_ht *ht;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -869,7 +868,7 @@ TEST(pop_existing_entry)
 	struct int_entry e, popped;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -890,7 +889,7 @@ TEST(pop_nonexistent_entry)
 	struct int_entry popped;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -911,7 +910,7 @@ TEST(table_growth)
 	struct int_entry e;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 2));  /* Very small initial size */
 
@@ -940,7 +939,7 @@ TEST(collision_handling)
 	int i;
 
 	/* Use pathological hash function to force collisions */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -970,7 +969,7 @@ TEST(excessive_collisions)
 	int result;
 
 	/* Use pathological hash function and small table */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
 	ASSERT(sht_init(ht, 128));
@@ -1001,7 +1000,7 @@ TEST(excessive_collisions_psl_10)
 	int result;
 
 	/* Use pathological hash function with low PSL threshold */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
 	sht_set_psl_limit(ht, 10);  /* Low PSL threshold */
@@ -1033,7 +1032,7 @@ TEST(excessive_collisions_psl_50)
 	int result;
 
 	/* Use pathological hash function with medium PSL threshold */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
 	sht_set_psl_limit(ht, 50);  /* Medium PSL threshold */
@@ -1065,7 +1064,7 @@ TEST(excessive_collisions_psl_1)
 	int result;
 
 	/* Use pathological hash function with minimal PSL threshold */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to delay growth */
 	sht_set_psl_limit(ht, 1);  /* Minimal PSL threshold */
@@ -1098,7 +1097,7 @@ TEST(psl_tracking_after_delete)
 	int result;
 
 	/* Use pathological hash with very low PSL threshold */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	sht_set_lft(ht, 95);  /* High load factor to prevent growth */
 	sht_set_psl_limit(ht, 3);  /* Very low PSL threshold */
@@ -1149,7 +1148,7 @@ TEST(ro_iterator_empty_table)
 	struct sht_ht *ht;
 	struct sht_ro_iter *iter;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1170,7 +1169,7 @@ TEST(ro_iterator_all_entries)
 	int i, count;
 	int seen[100] = {0};
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1204,7 +1203,7 @@ TEST(multiple_ro_iterators)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1231,7 +1230,7 @@ TEST(ro_iterator_max_count)
 	struct int_entry e;
 	int i, key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1266,7 +1265,7 @@ TEST(ro_iterator_replace)
 	const struct int_entry *result;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1308,7 +1307,7 @@ TEST(rw_iterator_empty_table)
 	struct sht_ht *ht;
 	struct sht_rw_iter *iter;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1327,7 +1326,7 @@ TEST(rw_iterator_exclusive)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1359,7 +1358,7 @@ TEST(ro_iterator_blocks_rw)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1387,7 +1386,7 @@ TEST(rw_iterator_delete)
 	struct int_entry *result;
 	int i, count;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1433,7 +1432,7 @@ TEST(rw_iterator_replace)
 	struct int_entry *result;
 	int i;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1471,7 +1470,7 @@ TEST(iterator_delete_no_last)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1507,7 +1506,7 @@ TEST(iterator_replace_no_last)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1536,7 +1535,7 @@ TEST(iterator_error_messages)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1584,7 +1583,7 @@ TEST(delete_and_readd)
 	struct int_entry e;
 	int i, key;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1612,7 +1611,7 @@ TEST(wraparound_deletion)
 	int i;
 
 	/* Use bad hash to force entries at end of table */
-	ht = SHT_NEW(bad_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(bad_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 8));
 
@@ -1650,9 +1649,8 @@ TEST(string_keys)
 	const char *keys[] = {"foo", "bar", "baz", "qux"};
 	int i;
 
-	ht = SHT_NEW(str_hashfn, str_eqfn, struct str_entry);
+	ht = SHT_NEW(str_hashfn, str_eqfn, str_freefn, struct str_entry);
 	ASSERT(ht != NULL);
-	sht_set_freefn(ht, str_freefn, NULL);
 	ASSERT(sht_init(ht, 0));
 
 	for (i = 0; i < 4; i++) {
@@ -1683,26 +1681,26 @@ TEST(abort_invalid_error_code)
 
 TEST(abort_ealign_not_power_of_2)
 {
-	ASSERT_ABORTS(sht_new_(int_hashfn, int_eqfn, sizeof(struct int_entry), 3, NULL),
+	ASSERT_ABORTS(sht_new_(int_hashfn, int_eqfn, NULL, sizeof(struct int_entry), 3, NULL),
 		      "ealign not a power of 2");
 }
 
 TEST(abort_esize_ealign_incompatible)
 {
-	ASSERT_ABORTS(sht_new_(int_hashfn, int_eqfn, 10, 8, NULL),
+	ASSERT_ABORTS(sht_new_(int_hashfn, int_eqfn, NULL, 10, 8, NULL),
 		      "Incompatible values of esize and ealign");
 }
 
 TEST(abort_null_hashfn)
 {
-	ASSERT_ABORTS(sht_new_(NULL, int_eqfn, sizeof(struct int_entry),
+	ASSERT_ABORTS(sht_new_(NULL, int_eqfn, NULL, sizeof(struct int_entry),
 			       _Alignof(struct int_entry), NULL),
 		      "hashfn must not be NULL");
 }
 
 TEST(abort_null_eqfn)
 {
-	ASSERT_ABORTS(sht_new_(int_hashfn, NULL, sizeof(struct int_entry),
+	ASSERT_ABORTS(sht_new_(int_hashfn, NULL, NULL, sizeof(struct int_entry),
 			       _Alignof(struct int_entry), NULL),
 		      "eqfn must not be NULL");
 }
@@ -1712,7 +1710,7 @@ TEST(abort_set_hash_ctx_after_init)
 	struct sht_ht *ht;
 	int ctx = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1726,7 +1724,7 @@ TEST(abort_set_eq_ctx_after_init)
 	struct sht_ht *ht;
 	int ctx = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1735,15 +1733,16 @@ TEST(abort_set_eq_ctx_after_init)
 	sht_free(ht);
 }
 
-TEST(abort_set_freefn_after_init)
+TEST(abort_set_free_ctx_after_init)
 {
 	struct sht_ht *ht;
+	int ctx = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, ctx_freefn, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
-	ASSERT_ABORTS(sht_set_freefn(ht, ctx_freefn, NULL), "already initialized");
+	ASSERT_ABORTS(sht_set_free_ctx(ht, &ctx), "already initialized");
 
 	sht_free(ht);
 }
@@ -1752,7 +1751,7 @@ TEST(abort_set_lft_after_init)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1765,7 +1764,7 @@ TEST(abort_set_lft_invalid_low)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_set_lft(ht, 0), "Invalid load factor");
@@ -1777,7 +1776,7 @@ TEST(abort_set_lft_invalid_high)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_set_lft(ht, 101), "Invalid load factor");
@@ -1789,7 +1788,7 @@ TEST(abort_set_psl_thold_after_init)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1802,7 +1801,7 @@ TEST(abort_set_psl_thold_invalid_low)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_set_psl_limit(ht, 0), "Invalid PSL threshold");
@@ -1814,7 +1813,7 @@ TEST(abort_set_psl_thold_invalid_high)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_set_psl_limit(ht, 128), "Invalid PSL threshold");
@@ -1826,7 +1825,7 @@ TEST(abort_init_twice)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
@@ -1839,7 +1838,7 @@ TEST(abort_size_not_initialized)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_size(ht), "not initialized");
@@ -1851,7 +1850,7 @@ TEST(abort_empty_not_initialized)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_empty(ht), "not initialized");
@@ -1864,7 +1863,7 @@ TEST(abort_get_not_initialized)
 	struct sht_ht *ht;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_get(ht, &key), "not initialized");
@@ -1878,7 +1877,7 @@ TEST(abort_add_not_initialized)
 	struct int_entry e = { .key = 42, .value = 100 };
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_add(ht, &key, &e), "not initialized");
@@ -1892,7 +1891,7 @@ TEST(abort_set_not_initialized)
 	struct int_entry e = { .key = 42, .value = 100 };
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_set(ht, &key, &e), "not initialized");
@@ -1906,7 +1905,7 @@ TEST(abort_replace_not_initialized)
 	struct int_entry e = { .key = 42, .value = 100 };
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_replace(ht, &key, &e), "not initialized");
@@ -1920,7 +1919,7 @@ TEST(abort_swap_not_initialized)
 	struct int_entry e = { .key = 42, .value = 100 };
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_swap(ht, &key, &e, &e), "not initialized");
@@ -1934,7 +1933,7 @@ TEST(abort_pop_not_initialized)
 	struct int_entry e;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_pop(ht, &key, &e), "not initialized");
@@ -1947,7 +1946,7 @@ TEST(abort_delete_not_initialized)
 	struct sht_ht *ht;
 	int key = 42;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_delete(ht, &key), "not initialized");
@@ -1959,7 +1958,7 @@ TEST(abort_ro_iter_not_initialized)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_ro_iter(ht), "not initialized");
@@ -1971,7 +1970,7 @@ TEST(abort_rw_iter_not_initialized)
 {
 	struct sht_ht *ht;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
 	ASSERT_ABORTS(sht_rw_iter(ht), "not initialized");
@@ -1987,7 +1986,7 @@ TEST(abort_add_with_iterator)
 	struct int_entry e2 = { .key = 2, .value = 20 };
 	int key1 = 1, key2 = 2;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key1, &e) == 0);
@@ -2009,7 +2008,7 @@ TEST(abort_set_with_iterator)
 	struct int_entry e2 = { .key = 2, .value = 20 };
 	int key1 = 1, key2 = 2;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key1, &e) == 0);
@@ -2031,7 +2030,7 @@ TEST(abort_pop_with_iterator)
 	struct int_entry popped;
 	int key = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
@@ -2052,7 +2051,7 @@ TEST(abort_delete_with_iterator)
 	struct int_entry e = { .key = 1, .value = 10 };
 	int key = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
@@ -2073,7 +2072,7 @@ TEST(abort_free_with_iterator)
 	struct int_entry e = { .key = 1, .value = 10 };
 	int key = 1;
 
-	ht = SHT_NEW(int_hashfn, int_eqfn, struct int_entry);
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
@@ -2189,7 +2188,7 @@ int main(void)
 	RUN_TEST(abort_null_eqfn);
 	RUN_TEST(abort_set_hash_ctx_after_init);
 	RUN_TEST(abort_set_eq_ctx_after_init);
-	RUN_TEST(abort_set_freefn_after_init);
+	RUN_TEST(abort_set_free_ctx_after_init);
 	RUN_TEST(abort_set_lft_after_init);
 	RUN_TEST(abort_set_lft_invalid_low);
 	RUN_TEST(abort_set_lft_invalid_high);
