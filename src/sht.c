@@ -285,10 +285,10 @@ static void sht_assert_nonnull(const void *p, const char *msg)
  * A table returned by this function cannot be used until it has been
  * initialized.
  *
- * @param	hashfn	The function that will be used to compute the hash
- *			values of keys.
- * @param	eqfn	The function that will be used to compare keys for
- *			equality.
+ * @param	hashfn	Function to be used to compute the hash values of keys.
+ * @param	eqfn	Function to be used to compare keys for	equality.
+ * @param	freefn	Function to be used to free entry resources.  (May be
+ *			`NULL`.)
  * @param	esize	The size of the entries to be stored in the table.
  * @param	ealign	The alignment of the entries to be stored in the table.
  * @param[out]	err	Optional output pointer for error reporting.
@@ -300,7 +300,8 @@ static void sht_assert_nonnull(const void *p, const char *msg)
  * @see		SHT_NEW()
  *
  */
-struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
+struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
+			sht_freefn_t freefn, size_t esize,
 			size_t ealign, enum sht_err *err)
 {
 	struct sht_ht *ht;
@@ -327,6 +328,7 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
 
 	ht->hashfn = hashfn;
 	ht->eqfn = eqfn;
+	ht->freefn = freefn;
 	ht->esize = esize;
 	ht->ealign = ealign;
 	ht->lft = SHT_DEF_LFT;
@@ -384,11 +386,10 @@ void sht_set_eq_ctx(struct sht_ht *ht, void *context)
 }
 
 /**
- * Set the optional entry resource free function for a table.
+ * Set the "context" for a table's free function.
  *
- * An entry free function is used to automatically free resources associated
- * with table entries.  It is not required in order to free the entries
- * themselves.
+ * Sets the value of the @p context argument for all calls to the table's free
+ * function.
  *
  * > **NOTE**
  * >
@@ -396,17 +397,15 @@ void sht_set_eq_ctx(struct sht_ht *ht, void *context)
  * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	ht	The hash table.
- * @param	freefn	The function to be used to free entry resources.
  * @param	context	Optional function-specific context.
  *
  * @see		sht_freefn_t
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context)
+void sht_set_free_ctx(struct sht_ht *ht, void *context)
 {
 	if (ht->tsize != 0)
 		sht_abort("sht_set_freefn: Table already initialized");
-	ht->freefn = freefn;
 	ht->free_ctx = context;
 }
 

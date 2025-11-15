@@ -232,7 +232,8 @@ _Static_assert(sizeof(enum sht_err) == 1, "sht_err size");
 
 // Create a new hash table.
 SHT_FNATTR(nonnull(1, 2))
-struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, size_t esize,
+struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
+			sht_freefn_t freefn, size_t esize,
 			size_t ealign, enum sht_err *err);
 
 // Set the "context" for a table's hash function.
@@ -243,9 +244,9 @@ void sht_set_hash_ctx(struct sht_ht *ht, void *context);
 SHT_FNATTR(nonnull(1))
 void sht_set_eq_ctx(struct sht_ht *ht, void *context);
 
-// Set the optional entry resource free function for a table.
+// Set the "context" for a table's free function.
 SHT_FNATTR(nonnull(1))
-void sht_set_freefn(struct sht_ht *ht, sht_freefn_t freefn, void *context);
+void sht_set_free_ctx(struct sht_ht *ht, void *context);
 
 // Set the load factor threshold for a table.
 SHT_FNATTR(nonnull)
@@ -428,24 +429,24 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
  * struct sht_ht *ht;
  * enum sht_err err;
  *
- * ht = sht_new(hashfn, eqfn, sizeof(struct entry),
+ * ht = sht_new(hashfn, eqfn, NULL, sizeof(struct entry),
  *              _Alignof(struct entry), &err);
  *
  * // Rewrite as ...
- * ht = SHT_NEW(hashfn, eqfn, struct entry, &err);
+ * ht = SHT_NEW(hashfn, eqfn, NULL, struct entry, &err);
  *
  * // Without error reporting ...
- * ht = sht_new(hashfn, eqfn, sizeof(struct entry),
+ * ht = sht_new(hashfn, eqfn, NULL, sizeof(struct entry),
  *              _Alignof(struct entry), NULL);
  *
  * // Becomes ...
- * ht = SHT_NEW(hashfn, eqfn, struct entry);
+ * ht = SHT_NEW(hashfn, eqfn, NULL, struct entry);
  * ```
  *
- * @param	hashfn	The function that will be used to compute the hash
- *			values of keys.
- * @param	eqfn	The function that will be used to compare keys for
- *			equality.
+ * @param	hashfn	Function to be used to compute the hash values of keys.
+ * @param	eqfn	Function to be used to compare keys for	equality.
+ * @param	freefn	Function to be used to free entry resources.  (May be
+ *			`NULL`.)
  * @param	etype	The type of the entries to be stored in the table.
  * @param[out]	...	Optional output pointer for error reporting.
  *
@@ -455,12 +456,13 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
  *
  * @see		sht_new_()
  */
-#define SHT_NEW(hashfn, eqfn, etype, ...)				\
+#define SHT_NEW(hashfn, eqfn, freefn, etype, ...)			\
 	({								\
 		_Static_assert(sizeof(etype) <= SHT_MAX_ESIZE,		\
 			       "Entry type (" #etype ") too large");	\
-		sht_new_(hashfn, eqfn, sizeof(etype), _Alignof(etype),	\
-			SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
+		sht_new_(hashfn, eqfn, freefn,				\
+			 sizeof(etype), _Alignof(etype),		\
+			 SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
 	})
 
 /*
