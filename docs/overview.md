@@ -108,7 +108,7 @@ struct sht_ht *int_set(void)
 {
     struct sht_ht *ht;
 
-    ht = SHT_NEW(int_hash, int_eq, int);
+    ht = SHT_NEW(int_hash, int_eq, NULL, int);
     sht_init(ht, 0);  // default initial capacity
     return ht;
 }
@@ -162,9 +162,8 @@ struct sht_ht *dict(void)
     struct sht_ht *ht;
 
     getrandom(&hash_seed, sizeof hash_seed, 0);
-    ht = SHT_NEW(dict_hash, dict_eq, struct dict_entry);
+    ht = SHT_NEW(dict_hash, dict_eq, dict_free, struct dict_entry);
     sht_set_hash_ctx(ht, &hash_seed);
-    sht_set_freefn(ht, dict_free, NULL);
     sht_init(ht, 20);
     return ht;
 }
@@ -303,7 +302,7 @@ approach to API contract violations by the calling program.  The library will
 
 * An invalid value is passed to sht_msg().
 
-* A `NULL` function pointer is passed to sht_new_().
+* A `NULL` hash function or equality function pointer is passed to sht_new_().
 
 * sht_new_() is called with an invalid `esize` or `ealign` argument.  (This
   cannot occur if sht_new_() is called via SHT_NEW().)
@@ -322,7 +321,7 @@ approach to API contract violations by the calling program.  The library will
   |----------------------|:-------------:|:-----------:|:-----------------:|
   |sht_set_hash_ctx()    |               |  **ABORT**  |         †         |
   |sht_set_eq_ctx()      |               |  **ABORT**  |         †         |
-  |sht_set_freefn()      |               |  **ABORT**  |         †         |
+  |sht_set_free_ctx()    |               |  **ABORT**  |         †         |
   |sht_set_lft()         |               |  **ABORT**  |         †         |
   |sht_set_psl_limit()   |               |  **ABORT**  |         †         |
   |sht_init()            |               |  **ABORT**  |         †         |
