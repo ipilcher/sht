@@ -52,9 +52,9 @@ The basic usage pattern is:
 
 * Create a table &mdash; `SHT_NEW()`,
 * If necessary, set any non-default table attributes &mdash; `sht_set_eq_ctx()`,
-  `sht_set_lft()`, `sht_set_freefn()`, etc.,
+  `sht_set_lft()`, `sht_set_free_ctx()`, etc.,
 * Initialize the table &mdash; `sht_init()`,
-* Use the table &mdash; `sht_add()`, `sht_get()`, `sht_ro_iter()`, etc., and
+* Use the table &mdash; `sht_add()`, `sht_get()`, `sht_iter_new()`, etc., and
 * Free the table &mdash; `sht_free()`.
 
 ### Table examples
@@ -183,19 +183,6 @@ Note:
   any of these attributes on a table that has been initialized is an API
   contract violation that will cause the program to abort.
 
-### Helper macros
-
-Some of the library's API functions are intended to be called via helper macros.
-The names of these functions end in an underscore (`_`), and their short
-descriptions in the API documentation are enclosed in parentheses.
-
-* SHT_NEW() wraps sht_new_().
-* SHT_ITER_FREE() wraps sht_ro_iter_free_() and sht_rw_iter_free_().
-* SHT_ITER_NEXT() wraps sht_ro_iter_next_() and sht_rw_iter_next_().
-* SHT_ITER_REPLACE() wraps sht_ro_iter_replace_() and sht_rw_iter_replace_().
-* SHT_ITER_ERR() wraps sht_ro_iter_err_() and sht_rw_iter_err_().
-* SHT_ITER_MSG() wraps sht_ro_iter_msg_() and sht_rw_iter_msg_().
-
 ## Memory management
 
 Table entries may contain pointers to other objects.  (See `dict_entry.hostname`
@@ -211,7 +198,7 @@ The following operations can cause entries to be deleted.
 * sht_delete()
 * sht_free()
 * sht_iter_delete()
-* SHT_ITER_REPLACE()
+* sht_iter_replace()
 
 (Operations such as sht_swap(), that return the entry being removed from the
 table, will not call the free function.)
@@ -261,17 +248,14 @@ some circumstances.
 
 |Function |Error return|Error info|Error codes                                               |
 |----------------------|:----:|:-:|----------------------------------------------------------|
-|SHT_NEW()               |`NULL`|1|`SHT_ERR_ALLOC`†                                          |
-|- sht_new_()            |`NULL`|1|`SHT_ERR_BAD_ESIZE`, `SHT_ERR_ALLOC`                      |
-|sht_init()              |  `0` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`                         |
-|sht_add()               | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
-|sht_set()               | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
-|sht_ro_iter()           |`NULL`|2|`SHT_ERR_ITER_LOCK`, `SHT_ERR_ITER_COUNT`, `SHT_ERR_ALLOC`|
-|sht_rw_iter()           |`NULL`|2|`SHT_ERR_ITER_LOCK`, `SHT_ERR_ALLOC`                      |
-|sht_iter_delete()       |  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
-|SHT_ITER_REPLACE()      |  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
-|- sht_ro_iter_replace_()|  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
-|- sht_rw_iter_replace_()|  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+|SHT_NEW()         |`NULL`|1|`SHT_ERR_ALLOC`†                                          |
+|- sht_new_()      |`NULL`|1|`SHT_ERR_BAD_ESIZE`, `SHT_ERR_ALLOC`                      |
+|sht_init()        |  `0` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`                         |
+|sht_add()         | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
+|sht_set()         | `-1` |2|`SHT_ERR_TOOBIG`, `SHT_ERR_ALLOC`, `SHT_ERR_BAD_HASH`     |
+|sht_iter_new()    |`NULL`|2|`SHT_ERR_ITER_LOCK`, `SHT_ERR_ITER_COUNT`, `SHT_ERR_ALLOC`|
+|sht_iter_delete() |  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
+|sht_iter_replace()|  `0` |3|`SHT_ERR_ITER_NO_LAST`                                    |
 
 † SHT_NEW() checks the entry size during compilation.
 
@@ -314,6 +298,8 @@ approach to API contract violations by the calling program.  The library will
 
 * An invalid PSL limit is passed to sht_set_psl_limit().
 
+* sht_iter_delete() is called on a read-only iterator.
+
 * One of the functions in the table below is called on a table that is in an
   inappropriate state.
 
@@ -335,8 +321,7 @@ approach to API contract violations by the calling program.  The library will
   |sht_pop()             |   **ABORT**   |             |     **ABORT**     |
   |sht_replace()         |   **ABORT**   |             |                   |
   |sht_swap()            |   **ABORT**   |             |                   |
-  |sht_ro_iter()         |   **ABORT**   |             |                   |
-  |sht_rw_iter()         |   **ABORT**   |             |                   |
+  |sht_iter_new()        |   **ABORT**   |             |                   |
 
   † Abort implied.  (An iterator cannot be created on an uninitialized
     table.)
