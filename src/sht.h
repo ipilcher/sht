@@ -186,14 +186,17 @@ typedef void (*sht_freefn_t)(const void *restrict entry,
 struct sht_ht;
 
 /**
- * Read-only hash table iterator.
+ * Iterator types.
  */
-struct sht_ro_iter;
+enum sht_iter_type: _Bool {
+	SHT_ITER_RO = 0,	/**< Read-only iterator. */
+	SHT_ITER_RW = 1		/**< Read/write iterator. */
+};
 
 /**
- * Read/write hash table iterator.
+ * Hash table iterator.
  */
-struct sht_rw_iter;
+struct sht_iter;
 
 /**
  * Error codes.
@@ -309,51 +312,28 @@ _Bool sht_swap(struct sht_ht *ht, const void *key,
 
 
 /*
- * Iterator lifecycle - create & free
+ * Iterators
  */
 
-// Create a new read-only iterator.
+// Create a new iterator
 SHT_FNATTR(nonnull)
-struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht);
+struct sht_iter *sht_iter_new(struct sht_ht *ht, enum sht_iter_type type);
 
-// Create a new read/write iterator.
+// Free an iterator.
 SHT_FNATTR(nonnull)
-struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht);
+void sht_iter_free(struct sht_iter *iter);
 
-// Free a read-only iterator.
+// Get the next entry from an iterator.
 SHT_FNATTR(nonnull)
-void sht_ro_iter_free_(struct sht_ro_iter *iter);
-
-// Free a read/write iterator.
-SHT_FNATTR(nonnull)
-void sht_rw_iter_free_(struct sht_rw_iter *iter);
-
-
-/*
- * Iterator operations - next, delete & replace
- */
-
-// Get the next entry from a read-only iterator.
-SHT_FNATTR(nonnull)
-const void *sht_ro_iter_next_(struct sht_ro_iter *iter);
-
-// Get the next entry from a read/write iterator.
-SHT_FNATTR(nonnull)
-void *sht_rw_iter_next_(struct sht_rw_iter *iter);
+const void *sht_iter_next(struct sht_iter *iter);
 
 // Remove the last entry returned by a read/write iterator.
 SHT_FNATTR(nonnull)
-_Bool sht_iter_delete(struct sht_rw_iter *iter);
+_Bool sht_iter_delete(struct sht_iter *iter);
 
-// Replace the last entry returned by a read-only iterator.
+// Replace the last entry returned by an iterator.
 SHT_FNATTR(nonnull)
-_Bool sht_ro_iter_replace_(struct sht_ro_iter *iter,
-			   const void *restrict entry);
-
-// Replace the last entry returned by a read/write iterator.
-SHT_FNATTR(nonnull)
-_Bool sht_rw_iter_replace_(struct sht_rw_iter *iter,
-			   const void *restrict entry);
+_Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry);
 
 
 /*
@@ -364,13 +344,9 @@ _Bool sht_rw_iter_replace_(struct sht_rw_iter *iter,
 SHT_FNATTR(nonnull)
 enum sht_err sht_get_err(const struct sht_ht *ht);
 
-// Get the error code of a read-only iterator's last error.
+// Get the error code of an iterator's last error.
 SHT_FNATTR(nonnull)
-enum sht_err sht_ro_iter_err_(const struct sht_ro_iter *iter);
-
-// Get the error code of a read/write iterator's last error.
-SHT_FNATTR(nonnull)
-enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter);
+enum sht_err sht_iter_err(const struct sht_iter *iter);
 
 // Get the description for an error code.
 const char *sht_msg(enum sht_err err);
@@ -379,13 +355,9 @@ const char *sht_msg(enum sht_err err);
 SHT_FNATTR(nonnull)
 const char *sht_get_msg(const struct sht_ht *ht);
 
-// Get a description of a read-only iterator's last error.
+// Get a description of an iterator's last error.
 SHT_FNATTR(nonnull)
-const char *sht_ro_iter_msg_(const struct sht_ro_iter *iter);
-
-// Get a description of a read/write iterator's last error.
-SHT_FNATTR(nonnull)
-const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
+const char *sht_iter_msg(const struct sht_iter *iter);
 
 
 /*******************************************************************************
@@ -464,6 +436,8 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
 			 sizeof(etype), _Alignof(etype),		\
 			 SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
 	})
+
+#if 0
 
 /*
  * Iterator generics
@@ -565,6 +539,8 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter);
  * @see		sht_rw_iter_msg_()
  */
 #define SHT_ITER_MSG(iter)		SHT_ITER_GENERIC(msg, iter)
+
+#endif
 
 
 #endif		/* SHT_H */

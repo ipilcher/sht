@@ -114,15 +114,6 @@ struct sht_ht {
 
 /**
  * @private
- * Iterator types.
- */
-enum sht_iter_type: _Bool {
-	SHT_ITER_RO = 0,	/**< Read-only iterator. */
-	SHT_ITER_RW = 1		/**< Read/write iterator. */
-};
-
-/**
- * @private
  * Hash table iterator.
  */
 struct sht_iter {
@@ -130,22 +121,6 @@ struct sht_iter {
 	int32_t			last;	/**< Position of last entry returned. */
 	enum sht_err		err;	/**< Last error. */
 	enum sht_iter_type	type;	/**< Type of iterator (ro/rw). */
-};
-
-/**
- * @private
- * Read-only hash table iterator.
- */
-struct sht_ro_iter {
-	struct sht_iter		i;	/**< Iterator implementation. */
-};
-
-/**
- * @private
- * Read/write hash table iterator.
- */
-struct sht_rw_iter {
-	struct sht_iter		i;	/**< Iterator implementation. */
 };
 
 /**
@@ -1377,7 +1352,7 @@ void sht_free(struct sht_ht *ht)
 }
 
 /**
- * Create a new hash table iterator.
+ * Create a new iterator.
  *
  * @param	ht	The hash table.
  * @param	type	The type of the iterator (read-only or read/write).
@@ -1385,18 +1360,14 @@ void sht_free(struct sht_ht *ht)
  * @returns	On success, a pointer to the new iterator is returned.  If
  *		memory allocation fails, `NULL` is returned, and the error
  *		status of the table is set.
- *
- * @see		sht_ro_iter()
- * @see		sht_rw_iter()
  */
-static struct sht_iter *sht_iter_new(struct sht_ht *ht,
-				     enum sht_iter_type type)
+struct sht_iter *sht_iter_new(struct sht_ht *ht, enum sht_iter_type type)
 {
 	struct sht_iter *iter;
 	uint16_t lock;
 
 	if (ht->tsize == 0)
-		sht_abort("sht_ro_iter/sht_rw_iter: Table not initialized");
+		sht_abort("sht_iter_new: Table not initialized");
 
 	if (type == SHT_ITER_RO) {
 
@@ -1434,95 +1405,22 @@ static struct sht_iter *sht_iter_new(struct sht_ht *ht,
 }
 
 /**
- * Create a new read-only iterator.
- *
- * > **NOTE**
- * >
- * > This function cannot be called on an unitialized table.  (See
- * > [Abort conditions](index.html#abort-conditions).)
- *
- * @param	ht	The hash table.
- *
- * @returns	On success, a pointer to the new iterator is returned.  If an
- *		error occurs, `NULL` is returned, and the error status of the
- *		table is set.
- *
- * @see		[Abort conditions](index.html#abort-conditions)
- */
-struct sht_ro_iter *sht_ro_iter(struct sht_ht *ht)
-{
-	return (struct sht_ro_iter *)sht_iter_new(ht, SHT_ITER_RO);
-}
-
-/**
- * Create a new read/write iterator.
- *
- * > **NOTE**
- * >
- * > This function cannot be called on an unitialized table.  (See
- * > [Abort conditions](index.html#abort-conditions).)
- *
- * @param	ht	The hash table.
- *
- * @returns	On success, a pointer to the new iterator is returned.  If an
- *		error occurs, `NULL` is returned, and the error status of the
- *		table is set.
- *
- * @see		[Abort conditions](index.html#abort-conditions)
- */
-struct sht_rw_iter *sht_rw_iter(struct sht_ht *ht)
-{
-	return (struct sht_rw_iter *)sht_iter_new(ht, SHT_ITER_RW);
-}
-
-/**
- * (Get the error code of a read-only iterator's last error.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_ERR().
+ * Get the error code of an iterator's last error.
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
  *
- * @param	iter	The iterator.
+ * @param	iter	The iterator
  *
  * @returns	A code that describes the error.
- *
- * @see		SHT_ITER_STATUS()
  */
-enum sht_err sht_ro_iter_err_(const struct sht_ro_iter *iter)
+enum sht_err sht_iter_err(const struct sht_iter *iter)
 {
-	return iter->i.err;
+	return iter->err;
 }
 
 /**
- * (Get the error code of a read/write iterator's last error.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_ERR().
- *
- * The value returned by this function is only valid after a previous iterator
- * function call indicated an error.
- *
- * @param	iter	The iterator.
- *
- * @returns	A code that describes the error.
- *
- * @see		SHT_ITER_STATUS()
- */
-enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter)
-{
-	return iter->i.err;
-}
-
-/**
- * (Get a description of a read-only iterator's last error.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_MSG().
+ * Get a description of an iterator's last error.
  *
  * The value returned by this function is only valid after a previous iterator
  * function call indicated an error.
@@ -1530,33 +1428,10 @@ enum sht_err sht_rw_iter_err_(const struct sht_rw_iter *iter)
  * @param	iter	The iterator.
  *
  * @returns	A string that describes the error.
- *
- * @see		SHT_ITER_MSG()
  */
-const char *sht_ro_iter_msg_(const struct sht_ro_iter *iter)
+const char *sht_iter_msg(const struct sht_iter *iter)
 {
-	return sht_msg(iter->i.err);
-}
-
-/**
- * (Get a description of a read/write iterator's last error.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_MSG().
- *
- * The value returned by this function is only valid after a previous iterator
- * function call indicated an error.
- *
- * @param	iter	The iterator.
- *
- * @returns	A string that describes the error.
- *
- * @see		SHT_ITER_MSG()
- */
-const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter)
-{
-	return sht_msg(iter->i.err);
+	return sht_msg(iter->err);
 }
 
 /**
@@ -1566,12 +1441,8 @@ const char *sht_rw_iter_msg_(const struct sht_rw_iter *iter)
  *
  * @returns	A pointer to the next entry, if any.  If no more entries are
  *		available, `NULL` is returned.
- *
- * @see		sht_ro_iter_next_()
- * @see		sht_rw_iter_next_()
- * @see		SHT_ITER_FREE()
  */
-static void *sht_iter_next(struct sht_iter *iter)
+const void *sht_iter_next(struct sht_iter *iter)
 {
 	uint32_t next;
 	const struct sht_ht *ht;
@@ -1599,66 +1470,36 @@ static void *sht_iter_next(struct sht_iter *iter)
 }
 
 /**
- * (Get the next entry from a read-only iterator.)
+ * Remove the last entry returned by a **read/write** iterator.
  *
  * > **NOTE**
  * >
- * > Do not call this function directly.  Use SHT_ITER_NEXT().
- *
- * @param	iter	The iterator.
- *
- * @returns	A pointer to the next entry, if any.  If no more entries are
- *		available, `NULL` is returned.
- *
- * @see		SHT_ITER_NEXT()
- */
-const void *sht_ro_iter_next_(struct sht_ro_iter *iter)
-{
-	return sht_iter_next(&iter->i);
-}
-
-/**
- * (Get the next entry from a read/write iterator.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_NEXT().
- *
- * @param	iter	The iterator.
- *
- * @returns	A pointer to the next entry, if any.  If no more entries are
- *		available, `NULL` is returned.
- *
- * @see		SHT_ITER_NEXT()
- */
-void *sht_rw_iter_next_(struct sht_rw_iter *iter)
-{
-	return sht_iter_next(&iter->i);
-}
-
-/**
- * Remove the last entry returned by a read/write iterator.
+ * > This function cannot be called on a read-only iterator.  (See
+ * > [Abort conditions](index.html#abort-conditions).)
  *
  * @param	iter	The iterator.
  *
  * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
  *		returned and the error status of the iterator is set.
  */
-_Bool sht_iter_delete(struct sht_rw_iter *iter)
+_Bool sht_iter_delete(struct sht_iter *iter)
 {
-	if (iter->i.last == -1 || iter->i.last == INT32_MAX) {
-		iter->i.err = SHT_ERR_ITER_NO_LAST;
+	if (iter->type != SHT_ITER_RW)
+		sht_abort("sht_iter_delete: Iterator is read-only");
+
+	if (iter->last == -1 || iter->last == INT32_MAX) {
+		iter->err = SHT_ERR_ITER_NO_LAST;
 		return 0;
 	}
 
-	assert(iter->i.last >= 0 && (uint32_t)iter->i.last < iter->i.ht->tsize);
-	assert(!iter->i.ht->buckets[iter->i.last].empty);
+	assert(iter->last >= 0 && (uint32_t)iter->last < iter->ht->tsize);
+	assert(!iter->ht->buckets[iter->last].empty);
 
-	sht_remove_at(iter->i.ht, iter->i.last, NULL);
+	sht_remove_at(iter->ht, iter->last, NULL);
 
 	// If an entry has been shifted down, return it on next call to
 	// SHT_ITER_NEXT
-	iter->i.last--;
+	iter->last--;
 
 	return 1;
 }
@@ -1677,12 +1518,8 @@ _Bool sht_iter_delete(struct sht_rw_iter *iter)
  *
  * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
  *		returned and the error status of the iterator is set.
- *
- * @see		sht_ro_iter_replace_()
- * @see		sht_rw_iter_replace_()
- * @see		SHT_ITER_REPLACE()
  */
-static _Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
+_Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 {
 	if (iter->last == -1 || iter->last == INT32_MAX) {
 		iter->err = SHT_ERR_ITER_NO_LAST;
@@ -1698,69 +1535,11 @@ static _Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 }
 
 /**
- * (Replace the last entry returned by a read-only iterator.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_REPLACE().
- *
- * > **WARNING**
- * >
- * > The new entry **must** have the same key as the entry being replaced.
- * > Replacing an entry with an entry that contains a different key will corrupt
- * > the table.
+ * Free an iterator.
  *
  * @param	iter	The iterator.
- * @param	entry	The new entry.
- *
- * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
- *		returned and the error status of the iterator is set.
- *
- * @see		SHT_ITER_REPLACE()
  */
-_Bool sht_ro_iter_replace_(struct sht_ro_iter *iter,
-			   const void *restrict entry)
-{
-	return sht_iter_replace(&iter->i, entry);
-}
-
-/**
- * (Replace the last entry returned by a read/write iterator.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_REPLACE().
- *
- * > **WARNING**
- * >
- * > The new entry **must** have the same key as the entry being replaced.
- * > Replacing an entry with an entry that contains a different key will corrupt
- * > the table.
- *
- * @param	iter	The iterator.
- * @param	entry	The new entry.
- *
- * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
- *		returned and the error status of the iterator is set.
- *
- * @see		SHT_ITER_REPLACE()
-*/
-_Bool sht_rw_iter_replace_(struct sht_rw_iter *iter,
-			   const void *restrict entry)
-{
-	return sht_iter_replace(&iter->i, entry);
-}
-
-/**
- * Free a hash table iterator.
- *
- * @param	iter	The iterator.
- *
- * @see		sht_ro_iter_free_()
- * @see		sht_rw_iter_free_()
- * @see		SHT_ITER_FREE()
- */
-static void sht_iter_free(struct sht_iter *iter)
+void sht_iter_free(struct sht_iter *iter)
 {
 	struct sht_ht *ht;
 
@@ -1776,36 +1555,4 @@ static void sht_iter_free(struct sht_iter *iter)
 	}
 
 	free(iter);
-}
-
-/**
- * (Free a read-only iterator.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_FREE().
- *
- * @param	iter	The iterator.
- *
- * @see		SHT_ITER_FREE()
- */
-void sht_ro_iter_free_(struct sht_ro_iter *iter)
-{
-	sht_iter_free(&iter->i);
-}
-
-/**
- * (Free a read/write iterator.)
- *
- * > **NOTE**
- * >
- * > Do not call this function directly.  Use SHT_ITER_FREE().
- *
- * @param	iter	The iterator.
- *
- * @see		SHT_ITER_FREE()
- */
-void sht_rw_iter_free_(struct sht_rw_iter *iter)
-{
-	sht_iter_free(&iter->i);
 }
