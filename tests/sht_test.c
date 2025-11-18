@@ -1146,16 +1146,16 @@ TEST(psl_tracking_after_delete)
 TEST(ro_iterator_empty_table)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
-	ASSERT(SHT_ITER_NEXT(iter) == NULL);
-	SHT_ITER_FREE(iter);
+	ASSERT(sht_iter_next(iter) == NULL);
+	sht_iter_free(iter);
 
 	sht_free(ht);
 }
@@ -1163,7 +1163,7 @@ TEST(ro_iterator_empty_table)
 TEST(ro_iterator_all_entries)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	const struct int_entry *result;
 	int i, count;
@@ -1179,11 +1179,11 @@ TEST(ro_iterator_all_entries)
 		ASSERT(sht_add(ht, &e.key, &e) == 0);
 	}
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	count = 0;
-	while ((result = SHT_ITER_NEXT(iter)) != NULL) {
+	while ((result = sht_iter_next(iter)) != NULL) {
 		ASSERT(result->key >= 0 && result->key < 100);
 		ASSERT(result->value == result->key * 10);
 		ASSERT(seen[result->key] == 0);
@@ -1192,14 +1192,14 @@ TEST(ro_iterator_all_entries)
 	}
 	ASSERT(count == 100);
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(multiple_ro_iterators)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter1, *iter2;
+	struct sht_iter *iter1, *iter2;
 	struct int_entry e;
 	int key = 42;
 
@@ -1211,14 +1211,14 @@ TEST(multiple_ro_iterators)
 	e.value = 100;
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter1 = sht_ro_iter(ht);
+	iter1 = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter1 != NULL);
 
-	iter2 = sht_ro_iter(ht);
+	iter2 = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter2 != NULL);
 
-	SHT_ITER_FREE(iter1);
-	SHT_ITER_FREE(iter2);
+	sht_iter_free(iter1);
+	sht_iter_free(iter2);
 
 	sht_free(ht);
 }
@@ -1226,7 +1226,7 @@ TEST(multiple_ro_iterators)
 TEST(ro_iterator_max_count)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iters[32767];  /* SHT_MAX_ITERS */
+	struct sht_iter *iters[32767];  /* SHT_MAX_ITERS */
 	struct int_entry e;
 	int i, key = 42;
 
@@ -1240,18 +1240,18 @@ TEST(ro_iterator_max_count)
 
 	/* Create maximum number of iterators */
 	for (i = 0; i < 32767; i++) {
-		iters[i] = sht_ro_iter(ht);
+		iters[i] = sht_iter_new(ht, SHT_ITER_RO);
 		ASSERT(iters[i] != NULL);
 	}
 
 	/* Try to create one more - should fail */
-	struct sht_ro_iter *extra = sht_ro_iter(ht);
+	struct sht_iter *extra = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(extra == NULL);
 	ASSERT(sht_get_err(ht) == SHT_ERR_ITER_COUNT);
 
 	/* Free all iterators */
 	for (i = 0; i < 32767; i++) {
-		SHT_ITER_FREE(iters[i]);
+		sht_iter_free(iters[i]);
 	}
 
 	sht_free(ht);
@@ -1260,7 +1260,7 @@ TEST(ro_iterator_max_count)
 TEST(ro_iterator_replace)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	const struct int_entry *result;
 	int i;
@@ -1275,18 +1275,18 @@ TEST(ro_iterator_replace)
 		ASSERT(sht_add(ht, &e.key, &e) == 0);
 	}
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	/* Get first entry and replace it */
-	result = SHT_ITER_NEXT(iter);
+	result = sht_iter_next(iter);
 	ASSERT(result != NULL);
 
 	e.key = result->key;
 	e.value = 9999;
-	ASSERT(SHT_ITER_REPLACE(iter, &e));
+	ASSERT(sht_iter_replace(iter, &e));
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 
 	/* Verify replacement */
 	result = sht_get(ht, &e.key);
@@ -1305,16 +1305,16 @@ TEST(ro_iterator_replace)
 TEST(rw_iterator_empty_table)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 	ASSERT(sht_init(ht, 0));
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
-	ASSERT(SHT_ITER_NEXT(iter) == NULL);
-	SHT_ITER_FREE(iter);
+	ASSERT(sht_iter_next(iter) == NULL);
+	sht_iter_free(iter);
 
 	sht_free(ht);
 }
@@ -1322,7 +1322,7 @@ TEST(rw_iterator_empty_table)
 TEST(rw_iterator_exclusive)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	int key = 42;
 
@@ -1334,27 +1334,27 @@ TEST(rw_iterator_exclusive)
 	e.value = 100;
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
 
 	/* Try to create another rw iterator - should fail */
-	struct sht_rw_iter *iter2 = sht_rw_iter(ht);
+	struct sht_iter *iter2 = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter2 == NULL);
 	ASSERT(sht_get_err(ht) == SHT_ERR_ITER_LOCK);
 
 	/* Try to create ro iterator - should also fail */
-	struct sht_ro_iter *ro_iter = sht_ro_iter(ht);
+	struct sht_iter *ro_iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(ro_iter == NULL);
 	ASSERT(sht_get_err(ht) == SHT_ERR_ITER_LOCK);
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(ro_iterator_blocks_rw)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *ro_iter;
+	struct sht_iter *ro_iter;
 	struct int_entry e;
 	int key = 42;
 
@@ -1366,22 +1366,22 @@ TEST(ro_iterator_blocks_rw)
 	e.value = 100;
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	ro_iter = sht_ro_iter(ht);
+	ro_iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(ro_iter != NULL);
 
 	/* Try to create rw iterator - should fail */
-	struct sht_rw_iter *rw_iter = sht_rw_iter(ht);
+	struct sht_iter *rw_iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(rw_iter == NULL);
 	ASSERT(sht_get_err(ht) == SHT_ERR_ITER_LOCK);
 
-	SHT_ITER_FREE(ro_iter);
+	sht_iter_free(ro_iter);
 	sht_free(ht);
 }
 
 TEST(rw_iterator_delete)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	struct int_entry *result;
 	int i, count;
@@ -1396,11 +1396,11 @@ TEST(rw_iterator_delete)
 		ASSERT(sht_add(ht, &e.key, &e) == 0);
 	}
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
 
 	count = 0;
-	while ((result = SHT_ITER_NEXT(iter)) != NULL) {
+	while ((result = sht_iter_next(iter)) != NULL) {
 		if (result->key % 2 == 0) {
 			ASSERT(sht_iter_delete(iter));
 		}
@@ -1408,7 +1408,7 @@ TEST(rw_iterator_delete)
 	}
 	ASSERT(count == 10);
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 
 	/* Verify even keys are gone */
 	for (i = 0; i < 10; i++) {
@@ -1427,7 +1427,7 @@ TEST(rw_iterator_delete)
 TEST(rw_iterator_replace)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	struct int_entry *result;
 	int i;
@@ -1442,16 +1442,16 @@ TEST(rw_iterator_replace)
 		ASSERT(sht_add(ht, &e.key, &e) == 0);
 	}
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
 
-	while ((result = SHT_ITER_NEXT(iter)) != NULL) {
+	while ((result = sht_iter_next(iter)) != NULL) {
 		e.key = result->key;
 		e.value = result->key * 100;
-		ASSERT(SHT_ITER_REPLACE(iter, &e));
+		ASSERT(sht_iter_replace(iter, &e));
 	}
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 
 	/* Verify all values updated */
 	for (i = 0; i < 10; i++) {
@@ -1466,7 +1466,7 @@ TEST(rw_iterator_replace)
 TEST(iterator_delete_no_last)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	int key = 42;
 
@@ -1478,31 +1478,31 @@ TEST(iterator_delete_no_last)
 	e.value = 100;
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
 
 	/* Try to delete before calling NEXT */
 	ASSERT(!sht_iter_delete(iter));
-	ASSERT(SHT_ITER_ERR(iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(iter), "Iterator at beginning or end") == 0);
+	ASSERT(sht_iter_err(iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(iter), "Iterator at beginning or end") == 0);
 
 	/* Advance iterator */
-	ASSERT(SHT_ITER_NEXT(iter) != NULL);
-	ASSERT(SHT_ITER_NEXT(iter) == NULL);
+	ASSERT(sht_iter_next(iter) != NULL);
+	ASSERT(sht_iter_next(iter) == NULL);
 
 	/* Try to delete after reaching end */
 	ASSERT(!sht_iter_delete(iter));
-	ASSERT(SHT_ITER_ERR(iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(iter), "Iterator at beginning or end") == 0);
+	ASSERT(sht_iter_err(iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(iter), "Iterator at beginning or end") == 0);
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(iterator_replace_no_last)
 {
 	struct sht_ht *ht;
-	struct sht_rw_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e;
 	int key = 42;
 
@@ -1514,24 +1514,24 @@ TEST(iterator_replace_no_last)
 	e.value = 100;
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_rw_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(iter != NULL);
 
 	/* Try to replace before calling NEXT */
 	e.value = 200;
-	ASSERT(!SHT_ITER_REPLACE(iter, &e));
-	ASSERT(SHT_ITER_ERR(iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(iter), "Iterator at beginning or end") == 0);
+	ASSERT(!sht_iter_replace(iter, &e));
+	ASSERT(sht_iter_err(iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(iter), "Iterator at beginning or end") == 0);
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(iterator_error_messages)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *ro_iter;
-	struct sht_rw_iter *rw_iter;
+	struct sht_iter *ro_iter;
+	struct sht_iter *rw_iter;
 	struct int_entry e;
 	int key = 42;
 
@@ -1544,30 +1544,30 @@ TEST(iterator_error_messages)
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
 	/* Test read-only iterator error messages */
-	ro_iter = sht_ro_iter(ht);
+	ro_iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(ro_iter != NULL);
 
 	e.value = 200;
-	ASSERT(!SHT_ITER_REPLACE(ro_iter, &e));
-	ASSERT(SHT_ITER_ERR(ro_iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(ro_iter), "Iterator at beginning or end") == 0);
+	ASSERT(!sht_iter_replace(ro_iter, &e));
+	ASSERT(sht_iter_err(ro_iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(ro_iter), "Iterator at beginning or end") == 0);
 
-	SHT_ITER_FREE(ro_iter);
+	sht_iter_free(ro_iter);
 
 	/* Test read/write iterator error messages */
-	rw_iter = sht_rw_iter(ht);
+	rw_iter = sht_iter_new(ht, SHT_ITER_RW);
 	ASSERT(rw_iter != NULL);
 
 	ASSERT(!sht_iter_delete(rw_iter));
-	ASSERT(SHT_ITER_ERR(rw_iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(rw_iter), "Iterator at beginning or end") == 0);
+	ASSERT(sht_iter_err(rw_iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(rw_iter), "Iterator at beginning or end") == 0);
 
 	e.value = 300;
-	ASSERT(!SHT_ITER_REPLACE(rw_iter, &e));
-	ASSERT(SHT_ITER_ERR(rw_iter) == SHT_ERR_ITER_NO_LAST);
-	ASSERT(strcmp(SHT_ITER_MSG(rw_iter), "Iterator at beginning or end") == 0);
+	ASSERT(!sht_iter_replace(rw_iter, &e));
+	ASSERT(sht_iter_err(rw_iter) == SHT_ERR_ITER_NO_LAST);
+	ASSERT(strcmp(sht_iter_msg(rw_iter), "Iterator at beginning or end") == 0);
 
-	SHT_ITER_FREE(rw_iter);
+	sht_iter_free(rw_iter);
 	sht_free(ht);
 }
 
@@ -1961,7 +1961,7 @@ TEST(abort_ro_iter_not_initialized)
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
-	ASSERT_ABORTS(sht_ro_iter(ht), "not initialized");
+	ASSERT_ABORTS(sht_iter_new(ht, SHT_ITER_RO), "not initialized");
 
 	free(ht);
 }
@@ -1973,7 +1973,7 @@ TEST(abort_rw_iter_not_initialized)
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
 	ASSERT(ht != NULL);
 
-	ASSERT_ABORTS(sht_rw_iter(ht), "not initialized");
+	ASSERT_ABORTS(sht_iter_new(ht, SHT_ITER_RW), "not initialized");
 
 	free(ht);
 }
@@ -1981,7 +1981,7 @@ TEST(abort_rw_iter_not_initialized)
 TEST(abort_add_with_iterator)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e = { .key = 1, .value = 10 };
 	struct int_entry e2 = { .key = 2, .value = 20 };
 	int key1 = 1, key2 = 2;
@@ -1991,19 +1991,19 @@ TEST(abort_add_with_iterator)
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key1, &e) == 0);
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	ASSERT_ABORTS(sht_add(ht, &key2, &e2), "iterator");
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(abort_set_with_iterator)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e = { .key = 1, .value = 10 };
 	struct int_entry e2 = { .key = 2, .value = 20 };
 	int key1 = 1, key2 = 2;
@@ -2013,19 +2013,19 @@ TEST(abort_set_with_iterator)
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key1, &e) == 0);
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	ASSERT_ABORTS(sht_set(ht, &key2, &e2), "iterator");
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(abort_pop_with_iterator)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e = { .key = 1, .value = 10 };
 	struct int_entry popped;
 	int key = 1;
@@ -2035,19 +2035,19 @@ TEST(abort_pop_with_iterator)
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	ASSERT_ABORTS(sht_pop(ht, &key, &popped), "iterator");
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(abort_delete_with_iterator)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e = { .key = 1, .value = 10 };
 	int key = 1;
 
@@ -2056,19 +2056,19 @@ TEST(abort_delete_with_iterator)
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	ASSERT_ABORTS(sht_delete(ht, &key), "iterator");
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
 TEST(abort_free_with_iterator)
 {
 	struct sht_ht *ht;
-	struct sht_ro_iter *iter;
+	struct sht_iter *iter;
 	struct int_entry e = { .key = 1, .value = 10 };
 	int key = 1;
 
@@ -2077,12 +2077,46 @@ TEST(abort_free_with_iterator)
 	ASSERT(sht_init(ht, 0));
 	ASSERT(sht_add(ht, &key, &e) == 0);
 
-	iter = sht_ro_iter(ht);
+	iter = sht_iter_new(ht, SHT_ITER_RO);
 	ASSERT(iter != NULL);
 
 	ASSERT_ABORTS(sht_free(ht), "iterator");
 
-	SHT_ITER_FREE(iter);
+	sht_iter_free(iter);
+	sht_free(ht);
+}
+
+TEST(abort_iter_delete_read_only)
+{
+	struct sht_ht *ht;
+	struct sht_iter *iter;
+	struct int_entry e;
+	const struct int_entry *result;
+	int i;
+
+	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
+	ASSERT(ht != NULL);
+	ASSERT(sht_init(ht, 0));
+
+	/* Add some entries */
+	for (i = 0; i < 10; i++) {
+		e.key = i;
+		e.value = i * 10;
+		ASSERT(sht_add(ht, &e.key, &e) == 0);
+	}
+
+	/* Create read-only iterator */
+	iter = sht_iter_new(ht, SHT_ITER_RO);
+	ASSERT(iter != NULL);
+
+	/* Get first entry */
+	result = sht_iter_next(iter);
+	ASSERT(result != NULL);
+
+	/* Try to delete via read-only iterator - should abort */
+	ASSERT_ABORTS(sht_iter_delete(iter), "read-only");
+
+	sht_iter_free(iter);
 	sht_free(ht);
 }
 
@@ -2212,6 +2246,7 @@ int main(void)
 	RUN_TEST(abort_pop_with_iterator);
 	RUN_TEST(abort_delete_with_iterator);
 	RUN_TEST(abort_free_with_iterator);
+	RUN_TEST(abort_iter_delete_read_only);
 
 	/* Summary */
 	printf("\n=== Test Summary ===\n");

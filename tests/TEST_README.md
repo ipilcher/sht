@@ -4,7 +4,7 @@
 
 ## Overview
 
-Comprehensive test suite for the SHT hash table library. The test suite contains 89 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
+Comprehensive test suite for the SHT hash table library. The test suite contains 90 tests that cover all public API functions, runtime error conditions, abort conditions, and edge cases.
 
 ## Building and Running
 
@@ -105,7 +105,7 @@ make sht_test
 - ✓ Wraparound deletion (circular buffer)
 - ✓ String keys with dynamic allocation
 
-### 14. Abort Conditions (31 tests)
+### 14. Abort Conditions (32 tests)
 These tests use `setjmp`/`longjmp` to verify that the library correctly aborts on programming errors:
 - ✓ Invalid error code to `sht_msg()`
 - ✓ NULL function pointers to `sht_new_()` (2 tests):
@@ -137,14 +137,15 @@ These tests use `setjmp`/`longjmp` to verify that the library correctly aborts o
   - `sht_swap()`
   - `sht_pop()`
   - `sht_delete()`
-  - `sht_ro_iter()`
-  - `sht_rw_iter()`
+  - `sht_iter_new()`
 - ✓ Modification operations with active iterators (5 tests):
   - `sht_add()`
   - `sht_set()`
   - `sht_pop()`
   - `sht_delete()`
   - `sht_free()`
+- ✓ Iterator operations on wrong iterator type (1 test):
+  - `sht_iter_delete()` called on read-only iterator
 
 ## Error Conditions Tested
 
@@ -171,6 +172,7 @@ All programming errors that trigger `abort()` are tested using `setjmp`/`longjmp
 6. Invalid PSL threshold (2 conditions)
 7. Operations on uninitialized table (11 conditions)
 8. Modification operations with active iterators (5 conditions)
+9. Iterator operations on wrong iterator type (1 condition)
 
 ## API Coverage
 
@@ -198,14 +200,13 @@ Every public API function is tested with multiple scenarios:
 - `sht_get_err()`
 - `sht_get_msg()`
 - `sht_msg()`
-- `sht_ro_iter()`
-- `sht_rw_iter()`
-- `SHT_ITER_NEXT()` macro
-- `SHT_ITER_FREE()` macro
-- `SHT_ITER_REPLACE()` macro
-- `SHT_ITER_ERR()` macro
-- `SHT_ITER_MSG()` macro
+- `sht_iter_new()`
+- `sht_iter_free()`
+- `sht_iter_next()`
 - `sht_iter_delete()`
+- `sht_iter_replace()`
+- `sht_iter_err()`
+- `sht_iter_msg()`
 
 ### Argument Patterns Tested
 
