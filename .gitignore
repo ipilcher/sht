@@ -1,6 +1,8 @@
+.clang-format
 docs/internal/
 docs/public/
 tests/sht_test
+tests/sht_ts_test
 src/sht.o
 src/sht.s
 src/libsht.so.*
