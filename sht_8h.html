@@ -105,18 +105,8 @@ $(function(){initNavTree('sht_8h.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ad8ef9ee0703cc0982a080f184ecf5255" id="r_ad8ef9ee0703cc0982a080f184ecf5255"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(hashfn,  eqfn,  etype, ...)</td></tr>
-<tr class="memdesc:ad8ef9ee0703cc0982a080f184ecf5255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new hash table.  <br /></td></tr>
-<tr class="memitem:a5151d8f5358c4e8794d00175adafdf50" id="r_a5151d8f5358c4e8794d00175adafdf50"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5151d8f5358c4e8794d00175adafdf50">SHT_ITER_FREE</a>(iter)</td></tr>
-<tr class="memdesc:a5151d8f5358c4e8794d00175adafdf50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free a hash table iterator.  <br /></td></tr>
-<tr class="memitem:a7475a8362314f58553b1b8e2abad1dea" id="r_a7475a8362314f58553b1b8e2abad1dea"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7475a8362314f58553b1b8e2abad1dea">SHT_ITER_NEXT</a>(iter)</td></tr>
-<tr class="memdesc:a7475a8362314f58553b1b8e2abad1dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next entry from an iterator.  <br /></td></tr>
-<tr class="memitem:a8fe738f6e2175c8bcc804dfa05279892" id="r_a8fe738f6e2175c8bcc804dfa05279892"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892">SHT_ITER_REPLACE</a>(iter,  entry)</td></tr>
-<tr class="memdesc:a8fe738f6e2175c8bcc804dfa05279892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the last entry returned by an iterator.  <br /></td></tr>
-<tr class="memitem:ab33eebaeeeac9f58e2fd7638b1df9e89" id="r_ab33eebaeeeac9f58e2fd7638b1df9e89"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab33eebaeeeac9f58e2fd7638b1df9e89">SHT_ITER_ERR</a>(iter)</td></tr>
-<tr class="memdesc:ab33eebaeeeac9f58e2fd7638b1df9e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the the error code of an iterator's last error.  <br /></td></tr>
-<tr class="memitem:a979b35b0fff0c23091d3a8de47a5dec9" id="r_a979b35b0fff0c23091d3a8de47a5dec9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9">SHT_ITER_MSG</a>(iter)</td></tr>
-<tr class="memdesc:a979b35b0fff0c23091d3a8de47a5dec9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of an iterator's last error.  <br /></td></tr>
+<tr class="memitem:aff395306d3299b2e23d1ec5dfb0b70d0" id="r_aff395306d3299b2e23d1ec5dfb0b70d0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff395306d3299b2e23d1ec5dfb0b70d0">SHT_NEW</a>(hashfn,  eqfn,  freefn,  etype, ...)</td></tr>
+<tr class="memdesc:aff395306d3299b2e23d1ec5dfb0b70d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new hash table.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -129,23 +119,25 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:ae56a1de80dda406e4b96260c89609df2" id="r_ae56a1de80dda406e4b96260c89609df2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a> : _Bool </td></tr>
+<tr class="memdesc:ae56a1de80dda406e4b96260c89609df2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator types.  <a href="#ae56a1de80dda406e4b96260c89609df2">More...</a><br /></td></tr>
 <tr class="memitem:a13c6debd7b2ee2b587a74957662713a7" id="r_a13c6debd7b2ee2b587a74957662713a7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> : uint8_t </td></tr>
 <tr class="memdesc:a13c6debd7b2ee2b587a74957662713a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error codes.  <a href="#a13c6debd7b2ee2b587a74957662713a7">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa48d9d4ace5ca91c464f5e9157040e86" id="r_aa48d9d4ace5ca91c464f5e9157040e86"><td class="memItemLeft" align="right" valign="top">struct sht_ht *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86">sht_new_</a> (<a class="el" href="#a5f9d37456d909db3cfeb4496d631bc66">sht_hashfn_t</a> hashfn, <a class="el" href="#a1f5af078e1c27398dcade83ce429047d">sht_eqfn_t</a> eqfn, size_t esize, size_t ealign, enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> *err)</td></tr>
-<tr class="memdesc:aa48d9d4ace5ca91c464f5e9157040e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Create a new hash table.)  <br /></td></tr>
+<tr class="memitem:adb0d21d1b389094b3188be811ed5616c" id="r_adb0d21d1b389094b3188be811ed5616c"><td class="memItemLeft" align="right" valign="top">struct sht_ht *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb0d21d1b389094b3188be811ed5616c">sht_new_</a> (<a class="el" href="#a5f9d37456d909db3cfeb4496d631bc66">sht_hashfn_t</a> hashfn, <a class="el" href="#a1f5af078e1c27398dcade83ce429047d">sht_eqfn_t</a> eqfn, <a class="el" href="#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a> freefn, size_t esize, size_t ealign, enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> *err)</td></tr>
+<tr class="memdesc:adb0d21d1b389094b3188be811ed5616c"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Create a new hash table.)  <br /></td></tr>
 <tr class="memitem:a45747c22ee2656dcd16d86ce74ea5ec8" id="r_a45747c22ee2656dcd16d86ce74ea5ec8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45747c22ee2656dcd16d86ce74ea5ec8">sht_set_hash_ctx</a> (struct sht_ht *ht, void *context)</td></tr>
 <tr class="memdesc:a45747c22ee2656dcd16d86ce74ea5ec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the "context" for a table's hash function.  <br /></td></tr>
 <tr class="memitem:a9d385ed61d95d30e63344ebe6aa522a3" id="r_a9d385ed61d95d30e63344ebe6aa522a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d385ed61d95d30e63344ebe6aa522a3">sht_set_eq_ctx</a> (struct sht_ht *ht, void *context)</td></tr>
 <tr class="memdesc:a9d385ed61d95d30e63344ebe6aa522a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the "context" for a table's equality function.  <br /></td></tr>
-<tr class="memitem:ab6ac49df5028772a25b41c2c509ecced" id="r_ab6ac49df5028772a25b41c2c509ecced"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6ac49df5028772a25b41c2c509ecced">sht_set_freefn</a> (struct sht_ht *ht, <a class="el" href="#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a> freefn, void *context)</td></tr>
-<tr class="memdesc:ab6ac49df5028772a25b41c2c509ecced"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the optional entry resource free function for a table.  <br /></td></tr>
+<tr class="memitem:aae724bd6d23b2cc6921fe638c75c1b48" id="r_aae724bd6d23b2cc6921fe638c75c1b48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae724bd6d23b2cc6921fe638c75c1b48">sht_set_free_ctx</a> (struct sht_ht *ht, void *context)</td></tr>
+<tr class="memdesc:aae724bd6d23b2cc6921fe638c75c1b48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the "context" for a table's free function.  <br /></td></tr>
 <tr class="memitem:a99d607b370024be6526a17863ee62145" id="r_a99d607b370024be6526a17863ee62145"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99d607b370024be6526a17863ee62145">sht_set_lft</a> (struct sht_ht *ht, uint8_t lft)</td></tr>
 <tr class="memdesc:a99d607b370024be6526a17863ee62145"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the load factor threshold for a table.  <br /></td></tr>
-<tr class="memitem:a85cf673284879f8339015347edde362d" id="r_a85cf673284879f8339015347edde362d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a85cf673284879f8339015347edde362d">sht_set_psl_limit</a> (struct sht_ht *ht, uint8_t thold)</td></tr>
-<tr class="memdesc:a85cf673284879f8339015347edde362d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the PSL limit of a table.  <br /></td></tr>
+<tr class="memitem:aa0790506e1bb1f4c3018feaa07d9fe62" id="r_aa0790506e1bb1f4c3018feaa07d9fe62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0790506e1bb1f4c3018feaa07d9fe62">sht_set_psl_limit</a> (struct sht_ht *ht, uint8_t limit)</td></tr>
+<tr class="memdesc:aa0790506e1bb1f4c3018feaa07d9fe62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the PSL limit of a table.  <br /></td></tr>
 <tr class="memitem:ab6a5c760d62564b28208f9cd780da00f" id="r_ab6a5c760d62564b28208f9cd780da00f"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6a5c760d62564b28208f9cd780da00f">sht_init</a> (struct sht_ht *ht, uint32_t capacity)</td></tr>
 <tr class="memdesc:ab6a5c760d62564b28208f9cd780da00f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a hash table.  <br /></td></tr>
 <tr class="memitem:ae36e072969cef119b1176887dcdc8623" id="r_ae36e072969cef119b1176887dcdc8623"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae36e072969cef119b1176887dcdc8623">sht_free</a> (struct sht_ht *ht)</td></tr>
@@ -168,38 +160,26 @@ Functions</h2></td></tr>
 <tr class="memdesc:a774ddeec974dc6616b06c65e01078a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the entry associated with an existing key.  <br /></td></tr>
 <tr class="memitem:af2fcd39aa951331b8dc042238c05eee6" id="r_af2fcd39aa951331b8dc042238c05eee6"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2fcd39aa951331b8dc042238c05eee6">sht_swap</a> (struct sht_ht *ht, const void *key, const void *entry, void *out)</td></tr>
 <tr class="memdesc:af2fcd39aa951331b8dc042238c05eee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exchange an existing entry and a new entry.  <br /></td></tr>
-<tr class="memitem:a5a76bce06872aedf3253f85a453cf059" id="r_a5a76bce06872aedf3253f85a453cf059"><td class="memItemLeft" align="right" valign="top">struct sht_ro_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a76bce06872aedf3253f85a453cf059">sht_ro_iter</a> (struct sht_ht *ht)</td></tr>
-<tr class="memdesc:a5a76bce06872aedf3253f85a453cf059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new read-only iterator.  <br /></td></tr>
-<tr class="memitem:a1810fbf97bb175be26189efa8023d0b4" id="r_a1810fbf97bb175be26189efa8023d0b4"><td class="memItemLeft" align="right" valign="top">struct sht_rw_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1810fbf97bb175be26189efa8023d0b4">sht_rw_iter</a> (struct sht_ht *ht)</td></tr>
-<tr class="memdesc:a1810fbf97bb175be26189efa8023d0b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new read/write iterator.  <br /></td></tr>
-<tr class="memitem:aacf17f485a20817ff310e5519307c9a1" id="r_aacf17f485a20817ff310e5519307c9a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacf17f485a20817ff310e5519307c9a1">sht_ro_iter_free_</a> (struct sht_ro_iter *iter)</td></tr>
-<tr class="memdesc:aacf17f485a20817ff310e5519307c9a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Free a read-only iterator.)  <br /></td></tr>
-<tr class="memitem:a43a4835de587eb7a71970548ff8e4585" id="r_a43a4835de587eb7a71970548ff8e4585"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a43a4835de587eb7a71970548ff8e4585">sht_rw_iter_free_</a> (struct sht_rw_iter *iter)</td></tr>
-<tr class="memdesc:a43a4835de587eb7a71970548ff8e4585"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Free a read/write iterator.)  <br /></td></tr>
-<tr class="memitem:a63fee9174bb5ef422d18756f712d7b87" id="r_a63fee9174bb5ef422d18756f712d7b87"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63fee9174bb5ef422d18756f712d7b87">sht_ro_iter_next_</a> (struct sht_ro_iter *iter)</td></tr>
-<tr class="memdesc:a63fee9174bb5ef422d18756f712d7b87"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get the next entry from a read-only iterator.)  <br /></td></tr>
-<tr class="memitem:a07cc2b8eb184f99bcc4fa5cabaaa9f36" id="r_a07cc2b8eb184f99bcc4fa5cabaaa9f36"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07cc2b8eb184f99bcc4fa5cabaaa9f36">sht_rw_iter_next_</a> (struct sht_rw_iter *iter)</td></tr>
-<tr class="memdesc:a07cc2b8eb184f99bcc4fa5cabaaa9f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get the next entry from a read/write iterator.)  <br /></td></tr>
-<tr class="memitem:a92921f9869d9305278c7f2d352bf0b70" id="r_a92921f9869d9305278c7f2d352bf0b70"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92921f9869d9305278c7f2d352bf0b70">sht_iter_delete</a> (struct sht_rw_iter *iter)</td></tr>
-<tr class="memdesc:a92921f9869d9305278c7f2d352bf0b70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the last entry returned by a read/write iterator.  <br /></td></tr>
-<tr class="memitem:a72a691fe8646d9bd2f2bdce4c637ce15" id="r_a72a691fe8646d9bd2f2bdce4c637ce15"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72a691fe8646d9bd2f2bdce4c637ce15">sht_ro_iter_replace_</a> (struct sht_ro_iter *iter, const void *restrict entry)</td></tr>
-<tr class="memdesc:a72a691fe8646d9bd2f2bdce4c637ce15"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Replace the last entry returned by a read-only iterator.)  <br /></td></tr>
-<tr class="memitem:ac5a02a924ee7341aa8c963114930c791" id="r_ac5a02a924ee7341aa8c963114930c791"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5a02a924ee7341aa8c963114930c791">sht_rw_iter_replace_</a> (struct sht_rw_iter *iter, const void *restrict entry)</td></tr>
-<tr class="memdesc:ac5a02a924ee7341aa8c963114930c791"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Replace the last entry returned by a read/write iterator.)  <br /></td></tr>
+<tr class="memitem:a82f0e05af3fc1174b3ff844ad1511362" id="r_a82f0e05af3fc1174b3ff844ad1511362"><td class="memItemLeft" align="right" valign="top">struct sht_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a> (struct sht_ht *ht, enum <a class="el" href="#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a> type)</td></tr>
+<tr class="memdesc:a82f0e05af3fc1174b3ff844ad1511362"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new iterator.  <br /></td></tr>
+<tr class="memitem:ac3f4b138ac33ecb1bbb59aa4a73354f8" id="r_ac3f4b138ac33ecb1bbb59aa4a73354f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac3f4b138ac33ecb1bbb59aa4a73354f8">sht_iter_free</a> (struct sht_iter *iter)</td></tr>
+<tr class="memdesc:ac3f4b138ac33ecb1bbb59aa4a73354f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free an iterator.  <br /></td></tr>
+<tr class="memitem:a2e5418f907f471d6b3670add83cfd77b" id="r_a2e5418f907f471d6b3670add83cfd77b"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e5418f907f471d6b3670add83cfd77b">sht_iter_next</a> (struct sht_iter *iter)</td></tr>
+<tr class="memdesc:a2e5418f907f471d6b3670add83cfd77b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next entry from an iterator.  <br /></td></tr>
+<tr class="memitem:a25bea47651654bef265950974eb13976" id="r_a25bea47651654bef265950974eb13976"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25bea47651654bef265950974eb13976">sht_iter_delete</a> (struct sht_iter *iter)</td></tr>
+<tr class="memdesc:a25bea47651654bef265950974eb13976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the last entry returned by a <b>read/write</b> iterator.  <br /></td></tr>
+<tr class="memitem:a1db67fdca1f6c024f6dc5822f88c4a85" id="r_a1db67fdca1f6c024f6dc5822f88c4a85"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1db67fdca1f6c024f6dc5822f88c4a85">sht_iter_replace</a> (struct sht_iter *iter, const void *restrict entry)</td></tr>
+<tr class="memdesc:a1db67fdca1f6c024f6dc5822f88c4a85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the last entry returned by an iterator.  <br /></td></tr>
 <tr class="memitem:a8a0fc3959fa6efaa802eeb84eab95c44" id="r_a8a0fc3959fa6efaa802eeb84eab95c44"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a0fc3959fa6efaa802eeb84eab95c44">sht_get_err</a> (const struct sht_ht *ht)</td></tr>
 <tr class="memdesc:a8a0fc3959fa6efaa802eeb84eab95c44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the error code of a table's last error.  <br /></td></tr>
-<tr class="memitem:a8eae4cade96128f6bfc8fdfc20feb1c9" id="r_a8eae4cade96128f6bfc8fdfc20feb1c9"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8eae4cade96128f6bfc8fdfc20feb1c9">sht_ro_iter_err_</a> (const struct sht_ro_iter *iter)</td></tr>
-<tr class="memdesc:a8eae4cade96128f6bfc8fdfc20feb1c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get the error code of a read-only iterator's last error.)  <br /></td></tr>
-<tr class="memitem:a9784abbc72986ebb457ebc3d8fafc34b" id="r_a9784abbc72986ebb457ebc3d8fafc34b"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9784abbc72986ebb457ebc3d8fafc34b">sht_rw_iter_err_</a> (const struct sht_rw_iter *iter)</td></tr>
-<tr class="memdesc:a9784abbc72986ebb457ebc3d8fafc34b"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get the error code of a read/write iterator's last error.)  <br /></td></tr>
+<tr class="memitem:ab1a800442ed16198b4317cf78e2e815a" id="r_ab1a800442ed16198b4317cf78e2e815a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1a800442ed16198b4317cf78e2e815a">sht_iter_err</a> (const struct sht_iter *iter)</td></tr>
+<tr class="memdesc:ab1a800442ed16198b4317cf78e2e815a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the error code of an iterator's last error.  <br /></td></tr>
 <tr class="memitem:aa2bb68233ce1db0c4f1ba50fec4daa84" id="r_aa2bb68233ce1db0c4f1ba50fec4daa84"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa2bb68233ce1db0c4f1ba50fec4daa84">sht_msg</a> (enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> err)</td></tr>
 <tr class="memdesc:aa2bb68233ce1db0c4f1ba50fec4daa84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the description for an error code.  <br /></td></tr>
 <tr class="memitem:aae2db74c56749b52273a6e6212d63a0c" id="r_aae2db74c56749b52273a6e6212d63a0c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae2db74c56749b52273a6e6212d63a0c">sht_get_msg</a> (const struct sht_ht *ht)</td></tr>
 <tr class="memdesc:aae2db74c56749b52273a6e6212d63a0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of a table's last error.  <br /></td></tr>
-<tr class="memitem:af7d396fce715de8f325d10fa92cad91c" id="r_af7d396fce715de8f325d10fa92cad91c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7d396fce715de8f325d10fa92cad91c">sht_ro_iter_msg_</a> (const struct sht_ro_iter *iter)</td></tr>
-<tr class="memdesc:af7d396fce715de8f325d10fa92cad91c"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get a description of a read-only iterator's last error.)  <br /></td></tr>
-<tr class="memitem:a698cf6920155bca03dc60cd1ea7acffe" id="r_a698cf6920155bca03dc60cd1ea7acffe"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a698cf6920155bca03dc60cd1ea7acffe">sht_rw_iter_msg_</a> (const struct sht_rw_iter *iter)</td></tr>
-<tr class="memdesc:a698cf6920155bca03dc60cd1ea7acffe"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Get a description of a read/write iterator's last error.)  <br /></td></tr>
+<tr class="memitem:a21446834bf764bc08865cb2934e0960c" id="r_a21446834bf764bc08865cb2934e0960c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21446834bf764bc08865cb2934e0960c">sht_iter_msg</a> (const struct sht_iter *iter)</td></tr>
+<tr class="memdesc:a21446834bf764bc08865cb2934e0960c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of an iterator's last error.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -207,8 +187,8 @@ Variables</h2></td></tr>
 <tr class="memdesc:a59b404e9407b038decbda688475baeb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Critical error printing function.  <br /></td></tr>
 </table>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
-<a id="ad8ef9ee0703cc0982a080f184ecf5255" name="ad8ef9ee0703cc0982a080f184ecf5255"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8ef9ee0703cc0982a080f184ecf5255">&#9670;&#160;</a></span>SHT_NEW</h2>
+<a id="aff395306d3299b2e23d1ec5dfb0b70d0" name="aff395306d3299b2e23d1ec5dfb0b70d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff395306d3299b2e23d1ec5dfb0b70d0">&#9670;&#160;</a></span>SHT_NEW</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -226,6 +206,11 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>freefn</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>etype</em></span>, </td>
         </tr>
         <tr>
@@ -237,7 +222,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Create a new hash table. </p>
-<p>This macro is a wrapper for <a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a>.</p>
+<p>This macro is a wrapper for <a class="el" href="#adb0d21d1b389094b3188be811ed5616c" title="(Create a new hash table.)">sht_new_()</a>.</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>entry {</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>      *name;</div>
 <div class="line">    <span class="keyword">struct </span>in_addr  address;</div>
@@ -246,198 +231,34 @@ Variables</h2></td></tr>
 <div class="line"><span class="keyword">struct </span>sht_ht *ht;</div>
 <div class="line"><span class="keyword">enum</span> <a class="code hl_enumeration" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> err;</div>
 <div class="line"> </div>
-<div class="line">ht = sht_new(hashfn, eqfn, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> entry),</div>
+<div class="line">ht = sht_new(hashfn, eqfn, NULL, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> entry),</div>
 <div class="line">             _Alignof(<span class="keyword">struct</span> entry), &amp;err);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Rewrite as ...</span></div>
-<div class="line">ht = <a class="code hl_define" href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(hashfn, eqfn, <span class="keyword">struct</span> entry, &amp;err);</div>
+<div class="line">ht = <a class="code hl_define" href="#aff395306d3299b2e23d1ec5dfb0b70d0">SHT_NEW</a>(hashfn, eqfn, NULL, <span class="keyword">struct</span> entry, &amp;err);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Without error reporting ...</span></div>
-<div class="line">ht = sht_new(hashfn, eqfn, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> entry),</div>
+<div class="line">ht = sht_new(hashfn, eqfn, NULL, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> entry),</div>
 <div class="line">             _Alignof(<span class="keyword">struct</span> entry), NULL);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Becomes ...</span></div>
-<div class="line">ht = <a class="code hl_define" href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a>(hashfn, eqfn, <span class="keyword">struct</span> entry);</div>
-<div class="ttc" id="asht_8h_html_a13c6debd7b2ee2b587a74957662713a7"><div class="ttname"><a href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a></div><div class="ttdeci">sht_err</div><div class="ttdoc">Error codes.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00199">sht.h:199</a></div></div>
-<div class="ttc" id="asht_8h_html_ad8ef9ee0703cc0982a080f184ecf5255"><div class="ttname"><a href="#ad8ef9ee0703cc0982a080f184ecf5255">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00455">sht.h:455</a></div></div>
+<div class="line">ht = <a class="code hl_define" href="#aff395306d3299b2e23d1ec5dfb0b70d0">SHT_NEW</a>(hashfn, eqfn, NULL, <span class="keyword">struct</span> entry);</div>
+<div class="ttc" id="asht_8h_html_a13c6debd7b2ee2b587a74957662713a7"><div class="ttname"><a href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a></div><div class="ttdeci">sht_err</div><div class="ttdoc">Error codes.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00204">sht.h:204</a></div></div>
+<div class="ttc" id="asht_8h_html_aff395306d3299b2e23d1ec5dfb0b70d0"><div class="ttname"><a href="#aff395306d3299b2e23d1ec5dfb0b70d0">SHT_NEW</a></div><div class="ttdeci">#define SHT_NEW(hashfn, eqfn, freefn, etype,...)</div><div class="ttdoc">Create a new hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00431">sht.h:431</a></div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">hashfn</td><td>The function that will be used to compute the hash values of keys. </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">eqfn</td><td>The function that will be used to compare keys for equality. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">hashfn</td><td>Function to be used to compute the hash values of keys. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">eqfn</td><td>Function to be used to compare keys for equality. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">freefn</td><td>Function to be used to free entry resources. (May be <span class="tt">NULL</span>.) </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">etype</td><td>The type of the entries to be stored in the table. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">...</td><td>Optional output pointer for error reporting.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new hash table is returned. On error, <span class="tt">NULL</span> is returned, and an error code is returned in <code class="param">err</code> (if it is not <span class="tt">NULL</span>).</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aa48d9d4ace5ca91c464f5e9157040e86" title="(Create a new hash table.)">sht_new_()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#adb0d21d1b389094b3188be811ed5616c" title="(Create a new hash table.)">sht_new_()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00455">455</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
-
-</div>
-</div>
-<a id="a5151d8f5358c4e8794d00175adafdf50" name="a5151d8f5358c4e8794d00175adafdf50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5151d8f5358c4e8794d00175adafdf50">&#9670;&#160;</a></span>SHT_ITER_FREE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SHT_ITER_FREE</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Free a hash table iterator. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aacf17f485a20817ff310e5519307c9a1" title="(Free a read-only iterator.)">sht_ro_iter_free_()</a> </dd>
-<dd>
-<a class="el" href="#a43a4835de587eb7a71970548ff8e4585" title="(Free a read/write iterator.)">sht_rw_iter_free_()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00497">497</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
-
-</div>
-</div>
-<a id="a7475a8362314f58553b1b8e2abad1dea" name="a7475a8362314f58553b1b8e2abad1dea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7475a8362314f58553b1b8e2abad1dea">&#9670;&#160;</a></span>SHT_ITER_NEXT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SHT_ITER_NEXT</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the next entry from an iterator. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a63fee9174bb5ef422d18756f712d7b87" title="(Get the next entry from a read-only iterator.)">sht_ro_iter_next_()</a> </dd>
-<dd>
-<a class="el" href="#a07cc2b8eb184f99bcc4fa5cabaaa9f36" title="(Get the next entry from a read/write iterator.)">sht_rw_iter_next_()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00510">510</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
-
-</div>
-</div>
-<a id="a8fe738f6e2175c8bcc804dfa05279892" name="a8fe738f6e2175c8bcc804dfa05279892"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fe738f6e2175c8bcc804dfa05279892">&#9670;&#160;</a></span>SHT_ITER_REPLACE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SHT_ITER_REPLACE</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>iter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>entry</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Replace the last entry returned by an iterator. </p>
-<blockquote class="doxtable">
-<p><b>WARNING</b></p>
-<p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
-</blockquote>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
-    <tr><td class="paramname">entry</td><td>The new entry.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a72a691fe8646d9bd2f2bdce4c637ce15" title="(Replace the last entry returned by a read-only iterator.)">sht_ro_iter_replace_()</a> </dd>
-<dd>
-<a class="el" href="#ac5a02a924ee7341aa8c963114930c791" title="(Replace the last entry returned by a read/write iterator.)">sht_rw_iter_replace_()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00531">531</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
-
-</div>
-</div>
-<a id="ab33eebaeeeac9f58e2fd7638b1df9e89" name="ab33eebaeeeac9f58e2fd7638b1df9e89"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab33eebaeeeac9f58e2fd7638b1df9e89">&#9670;&#160;</a></span>SHT_ITER_ERR</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SHT_ITER_ERR</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the the error code of an iterator's last error. </p>
-<p>The value returned by this macro is only valid after a previous iterator function call indicated an error.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A code that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>sht_ro_iter_status_() </dd>
-<dd>
-sht_rw_iter_status_() </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00546">546</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
-
-</div>
-</div>
-<a id="a979b35b0fff0c23091d3a8de47a5dec9" name="a979b35b0fff0c23091d3a8de47a5dec9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a979b35b0fff0c23091d3a8de47a5dec9">&#9670;&#160;</a></span>SHT_ITER_MSG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SHT_ITER_MSG</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get a description of an iterator's last error. </p>
-<p>The value returned by this macro is only valid after a previous iterator function call indicated an error.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A string that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#af7d396fce715de8f325d10fa92cad91c" title="(Get a description of a read-only iterator&#39;s last error.)">sht_ro_iter_msg_()</a> </dd>
-<dd>
-<a class="el" href="#a698cf6920155bca03dc60cd1ea7acffe" title="(Get a description of a read/write iterator&#39;s last error.)">sht_rw_iter_msg_()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00561">561</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00431">431</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +302,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The hash value of the key. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00110">110</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00112">112</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -522,7 +343,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A boolean value that indicates whether <code class="param">key</code> is equal to the key in <code class="param">entry</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00144">144</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00146">146</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
@@ -558,11 +379,35 @@ sht_rw_iter_status_() </dd></dl>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00169">169</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00171">171</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
+<a id="ae56a1de80dda406e4b96260c89609df2" name="ae56a1de80dda406e4b96260c89609df2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae56a1de80dda406e4b96260c89609df2">&#9670;&#160;</a></span>sht_iter_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a> : _Bool</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Iterator types. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae56a1de80dda406e4b96260c89609df2a70bd4365fbe9ad25b54ed55730c53ff9" name="ae56a1de80dda406e4b96260c89609df2a70bd4365fbe9ad25b54ed55730c53ff9"></a>SHT_ITER_RO&#160;</td><td class="fielddoc"><p>Read-only iterator. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae56a1de80dda406e4b96260c89609df2a93ae4024cb2560ace90bd184b646c728" name="ae56a1de80dda406e4b96260c89609df2a93ae4024cb2560ace90bd184b646c728"></a>SHT_ITER_RW&#160;</td><td class="fielddoc"><p>Read/write iterator. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00191">191</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+
+</div>
+</div>
 <a id="a13c6debd7b2ee2b587a74957662713a7" name="a13c6debd7b2ee2b587a74957662713a7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a13c6debd7b2ee2b587a74957662713a7">&#9670;&#160;</a></span>sht_err</h2>
 
@@ -597,13 +442,13 @@ sht_rw_iter_status_() </dd></dl>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00199">199</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8h_source.html#l00204">204</a> of file <a class="el" href="sht_8h_source.html">sht.h</a>.</p>
 
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
-<a id="aa48d9d4ace5ca91c464f5e9157040e86" name="aa48d9d4ace5ca91c464f5e9157040e86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa48d9d4ace5ca91c464f5e9157040e86">&#9670;&#160;</a></span>sht_new_()</h2>
+<a id="adb0d21d1b389094b3188be811ed5616c" name="adb0d21d1b389094b3188be811ed5616c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb0d21d1b389094b3188be811ed5616c">&#9670;&#160;</a></span>sht_new_()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -617,6 +462,11 @@ sht_rw_iter_status_() </dd></dl>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="#a1f5af078e1c27398dcade83ce429047d">sht_eqfn_t</a></td>          <td class="paramname"><span class="paramname"><em>eqfn</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a></td>          <td class="paramname"><span class="paramname"><em>freefn</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -639,13 +489,14 @@ sht_rw_iter_status_() </dd></dl>
 <p>(Create a new hash table.) </p>
 <blockquote class="doxtable">
 <p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a>. </p>
+<p>Do not call this function directly. Use <a class="el" href="#aff395306d3299b2e23d1ec5dfb0b70d0" title="Create a new hash table.">SHT_NEW()</a>. </p>
 </blockquote>
 <p>A table returned by this function cannot be used until it has been initialized.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">hashfn</td><td>The function that will be used to compute the hash values of keys. </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">eqfn</td><td>The function that will be used to compare keys for equality. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">hashfn</td><td>Function to be used to compute the hash values of keys. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">eqfn</td><td>Function to be used to compare keys for equality. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">freefn</td><td>Function to be used to free entry resources. (May be <span class="tt">NULL</span>.) </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">esize</td><td>The size of the entries to be stored in the table. </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">ealign</td><td>The alignment of the entries to be stored in the table. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">err</td><td>Optional output pointer for error reporting.</td></tr>
@@ -653,9 +504,9 @@ sht_rw_iter_status_() </dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new hash table is returned. On error, <span class="tt">NULL</span> is returned, and an error code is returned in <code class="param">err</code> (if it is not <span class="tt">NULL</span>).</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad8ef9ee0703cc0982a080f184ecf5255" title="Create a new hash table.">SHT_NEW()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aff395306d3299b2e23d1ec5dfb0b70d0" title="Create a new hash table.">SHT_NEW()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00298">298</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00278">278</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -695,7 +546,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00350">350</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00332">332</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -735,25 +586,20 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00374">374</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00356">356</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="ab6ac49df5028772a25b41c2c509ecced" name="ab6ac49df5028772a25b41c2c509ecced"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6ac49df5028772a25b41c2c509ecced">&#9670;&#160;</a></span>sht_set_freefn()</h2>
+<a id="aae724bd6d23b2cc6921fe638c75c1b48" name="aae724bd6d23b2cc6921fe638c75c1b48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae724bd6d23b2cc6921fe638c75c1b48">&#9670;&#160;</a></span>sht_set_free_ctx()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void sht_set_freefn </td>
+          <td class="memname">void sht_set_free_ctx </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a></td>          <td class="paramname"><span class="paramname"><em>freefn</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -763,8 +609,8 @@ sht_rw_iter_status_() </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Set the optional entry resource free function for a table. </p>
-<p>An entry free function is used to automatically free resources associated with table entries. It is not required in order to free the entries themselves.</p>
+<p>Set the "context" for a table's free function. </p>
+<p>Sets the value of the <code class="param">context</code> argument for all calls to the table's free function.</p>
 <blockquote class="doxtable">
 <p><b>NOTE</b></p>
 <p>This function cannot be called after the table has been initialized. (See <a class="el" href="index.html#abort-conditions">Abort conditions</a>.) </p>
@@ -772,7 +618,6 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ht</td><td>The hash table. </td></tr>
-    <tr><td class="paramname">freefn</td><td>The function to be used to free entry resources. </td></tr>
     <tr><td class="paramname">context</td><td>Optional function-specific context.</td></tr>
   </table>
   </dd>
@@ -781,7 +626,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00400">400</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00380">380</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -819,12 +664,12 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00429">429</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00408">408</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a85cf673284879f8339015347edde362d" name="a85cf673284879f8339015347edde362d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85cf673284879f8339015347edde362d">&#9670;&#160;</a></span>sht_set_psl_limit()</h2>
+<a id="aa0790506e1bb1f4c3018feaa07d9fe62" name="aa0790506e1bb1f4c3018feaa07d9fe62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0790506e1bb1f4c3018feaa07d9fe62">&#9670;&#160;</a></span>sht_set_psl_limit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -859,7 +704,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00459">459</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00438">438</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -899,7 +744,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On failure, false (<span class="tt">0</span>) is returned, and the table's error status is set.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00558">558</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00537">537</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -931,7 +776,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01351">1351</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01330">1330</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -977,7 +822,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00928">928</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00907">907</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +868,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00956">956</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00935">935</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +910,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If the the key is present in the table, a pointer to the key's entry is returned. Otherwise, <span class="tt">NULL</span> is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00984">984</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00963">963</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1098,7 +943,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of entries in the table.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00601">601</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00580">580</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1131,7 +976,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>True (<span class="tt">1</span>) if the table is empty; false (<span class="tt">0</span>) if it has at least one entry.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00623">623</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00602">602</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1171,7 +1016,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01334">1334</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01313">1313</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1217,7 +1062,7 @@ sht_rw_iter_status_() </dd></dl>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01311">1311</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01290">1290</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1261,7 +1106,7 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, and the entry associated with the key is replaced with the new entry. Otherwise, false (<span class="tt">0</span>) is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01096">1096</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01075">1075</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1311,208 +1156,100 @@ sht_rw_iter_status_() </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, the entry associated with the key is replaced with the new entry, and the previous entry is copied to <code class="param">out</code>. Otherwise, false (<span class="tt">0</span>) is returned, and the contents of <code class="param">out</code> are unchanged.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01123">1123</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01102">1102</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a5a76bce06872aedf3253f85a453cf059" name="a5a76bce06872aedf3253f85a453cf059"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a76bce06872aedf3253f85a453cf059">&#9670;&#160;</a></span>sht_ro_iter()</h2>
+<a id="a82f0e05af3fc1174b3ff844ad1511362" name="a82f0e05af3fc1174b3ff844ad1511362"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82f0e05af3fc1174b3ff844ad1511362">&#9670;&#160;</a></span>sht_iter_new()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct sht_ro_iter * sht_ro_iter </td>
+          <td class="memname">struct sht_iter * sht_iter_new </td>
           <td>(</td>
-          <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span></td><td>)</td>
+          <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">enum <a class="el" href="#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a new read-only iterator. </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>This function cannot be called on an unitialized table. (See <a class="el" href="index.html#abort-conditions">Abort conditions</a>.) </p>
-</blockquote>
+<p>Create a new iterator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ht</td><td>The hash table.</td></tr>
+    <tr><td class="paramname">ht</td><td>The hash table. </td></tr>
+    <tr><td class="paramname">type</td><td>The type of the iterator (read-only or read/write).</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If an error occurs, <span class="tt">NULL</span> is returned, and the error status of the table is set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If memory allocation fails, <span class="tt">NULL</span> is returned, and the error status of the table is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01448">1448</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01364">1364</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a1810fbf97bb175be26189efa8023d0b4" name="a1810fbf97bb175be26189efa8023d0b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1810fbf97bb175be26189efa8023d0b4">&#9670;&#160;</a></span>sht_rw_iter()</h2>
+<a id="ac3f4b138ac33ecb1bbb59aa4a73354f8" name="ac3f4b138ac33ecb1bbb59aa4a73354f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3f4b138ac33ecb1bbb59aa4a73354f8">&#9670;&#160;</a></span>sht_iter_free()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct sht_rw_iter * sht_rw_iter </td>
+          <td class="memname">void sht_iter_free </td>
           <td>(</td>
-          <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span></td><td>)</td>
+          <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a new read/write iterator. </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>This function cannot be called on an unitialized table. (See <a class="el" href="index.html#abort-conditions">Abort conditions</a>.) </p>
-</blockquote>
+<p>Free an iterator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ht</td><td>The hash table.</td></tr>
+    <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If an error occurs, <span class="tt">NULL</span> is returned, and the error status of the table is set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01469">1469</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01542">1542</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="aacf17f485a20817ff310e5519307c9a1" name="aacf17f485a20817ff310e5519307c9a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacf17f485a20817ff310e5519307c9a1">&#9670;&#160;</a></span>sht_ro_iter_free_()</h2>
+<a id="a2e5418f907f471d6b3670add83cfd77b" name="a2e5418f907f471d6b3670add83cfd77b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e5418f907f471d6b3670add83cfd77b">&#9670;&#160;</a></span>sht_iter_next()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void sht_ro_iter_free_ </td>
+          <td class="memname">const void * sht_iter_next </td>
           <td>(</td>
-          <td class="paramtype">struct sht_ro_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
+          <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>(Free a read-only iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator.">SHT_ITER_FREE()</a>. </p>
-</blockquote>
+<p>Get the next entry from an iterator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator.">SHT_ITER_FREE()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01788">1788</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="a43a4835de587eb7a71970548ff8e4585" name="a43a4835de587eb7a71970548ff8e4585"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43a4835de587eb7a71970548ff8e4585">&#9670;&#160;</a></span>sht_rw_iter_free_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void sht_rw_iter_free_ </td>
-          <td>(</td>
-          <td class="paramtype">struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Free a read/write iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator.">SHT_ITER_FREE()</a>. </p>
-</blockquote>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a5151d8f5358c4e8794d00175adafdf50" title="Free a hash table iterator.">SHT_ITER_FREE()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01804">1804</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01445">1445</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a63fee9174bb5ef422d18756f712d7b87" name="a63fee9174bb5ef422d18756f712d7b87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63fee9174bb5ef422d18756f712d7b87">&#9670;&#160;</a></span>sht_ro_iter_next_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const void * sht_ro_iter_next_ </td>
-          <td>(</td>
-          <td class="paramtype">struct sht_ro_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Get the next entry from a read-only iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a>. </p>
-</blockquote>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01611">1611</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="a07cc2b8eb184f99bcc4fa5cabaaa9f36" name="a07cc2b8eb184f99bcc4fa5cabaaa9f36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07cc2b8eb184f99bcc4fa5cabaaa9f36">&#9670;&#160;</a></span>sht_rw_iter_next_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void * sht_rw_iter_next_ </td>
-          <td>(</td>
-          <td class="paramtype">struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Get the next entry from a read/write iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a>. </p>
-</blockquote>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7475a8362314f58553b1b8e2abad1dea" title="Get the next entry from an iterator.">SHT_ITER_NEXT()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01630">1630</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="a92921f9869d9305278c7f2d352bf0b70" name="a92921f9869d9305278c7f2d352bf0b70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92921f9869d9305278c7f2d352bf0b70">&#9670;&#160;</a></span>sht_iter_delete()</h2>
+<a id="a25bea47651654bef265950974eb13976" name="a25bea47651654bef265950974eb13976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25bea47651654bef265950974eb13976">&#9670;&#160;</a></span>sht_iter_delete()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1520,13 +1257,17 @@ sht_rw_iter_status_() </dd></dl>
         <tr>
           <td class="memname">_Bool sht_iter_delete </td>
           <td>(</td>
-          <td class="paramtype">struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
+          <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Remove the last entry returned by a read/write iterator. </p>
+<p>Remove the last entry returned by a <b>read/write</b> iterator. </p>
+<blockquote class="doxtable">
+<p><b>NOTE</b></p>
+<p>This function cannot be called on a read-only iterator. (See <a class="el" href="index.html#abort-conditions">Abort conditions</a>.) </p>
+</blockquote>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
@@ -1535,20 +1276,20 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01643">1643</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01485">1485</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a72a691fe8646d9bd2f2bdce4c637ce15" name="a72a691fe8646d9bd2f2bdce4c637ce15"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72a691fe8646d9bd2f2bdce4c637ce15">&#9670;&#160;</a></span>sht_ro_iter_replace_()</h2>
+<a id="a1db67fdca1f6c024f6dc5822f88c4a85" name="a1db67fdca1f6c024f6dc5822f88c4a85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1db67fdca1f6c024f6dc5822f88c4a85">&#9670;&#160;</a></span>sht_iter_replace()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_ro_iter_replace_ </td>
+          <td class="memname">_Bool sht_iter_replace </td>
           <td>(</td>
-          <td class="paramtype">struct sht_ro_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span>, </td>
+          <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1558,11 +1299,7 @@ sht_rw_iter_status_() </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>(Replace the last entry returned by a read-only iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a>. </p>
-</blockquote>
+<p>Replace the last entry returned by an iterator. </p>
 <blockquote class="doxtable">
 <p><b>WARNING</b></p>
 <p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
@@ -1574,52 +1311,9 @@ sht_rw_iter_status_() </dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01717">1717</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="ac5a02a924ee7341aa8c963114930c791" name="ac5a02a924ee7341aa8c963114930c791"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5a02a924ee7341aa8c963114930c791">&#9670;&#160;</a></span>sht_rw_iter_replace_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">_Bool sht_rw_iter_replace_ </td>
-          <td>(</td>
-          <td class="paramtype">struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *restrict</td>          <td class="paramname"><span class="paramname"><em>entry</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Replace the last entry returned by a read/write iterator.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a>. </p>
-</blockquote>
-<blockquote class="doxtable">
-<p><b>WARNING</b></p>
-<p>The new entry <b>must</b> have the same key as the entry being replaced. Replacing an entry with an entry that contains a different key will corrupt the table. </p>
-</blockquote>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator. </td></tr>
-    <tr><td class="paramname">entry</td><td>The new entry.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a8fe738f6e2175c8bcc804dfa05279892" title="Replace the last entry returned by an iterator.">SHT_ITER_REPLACE()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01744">1744</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01522">1522</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1648,75 +1342,36 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A code that describes the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00185">185</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00165">165</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a8eae4cade96128f6bfc8fdfc20feb1c9" name="a8eae4cade96128f6bfc8fdfc20feb1c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eae4cade96128f6bfc8fdfc20feb1c9">&#9670;&#160;</a></span>sht_ro_iter_err_()</h2>
+<a id="ab1a800442ed16198b4317cf78e2e815a" name="ab1a800442ed16198b4317cf78e2e815a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1a800442ed16198b4317cf78e2e815a">&#9670;&#160;</a></span>sht_iter_err()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> sht_ro_iter_err_ </td>
+          <td class="memname">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> sht_iter_err </td>
           <td>(</td>
-          <td class="paramtype">const struct sht_ro_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
+          <td class="paramtype">const struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>(Get the error code of a read-only iterator's last error.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#ab33eebaeeeac9f58e2fd7638b1df9e89" title="Get the the error code of an iterator&#39;s last error.">SHT_ITER_ERR()</a>. </p>
-</blockquote>
+<p>Get the error code of an iterator's last error. </p>
 <p>The value returned by this function is only valid after a previous iterator function call indicated an error.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
+    <tr><td class="paramname">iter</td><td>The iterator</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A code that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>SHT_ITER_STATUS() </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A code that describes the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01490">1490</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="a9784abbc72986ebb457ebc3d8fafc34b" name="a9784abbc72986ebb457ebc3d8fafc34b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9784abbc72986ebb457ebc3d8fafc34b">&#9670;&#160;</a></span>sht_rw_iter_err_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> sht_rw_iter_err_ </td>
-          <td>(</td>
-          <td class="paramtype">const struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Get the error code of a read/write iterator's last error.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#ab33eebaeeeac9f58e2fd7638b1df9e89" title="Get the the error code of an iterator&#39;s last error.">SHT_ITER_ERR()</a>. </p>
-</blockquote>
-<p>The value returned by this function is only valid after a previous iterator function call indicated an error.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A code that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>SHT_ITER_STATUS() </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01511">1511</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01417">1417</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1745,7 +1400,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string describing the error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00201">201</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00181">181</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1774,30 +1429,26 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string describing the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00234">234</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00214">214</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="af7d396fce715de8f325d10fa92cad91c" name="af7d396fce715de8f325d10fa92cad91c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7d396fce715de8f325d10fa92cad91c">&#9670;&#160;</a></span>sht_ro_iter_msg_()</h2>
+<a id="a21446834bf764bc08865cb2934e0960c" name="a21446834bf764bc08865cb2934e0960c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21446834bf764bc08865cb2934e0960c">&#9670;&#160;</a></span>sht_iter_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char * sht_ro_iter_msg_ </td>
+          <td class="memname">const char * sht_iter_msg </td>
           <td>(</td>
-          <td class="paramtype">const struct sht_ro_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
+          <td class="paramtype">const struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>(Get a description of a read-only iterator's last error.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a>. </p>
-</blockquote>
+<p>Get a description of an iterator's last error. </p>
 <p>The value returned by this function is only valid after a previous iterator function call indicated an error.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1805,44 +1456,9 @@ sht_rw_iter_status_() </dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A string that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A string that describes the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01532">1532</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
-
-</div>
-</div>
-<a id="a698cf6920155bca03dc60cd1ea7acffe" name="a698cf6920155bca03dc60cd1ea7acffe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a698cf6920155bca03dc60cd1ea7acffe">&#9670;&#160;</a></span>sht_rw_iter_msg_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char * sht_rw_iter_msg_ </td>
-          <td>(</td>
-          <td class="paramtype">const struct sht_rw_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>(Get a description of a read/write iterator's last error.) </p>
-<blockquote class="doxtable">
-<p><b>NOTE</b></p>
-<p>Do not call this function directly. Use <a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a>. </p>
-</blockquote>
-<p>The value returned by this function is only valid after a previous iterator function call indicated an error.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iter</td><td>The iterator.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A string that describes the error.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a979b35b0fff0c23091d3a8de47a5dec9" title="Get a description of an iterator&#39;s last error.">SHT_ITER_MSG()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01553">1553</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01432">1432</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1886,7 +1502,7 @@ sht_rw_iter_status_() </dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00161">161</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00141">141</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
