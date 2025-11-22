@@ -12,18 +12,26 @@ LDFLAGS = -lxxhash
 # Source files
 SHT_SRC = ../src/sht.c
 SHT_HDR = ../src/sht.h
+SHT_TS_HDR = ../src/sht-ts.h
 TEST_SRC = sht_test.c
+TEST_TS_SRC = sht_ts_test.c
 
 # Targets
-.PHONY: all clean test
+.PHONY: all clean test test_ts
 
-all: sht_test
+all: sht_test sht_ts_test
 
 sht_test: $(TEST_SRC) $(SHT_SRC) $(SHT_HDR)
 	$(CC) $(CFLAGS) -o $@ $(TEST_SRC) $(SHT_SRC) $(LDFLAGS)
 
+sht_ts_test: $(TEST_TS_SRC) $(SHT_SRC) $(SHT_HDR) $(SHT_TS_HDR)
+	$(CC) $(CFLAGS) -o $@ $(TEST_TS_SRC) $(SHT_SRC) $(LDFLAGS)
+
 test: sht_test
 	./sht_test
 
+test_ts: sht_ts_test
+	./sht_ts_test
+
 clean:
-	rm -f sht_test
+	rm -f sht_test sht_ts_test
