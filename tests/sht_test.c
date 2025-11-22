@@ -1383,7 +1383,7 @@ TEST(rw_iterator_delete)
 	struct sht_ht *ht;
 	struct sht_iter *iter;
 	struct int_entry e;
-	struct int_entry *result;
+	const struct int_entry *result;
 	int i, count;
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
@@ -1429,7 +1429,7 @@ TEST(rw_iterator_replace)
 	struct sht_ht *ht;
 	struct sht_iter *iter;
 	struct int_entry e;
-	struct int_entry *result;
+	const struct int_entry *result;
 	int i;
 
 	ht = SHT_NEW(int_hashfn, int_eqfn, NULL, struct int_entry);
@@ -1691,6 +1691,8 @@ TEST(abort_esize_ealign_incompatible)
 		      "Incompatible values of esize and ealign");
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
 TEST(abort_null_hashfn)
 {
 	ASSERT_ABORTS(sht_new_(NULL, int_eqfn, NULL, sizeof(struct int_entry),
@@ -1704,6 +1706,7 @@ TEST(abort_null_eqfn)
 			       _Alignof(struct int_entry), NULL),
 		      "eqfn must not be NULL");
 }
+#pragma GCC diagnostic pop
 
 TEST(abort_set_hash_ctx_after_init)
 {
