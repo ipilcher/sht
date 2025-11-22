@@ -257,7 +257,7 @@ void sht_set_lft(struct sht_ht *ht, uint8_t lft);
 
 // Set the PSL limit of a table.
 SHT_FNATTR(nonnull)
-void sht_set_psl_limit(struct sht_ht *ht, uint8_t thold);
+void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit);
 
 // Initialize a hash table.
 SHT_FNATTR(nonnull)
