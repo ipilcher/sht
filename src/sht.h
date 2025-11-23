@@ -28,18 +28,6 @@
 #define SHT_MAX_ESIZE		16384
 
 /**
- * @internal
- * @brief
- * Set function attributes without confusing Doxygen.
- */
-#ifndef SHT_DOXYGEN
-#define SHT_FNATTR(...)		__attribute__((__VA_ARGS__))
-#else
-#define SHT_FNATTR(...)
-#endif
-
-
-/**
  * Critical error printing function.
  *
  * If the calling program violates this library's contract, the library will
@@ -234,37 +222,37 @@ static_assert(sizeof(enum sht_err) == 1);
  */
 
 // Create a new hash table.
-SHT_FNATTR(nonnull(1, 2))
+[[gnu::nonnull(1, 2)]]
 struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
 			sht_freefn_t freefn, size_t esize,
 			size_t ealign, enum sht_err *err);
 
 // Set the "context" for a table's hash function.
-SHT_FNATTR(nonnull(1))
+[[gnu::nonnull(1)]]
 void sht_set_hash_ctx(struct sht_ht *ht, void *context);
 
 // Set the "context" for a table's equality function.
-SHT_FNATTR(nonnull(1))
+[[gnu::nonnull(1)]]
 void sht_set_eq_ctx(struct sht_ht *ht, void *context);
 
 // Set the "context" for a table's free function.
-SHT_FNATTR(nonnull(1))
+[[gnu::nonnull(1)]]
 void sht_set_free_ctx(struct sht_ht *ht, void *context);
 
 // Set the load factor threshold for a table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 void sht_set_lft(struct sht_ht *ht, uint8_t lft);
 
 // Set the PSL limit of a table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit);
 
 // Initialize a hash table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_init(struct sht_ht *ht, uint32_t capacity);
 
 // Free the resources used by a hash table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 void sht_free(struct sht_ht *ht);
 
 
@@ -273,40 +261,40 @@ void sht_free(struct sht_ht *ht);
  */
 
 // Add an entry to the table, if its key is not already present.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 int sht_add(struct sht_ht *ht, const void *key, const void *entry);
 
 // Unconditionally set the value associated with a key.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 int sht_set(struct sht_ht *ht, const void *key, const void *entry);
 
 // Lookup an entry in a table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 const void *sht_get(struct sht_ht *ht, const void *restrict key);
 
 // Get the number of entries in a table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 uint32_t sht_size(const struct sht_ht *ht);
 
 // Determine whether a table is empty.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_empty(const struct sht_ht *ht);
 
 // Remove an entry from the table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_delete(struct sht_ht *ht, const void *restrict key);
 
 // Remove and return an entry from the table.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out);
 
 // Replace the entry associated with an existing key.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_replace(struct sht_ht *ht, const void *key,
 		  const void *entry);
 
 // Exchange an existing entry and a new entry.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_swap(struct sht_ht *ht, const void *key,
 	       const void *entry, void *out);
 
@@ -316,23 +304,23 @@ bool sht_swap(struct sht_ht *ht, const void *key,
  */
 
 // Create a new iterator
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 struct sht_iter *sht_iter_new(struct sht_ht *ht, enum sht_iter_type type);
 
 // Free an iterator.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 void sht_iter_free(struct sht_iter *iter);
 
 // Get the next entry from an iterator.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 const void *sht_iter_next(struct sht_iter *iter);
 
 // Remove the last entry returned by a read/write iterator.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_iter_delete(struct sht_iter *iter);
 
 // Replace the last entry returned by an iterator.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry);
 
 
@@ -341,22 +329,22 @@ bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry);
  */
 
 // Get the error code of a table's last error.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 enum sht_err sht_get_err(const struct sht_ht *ht);
 
 // Get the error code of an iterator's last error.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 enum sht_err sht_iter_err(const struct sht_iter *iter);
 
 // Get the description for an error code.
 const char *sht_msg(enum sht_err err);
 
 // Get a description of a table's last error.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 const char *sht_get_msg(const struct sht_ht *ht);
 
 // Get a description of an iterator's last error.
-SHT_FNATTR(nonnull)
+[[gnu::nonnull]]
 const char *sht_iter_msg(const struct sht_iter *iter);
 
 

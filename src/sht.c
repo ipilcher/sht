@@ -145,7 +145,7 @@ void (*sht_abort_print)(const char *msg) = sht_err_print;
  *
  * @param	msg	The error message.
  */
-SHT_FNATTR(noreturn)
+[[noreturn]]
 static void sht_abort(const char *msg)
 {
 	sht_abort_print(msg);
@@ -219,14 +219,14 @@ const char *sht_get_msg(const struct sht_ht *ht)
  * Check that a `nonnull` pointer really isn't `NULL`.
  *
  * The public API (`sht.h`) declares most pointer arguments to be non-`NULL`
- * (using the `nonnull` function attribute).  This causes GCC to issue a warning
- * when it determines that one of these function arguments is `NULL`, which is a
- * very desirable behavior.
+ * (using the `gnu::nonnull` function attribute).  This causes GCC or Clang to
+ * issue a warning when it determines that one of these function arguments is
+ * `NULL`, which is a very desirable behavior.
  *
- * However, it also has the effect of allowing GCC to assume that the value of
- * these arguments will **never** be `NULL`, even though that is not actually
- * enforced.  Because of this assumption, explicit checks for `NULL` values will
- * usually be optimized away.
+ * However, it also has the effect of causing the compiler to assume that the
+ * value of these arguments can **never** be `NULL`, even though that is not
+ * actually enforced.  Because of this assumption, explicit checks for `NULL`
+ * values will usually be optimized away.
  *
  * This function endeavors to "force" the compiler to check that a pointer value
  * is not `NULL`, even when its been told that it can't be.
@@ -237,9 +237,9 @@ const char *sht_get_msg(const struct sht_ht *ht)
  * @see		sht_abort()
  */
 #ifdef __clang__
-SHT_FNATTR(optnone)
+[[clang::optnone]]
 #else
-SHT_FNATTR(optimize("-fno-delete-null-pointer-checks"))
+[[gnu::optimize("-fno-delete-null-pointer-checks")]]
 #endif
 static void sht_assert_nonnull(const void *p, const char *msg)
 {
