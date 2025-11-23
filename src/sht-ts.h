@@ -262,7 +262,7 @@
  *
  */
 #define SHT_EQFN_TD(ktype, etype, ...)					\
-	typedef _Bool (*ts_eqfn_t)(					\
+	typedef bool (*ts_eqfn_t)(					\
 				const ktype *restrict,			\
 				const etype *restrict			\
 				SHT_CB_CTX_TYPE(__VA_ARGS__)		\
@@ -309,7 +309,7 @@
  * @param	...	Optional context referent type.
  */
 #define SHT_MKEQFN(sc, name, ktype, etype, eqfn, ...)			\
-	sc _Bool name(const void *restrict key,				\
+	sc bool name(const void *restrict key,				\
 		   const void *restrict entry,				\
 		   void *restrict context)				\
 	{								\
