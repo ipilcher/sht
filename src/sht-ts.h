@@ -79,7 +79,7 @@
 		SHT_STRIP_ARG1(SHT_COND_DEPAREN(t))			\
 	)
 
-#define SHT_FOSR_REQ(t)						\
+#define SHT_FOSR_REQ(t)							\
 	SHT_IF_ELSE(							\
 		SHT_STRIP_ARG1(SHT_COND_DEPAREN(t)),			\
 		SHT_ARG1(SHT_COND_DEPAREN(t)), 				\
@@ -210,17 +210,14 @@
  * The generated function also includes a compile-time check of the type-safe
  * hash function's signature.
  *
- * @param	sc	Storage class (e.g., `static`).  May be empty.
  * @param	name	Wrapper function name.
  * @param	ktype	Key referent type.
  * @param	hashfn	The type-safe hash function to be wrapped.
  * @param	...	Optional context referent type.
  */
-#define SHT_MKHASHFN(sc, name, ktype, hashfn, ...)			\
-	sc uint32_t name(						\
-			const void *restrict key,			\
-			void *restrict context				\
-	)								\
+#define SHT_MKHASHFN(name, ktype, hashfn, ...)				\
+	static uint32_t name(const void *restrict key,			\
+			     void *restrict context)			\
 	{								\
 		/* typedef for wrapped function signature check */	\
 		SHT_HASHFN_TD(ktype, __VA_ARGS__);			\
@@ -301,20 +298,19 @@
  * The generated function also includes a compile-time check of the type-safe
  * equality function's signature.
  *
- * @param	sc	Storage class (e.g., `static`).  May be empty.
  * @param	name	Wrapper function name.
  * @param	ktype	Key referent type.
  * @param	etype	Entry referent type.
  * @param	eqfn	The type-safe equality function to be wrapped.
  * @param	...	Optional context referent type.
  */
-#define SHT_MKEQFN(sc, name, ktype, etype, eqfn, ...)			\
-	sc bool name(const void *restrict key,				\
-		   const void *restrict entry,				\
-		   void *restrict context)				\
+#define SHT_MKEQFN(name, ktype, etype, eqfn, ...)			\
+	static bool name(const void *restrict key,			\
+			 const void *restrict entry,			\
+			 void *restrict context)			\
 	{								\
 		/* typedef for wrapped function signature check */	\
-		SHT_EQFN_TD(ktype, etype, __VA_ARGS__);		\
+		SHT_EQFN_TD(ktype, etype, __VA_ARGS__);			\
 		/* Check that wrapped function matches typedef */	\
 		SHT_CHECK_TYPE(						\
 			eqfn,						\
@@ -386,17 +382,14 @@
  * The generated function also included a compile-time check of the type-safe
  * free function's signature.
  *
- * @param	sc	Storage class (e.g., `static`).  May be empty.
  * @param	name	Wrapper function name.
  * @param	etype	Entry referent type.
  * @param	freefn	The type-safe free function to be wrapped.
  * @param	...	Optional free function context type.
  */
-#define SHT_MKFREEFN(sc, name, etype, freefn, ...)			\
-	sc void name(							\
-		const void *restrict entry,				\
-		void *restrict context					\
-	)								\
+#define SHT_MKFREEFN(name, etype, freefn, ...)				\
+	static void name(const void *restrict entry,			\
+			 void *restrict context)			\
 	{								\
 		/* typedef for wrapped function signature check	*/	\
 		SHT_FREEFN_TD(etype, __VA_ARGS__);			\
@@ -486,7 +479,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	...	Absorbs `NULL` argument , if free function exists.
  */
 #define SHT_WRAP_NEW(sc, ttype, name, etype, hashfn, eqfn, freefn, ...)	\
-	__attribute__((unused))						\
+	[[maybe_unused]]						\
 	sc ttype *name(void)						\
 	{								\
 		return (ttype *)sht_new_(hashfn, eqfn, freefn,		\
@@ -508,7 +501,7 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_WRAP_SET_HASH_CTX(sc, name, ttype, ...)			\
 	__VA_OPT__(							\
-		__attribute__((unused, nonnull(1)))			\
+		[[maybe_unused, gnu::nonnull(1)]]			\
 		sc void name(ttype *ht, __VA_ARGS__ *context)		\
 		{							\
 			sht_set_hash_ctx((struct sht_ht *)ht,		\
@@ -530,7 +523,7 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_WRAP_SET_EQ_CTX(sc, name, ttype, ...)			\
 	__VA_OPT__(							\
-		__attribute__((unused, nonnull(1)))			\
+		[[maybe_unused, gnu::nonnull(1)]]			\
 		sc void name(ttype *ht, __VA_ARGS__ *context)		\
 		{							\
 			sht_set_eq_ctx((struct sht_ht *)ht,		\
@@ -552,7 +545,7 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_WRAP_SET_FREE_CTX(sc, name, ttype, ...)			\
 	__VA_OPT__(							\
-		__attribute__((unused, nonnull(1)))			\
+		[[maybe_unused, gnu::nonnull(1)]]			\
 		sc void name(ttype *ht, __VA_ARGS__ *context)		\
 		{							\
 			sht_set_free_ctx((struct sht_ht *)ht,		\
@@ -570,7 +563,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_SET_LFT(sc, name, ttype)				\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc void name(ttype *ht, uint8_t lft)				\
 	{								\
 		sht_set_lft((struct sht_ht *)ht, lft);			\
@@ -586,7 +579,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_SET_PSL_LIMIT(sc, name, ttype)				\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc void name(ttype *ht, uint8_t limit)				\
 	{								\
 		sht_set_psl_limit((struct sht_ht *)ht, limit);		\
@@ -602,7 +595,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_INIT(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht, uint32_t capacity)			\
 	{								\
 		return sht_init((struct sht_ht *)ht, capacity);		\
@@ -618,7 +611,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_FREE(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc void name(ttype *ht)						\
 	{								\
 		sht_free((struct sht_ht *)ht);				\
@@ -636,7 +629,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_ADD(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc int name(ttype *ht, const ktype *key, const etype *entry)	\
 	{								\
 		return sht_add((struct sht_ht *)ht, key, entry);	\
@@ -654,7 +647,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_SET(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc int name(ttype *ht, const ktype *key, const etype *entry)	\
 	{								\
 		return sht_set((struct sht_ht *)ht, key, entry);	\
@@ -672,7 +665,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_GET(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc const etype *name(ttype *ht, const ktype *key)		\
 	{								\
 		return sht_get((struct sht_ht *)ht, key);		\
@@ -688,7 +681,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_SIZE(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc uint32_t name(ttype *ht)					\
 	{								\
 		return sht_size((struct sht_ht *)ht);			\
@@ -704,7 +697,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ttype	Type-safe table type (incomplete).
  */
 #define SHT_WRAP_EMPTY(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht)						\
 	{								\
 		return sht_empty((struct sht_ht *)ht);			\
@@ -721,7 +714,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	ktype	Key referent type.
  */
 #define SHT_WRAP_DELETE(sc, name, ttype, ktype)				\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht, const ktype *key)			\
 	{								\
 		return sht_delete((struct sht_ht *)ht, key);		\
@@ -739,7 +732,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_POP(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht, const ktype *restrict key,		\
 		     etype *restrict out)				\
 	{								\
@@ -758,7 +751,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_REPLACE(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht, const ktype *key, const etype *entry)	\
 	{								\
 		return sht_replace((struct sht_ht *)ht, key, entry);	\
@@ -776,7 +769,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_SWAP(sc, name, ttype, ktype, etype)			\
-	__attribute__((unused, nonnull))				\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(ttype *ht, const ktype *key,			\
 		     const etype *entry, etype *out)			\
 	{								\
@@ -794,7 +787,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	itype	Type-safe iterator type (incomplete).
  */
 #define SHT_WRAP_ITER_NEW(sc, name, ttype, itype)			\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc itype *name(ttype *ht, enum sht_iter_type type)		\
 	{								\
 		return (itype *)sht_iter_new((struct sht_ht *)ht,	\
@@ -811,7 +804,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	itype	Type-safe iterator type (incomplete).
  */
 #define SHT_WRAP_ITER_FREE(sc, name, itype)				\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc void name(itype *iter)					\
 	{								\
 		sht_iter_free((struct sht_iter *)iter);			\
@@ -828,7 +821,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_ITER_NEXT(sc, name, itype, etype)			\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc const etype *name(itype *iter)				\
 	{								\
 		return sht_iter_next((struct sht_iter *)iter);		\
@@ -844,7 +837,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	itype	Type-safe iterator type (incomplete).
  */
 #define SHT_WRAP_ITER_DELETE(sc, name, itype)				\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(itype *iter)					\
 	{								\
 		return sht_iter_delete((struct sht_iter *)iter);	\
@@ -861,7 +854,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry referent type.
  */
 #define SHT_WRAP_ITER_REPLACE(sc, name, itype, etype)			\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc bool name(itype *iter, const etype *entry)			\
 	{								\
 		return sht_iter_replace((struct sht_iter *)iter,	\
@@ -877,11 +870,11 @@ static inline void *sht_strip_const_(const void *p)
  * @param	name	Wrapper function name.
  * @param	ttype	Type-safe table type (incomplete).
  */
-#define SHT_WRAP_GET_ERR(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
-	sc enum sht_err name(ttype *ht)						\
+#define SHT_WRAP_GET_ERR(sc, name, ttype)				\
+	[[maybe_unused, gnu::nonnull]]					\
+	sc enum sht_err name(ttype *ht)					\
 	{								\
-		return sht_get_err((struct sht_ht *)ht);			\
+		return sht_get_err((struct sht_ht *)ht);		\
 	}
 
 /**
@@ -893,11 +886,11 @@ static inline void *sht_strip_const_(const void *p)
  * @param	name	Wrapper function name.
  * @param	ttype	Type-safe table type (incomplete).
  */
-#define SHT_WRAP_GET_MSG(sc, name, ttype)					\
-	__attribute__((unused, nonnull))				\
-	sc const char *name(ttype *ht)						\
+#define SHT_WRAP_GET_MSG(sc, name, ttype)				\
+	[[maybe_unused, gnu::nonnull]]					\
+	sc const char *name(ttype *ht)					\
 	{								\
-		return sht_get_msg((struct sht_ht *)ht);			\
+		return sht_get_msg((struct sht_ht *)ht);		\
 	}
 
 /**
@@ -910,7 +903,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	itype	Type-safe iterator type (incomplete).
  */
 #define SHT_WRAP_ITER_ERR(sc, name, itype)				\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc enum sht_err name(itype *iter)				\
 	{								\
 		return sht_iter_err((struct sht_iter *)iter);		\
@@ -926,7 +919,7 @@ static inline void *sht_strip_const_(const void *p)
  * @param	itype	Type-safe iterator type (incomplete).
  */
 #define SHT_WRAP_ITER_MSG(sc, name, itype)				\
-	__attribute((unused, nonnull))					\
+	[[maybe_unused, gnu::nonnull]]					\
 	sc  const char *name(itype *iter)				\
 	{								\
 		return sht_iter_msg((struct sht_iter *)iter);		\
@@ -936,10 +929,17 @@ static inline void *sht_strip_const_(const void *p)
 /*******************************************************************************
  *
  *
- *	Table type uber-macro
+ *	Table type helpers
  *
  *
  ******************************************************************************/
+
+
+/*
+ *
+ * Function names
+ *
+ */
 
 /**
  * @internal
@@ -951,9 +951,39 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_FN_NAME(ttspec, base)	SHT_CONCAT(SHT_FOSR_REQ(ttspec), base)
 
+/**
+ * @internal
+ * @brief
+ * Generate a hash function wrapper name.
+ *
+ * @param	ttspec	Table type spec.
+ */
 #define SHT_HF_NAME(ttspec)		SHT_FN_NAME(ttspec, _hash_wrapper_)
+
+/**
+ * @internal
+ * @brief
+ * Generate an equalify function wrapper name.
+ *
+ * @param	ttspec	Table type spec.
+ */
 #define SHT_EF_NAME(ttspec)		SHT_FN_NAME(ttspec, _eq_wrapper_)
+
+/**
+ * @internal
+ * @brief
+ * Generate a free function wrapper name.
+ *
+ * @param	ttspec	Table type spec.
+ */
 #define SHT_FF_NAME(ttspec)		SHT_FN_NAME(ttspec, _free_wrapper_)
+
+
+/*
+ *
+ * Type names
+ *
+ */
 
 /**
  * @internal
@@ -962,7 +992,7 @@ static inline void *sht_strip_const_(const void *p)
  *
  * @param	ttspec Table type spec.
  */
-#define SHT_HT_T(ttspec)			\
+#define SHT_HT_T(ttspec)		\
 	struct SHT_CONCAT(SHT_FOSR_REQ(ttspec), _ht)
 
 /**
@@ -974,6 +1004,91 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_ITER_T(ttspec)		\
 	struct SHT_CONCAT(SHT_FOSR_REQ(ttspec), _iter)
+
+
+/*
+ *
+ * Function storage class
+ *
+ * (Callback functions are always static.)
+ *
+ */
+
+/**
+ * @internal
+ * @brief
+ * Expands to nothing.
+ */
+#define SHT_FN_SC_PROBE_extern
+
+/**
+ * @internal
+ * @brief
+ * Expands to nothing if (pre-expanded) @p sc is `extern`, otherwise @p sc.
+ *
+ * > **NOTE**
+ * >
+ * > This macro relies on the fact that `SHT_FN_SC_PROBE_##sc` is not defined
+ * > for any value of @p sc other than `extern`.
+ *
+ * @param	sc	The expanded storage class from the table type spec,
+ *			with an empty value replaced by `static`.
+ */
+#define SHT_EXTERN_2_EMPTY_NX(sc)	SHT_IF_ELSE(sc, , SHT_FN_SC_PROBE_##sc)
+
+/**
+ * @internal
+ * @brief
+ * Forces expansion of @p sc before invoking SHT_EXTERN_2_EMPTY_NX().
+ *
+ * @param	sc 	The unexpanded storage class from the table type spec,
+ *			with an empty value replaced by `static`.
+ */
+#define SHT_EXTERN_2_EMPTY(sc)		SHT_EXTERN_2_EMPTY_NX(sc)
+
+/**
+ * @internal
+ * @brief
+ * Expands to `static` if @p sc is empty; otherwise expands to @p sc.
+ *
+ * @param	sc	The storage class from the table type spec, which may be
+ *			empty.
+ */
+#define SHT_EMPTY_2_STATIC(sc)		SHT_IF_ELSE(sc, static, sc)
+
+/**
+ * @internal
+ * @brief
+ * Generates the storage class for a generated function.
+ *
+ * Callback function wrappers are always `static`.  Other generated functions
+ * default to `static`, if no storage class is specified in the table type spec.
+ * but this can be changed by specifying a storage class of `extern`, which will
+ * suppress the default `static`.  Any other storage class will be applied to
+ * the generated functions unchanged.
+ *
+ * In summary:
+ *
+ * * (Nothing) → `static`
+ * * `extern` → (nothing)
+ * * (Anything else) → (unchanged)
+ */
+#define SHT_FN_SC(ttspec)						\
+	SHT_EXTERN_2_EMPTY(						\
+		SHT_EMPTY_2_STATIC(					\
+			SHT_FOSR_OPT(ttspec)				\
+		)							\
+	)
+
+
+
+/*******************************************************************************
+ *
+ *
+ *	Table type macro
+ *
+ *
+ ******************************************************************************/
 
 /**
  * Generate types and functions for a type-safe hash table type.
@@ -1037,7 +1152,6 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* Hash function wrapper */					\
 	SHT_MKHASHFN(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
 		SHT_HF_NAME(ttspec),			/* name */	\
 		ktype,					/* ktype */	\
 		SHT_FRSO_REQ(hfspec),			/* hashfn */	\
@@ -1046,7 +1160,6 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* Equality function wrapper */					\
 	SHT_MKEQFN(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
 		SHT_EF_NAME(ttspec),			/* name */	\
 		ktype,					/* ktype */	\
 		etype,					/* etype */	\
@@ -1057,7 +1170,6 @@ static inline void *sht_strip_const_(const void *p)
 	/* Free function wrapper, if necessary */			\
 	__VA_OPT__(							\
 		SHT_MKFREEFN(						\
-			SHT_FOSR_OPT(ttspec),		/* sc */	\
 			SHT_FF_NAME(ttspec),		/* name */	\
 			etype,				/* etype */	\
 			SHT_FRSO_REQ(__VA_ARGS__),	/* freefn */	\
@@ -1067,7 +1179,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_new_() wrapper */					\
 	SHT_WRAP_NEW(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		SHT_FN_NAME(ttspec, _new),		/* name */	\
 		etype,					/* etype */	\
@@ -1079,7 +1191,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_set_hash_ctx() wrapper */				\
 	SHT_WRAP_SET_HASH_CTX(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _set_hash_ctx),	/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		SHT_FRSO_OPT(hfspec)			/* ...? */	\
@@ -1087,7 +1199,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_set_eq_ctx() wrapper */					\
 	SHT_WRAP_SET_EQ_CTX(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _set_eq_ctx),	/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		SHT_FRSO_OPT(efspec)			/* ...? */	\
@@ -1096,7 +1208,7 @@ static inline void *sht_strip_const_(const void *p)
 	/* sht_set_free_ctx() wrapper, if necessary */			\
 	__VA_OPT__(							\
 		SHT_WRAP_SET_FREE_CTX(					\
-			SHT_FOSR_OPT(ttspec),		/* sc */	\
+			SHT_FN_SC(ttspec),		/* sc */	\
 			SHT_FN_NAME(ttspec,		/* name */	\
 				    _set_free_ctx),			\
 			SHT_HT_T(ttspec),		/* ttype */	\
@@ -1106,35 +1218,35 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_set_lft() wrapper */					\
 	SHT_WRAP_SET_LFT(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _set_lft),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_set_psl_limit() wrapper */				\
 	SHT_WRAP_SET_PSL_LIMIT(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _set_psl_limit),	/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_init() wrapper */					\
 	SHT_WRAP_INIT(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _init),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_free() wrapper */					\
 	SHT_WRAP_FREE(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _free),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_add() wrapper */						\
 	SHT_WRAP_ADD(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _add),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1143,7 +1255,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_set() wrapper */						\
 	SHT_WRAP_SET(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _set),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1152,7 +1264,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_get() wrapper */						\
 	SHT_WRAP_GET(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _get),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1161,21 +1273,21 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_size() wrapper */					\
 	SHT_WRAP_SIZE(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _size),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_empty() wrapper */					\
 	SHT_WRAP_EMPTY(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _empty),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_delete() wrapper */					\
 	SHT_WRAP_DELETE(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _delete),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype					/* ktype */	\
@@ -1183,7 +1295,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_pop() wrapper */						\
 	SHT_WRAP_POP(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _pop),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1192,7 +1304,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_replace() wrapper */					\
 	SHT_WRAP_REPLACE(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _replace),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1201,7 +1313,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_swap() wrapper */					\
 	SHT_WRAP_SWAP(							\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _swap),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		ktype,					/* ktype */	\
@@ -1210,7 +1322,7 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_iter_new() wrapper */					\
 	SHT_WRAP_ITER_NEW(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_new),		/* name */	\
 		SHT_HT_T(ttspec),			/* ttype */	\
 		SHT_ITER_T(ttspec)			/* itype */	\
@@ -1218,14 +1330,14 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_iter_free() wrapper */					\
 	SHT_WRAP_ITER_FREE(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_free),	/* name */	\
 		SHT_ITER_T(ttspec)			/* itype */	\
 	)								\
 									\
 	/* sht_iter_next() wrapper */					\
 	SHT_WRAP_ITER_NEXT(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_next),	/* name */	\
 		SHT_ITER_T(ttspec),			/* itype */	\
 		etype					/* etype */	\
@@ -1233,14 +1345,14 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_iter_delete() wrapper */					\
 	SHT_WRAP_ITER_DELETE(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_delete),	/* name */	\
 		SHT_ITER_T(ttspec)			/* itype */	\
 	)								\
 									\
 	/* sht_iter_replace() wrapper */				\
 	SHT_WRAP_ITER_REPLACE(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_replace),	/* name */	\
 		SHT_ITER_T(ttspec),			/* itype */	\
 		etype					/* etype */	\
@@ -1248,28 +1360,28 @@ static inline void *sht_strip_const_(const void *p)
 									\
 	/* sht_get_err() wrapper */					\
 	SHT_WRAP_GET_ERR(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _get_err),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_get_msg() wrapper */					\
 	SHT_WRAP_GET_MSG(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _get_msg),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
 	/* sht_iter_err() wrapper */					\
 	SHT_WRAP_ITER_ERR(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_err),		/* name */	\
 		SHT_ITER_T(ttspec)			/* itype */	\
 	)								\
 									\
 	/* sht_iter_msg() wrapper */					\
 	SHT_WRAP_ITER_MSG(						\
-		SHT_FOSR_OPT(ttspec),			/* sc */	\
+		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _iter_msg),		/* name */	\
 		SHT_ITER_T(ttspec)			/* itype */	\
 	)
