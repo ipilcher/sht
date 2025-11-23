@@ -192,8 +192,7 @@ const char *sht_msg(enum sht_err err)
 	};
 
 	/* Ensure that we have a message for every code. */
-	_Static_assert(sizeof err_msgs / sizeof err_msgs[0] == SHT_ERR_COUNT,
-		       "sht_errs size");
+	static_assert(sizeof err_msgs / sizeof err_msgs[0] == SHT_ERR_COUNT);
 
 	if (err >= SHT_ERR_COUNT)
 		sht_abort("sht_msg: Invalid error code");
@@ -460,7 +459,7 @@ void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit)
  *		returned, and the table's error status is set.  (The state of
  *		the table is otherwise unchanged.)
  */
-static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
+static bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 {
 	size_t b_size;	// size of bucket array
 	size_t e_size;	// size of entry array
@@ -468,9 +467,9 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 	size_t size;	// total size
 	uint8_t *new;
 
-	_Static_assert(SHT_MAX_TSIZE == 1 << 24, "maximum table size");
-	_Static_assert(sizeof(union sht_bckt) == 4, "sht_bckt size");
-	_Static_assert(_Alignof(union sht_bckt) == 4, "sht_bckt alignment");
+	static_assert(SHT_MAX_TSIZE == 1 << 24);
+	static_assert(sizeof(union sht_bckt) == 4);
+	static_assert(alignof(union sht_bckt) == 4);
 
 	assert(tsize <= SHT_MAX_TSIZE);
 
@@ -534,7 +533,7 @@ static _Bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
  *
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_init(struct sht_ht *ht, uint32_t capacity)
+bool sht_init(struct sht_ht *ht, uint32_t capacity)
 {
 	if (ht->tsize != 0)
 		sht_abort("sht_init: Table already initialized");
@@ -599,7 +598,7 @@ uint32_t sht_size(const struct sht_ht *ht)
  *
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_empty(const struct sht_ht *ht)
+bool sht_empty(const struct sht_ht *ht)
 {
 	if (ht->tsize == 0)
 		sht_abort("sht_empty: Table not initialized");
@@ -698,11 +697,11 @@ static void sht_remove_entry(struct sht_ht *ht, const uint8_t *restrict o_entry,
  *		is called in insert mode and returns `-1`.
  */
 static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
-			 const uint8_t *ce, _Bool c_uniq)
+			 const uint8_t *ce, bool c_uniq)
 {
 	uint8_t e_tmp[2][ht->esize];	// temp storage for displaced entries
 	union sht_bckt b_tmp[2];	// temp storage for displaced buckets
-	_Bool ti;			// index for e_tmp and b_tmp
+	bool ti;			// index for e_tmp and b_tmp
 	union sht_bckt *cb;		// candidate bucket
 	union sht_bckt *ob;		// current position occupant bucket
 	uint8_t *oe;			// current position occupant entry
@@ -783,7 +782,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
  *		returned, and the table's error status is set.  (The state of
  *		the table is otherwise unchanged.)
  */
-static _Bool sht_ht_grow(struct sht_ht *ht)
+static bool sht_ht_grow(struct sht_ht *ht)
 {
 	union sht_bckt *b, *old;
 	uint8_t *e;
@@ -836,7 +835,7 @@ static _Bool sht_ht_grow(struct sht_ht *ht)
  * @see		sht_set()
  */
 static int sht_insert(struct sht_ht *ht, const void *key,
-		      const void *entry, _Bool replace)
+		      const void *entry, bool replace)
 {
 	uint32_t hash;
 	int32_t result;
@@ -1032,7 +1031,7 @@ static void sht_change_at(struct sht_ht *ht, uint32_t pos,
  * @see		sht_replace()
  * @see		sht_swap()
  */
-static _Bool sht_change(struct sht_ht *ht, const void *key,
+static bool sht_change(struct sht_ht *ht, const void *key,
 			const void *entry, void *out)
 {
 	uint32_t hash;
@@ -1072,7 +1071,7 @@ static _Bool sht_change(struct sht_ht *ht, const void *key,
  *
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
+bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
 {
 	return sht_change(ht, key, entry, NULL);
 }
@@ -1099,7 +1098,7 @@ _Bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
  *
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_swap(struct sht_ht *ht, const void *key, const void *entry, void *out)
+bool sht_swap(struct sht_ht *ht, const void *key, const void *entry, void *out)
 {
 	return sht_change(ht, key, entry, out);
 }
@@ -1244,7 +1243,7 @@ static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
  * @see		sht_pop()
  * @see		sht_delete()
  */
-static _Bool sht_remove(struct sht_ht *ht, const void *restrict key,
+static bool sht_remove(struct sht_ht *ht, const void *restrict key,
 			void *restrict out)
 {
 	uint32_t hash;
@@ -1287,7 +1286,7 @@ static _Bool sht_remove(struct sht_ht *ht, const void *restrict key,
  * @see		sht_delete()
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
+bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
 {
 	return sht_remove(ht, key, out);
 }
@@ -1310,7 +1309,7 @@ _Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
  * @see		sht_pop()
  * @see		[Abort conditions](index.html#abort-conditions)
  */
-_Bool sht_delete(struct sht_ht *ht, const void *restrict key)
+bool sht_delete(struct sht_ht *ht, const void *restrict key)
 {
 	return sht_remove(ht, key, NULL);
 }
@@ -1482,7 +1481,7 @@ const void *sht_iter_next(struct sht_iter *iter)
  * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
  *		returned and the error status of the iterator is set.
  */
-_Bool sht_iter_delete(struct sht_iter *iter)
+bool sht_iter_delete(struct sht_iter *iter)
 {
 	if (iter->type != SHT_ITER_RW)
 		sht_abort("sht_iter_delete: Iterator is read-only");
@@ -1519,7 +1518,7 @@ _Bool sht_iter_delete(struct sht_iter *iter)
  * @returns	On success, true (`1`) is returned.  On error, false (`0`) is
  *		returned and the error status of the iterator is set.
  */
-_Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
+bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 {
 	if (iter->last == -1 || iter->last == INT32_MAX) {
 		iter->err = SHT_ERR_ITER_NO_LAST;

@@ -125,7 +125,7 @@ typedef uint32_t (*sht_hashfn_t)(const void *restrict key,
  *     struct in_addr  address;
  * };
  *
- * _Bool my_cmp(const void *restrict key, const void *restrict entry,
+ * bool my_cmp(const void *restrict key, const void *restrict entry,
  *              void *restrict)
  * {
  *     const char *const name = key;
@@ -143,7 +143,7 @@ typedef uint32_t (*sht_hashfn_t)(const void *restrict key,
  * @returns	A boolean value that indicates whether @p key is equal to the
  *		key in @p entry.
  */
-typedef _Bool (*sht_eqfn_t)(const void *restrict key,
+typedef bool (*sht_eqfn_t)(const void *restrict key,
 			    const void *restrict entry,
 			    void *restrict context);
 
@@ -188,7 +188,7 @@ struct sht_ht;
 /**
  * Iterator types.
  */
-enum sht_iter_type: _Bool {
+enum sht_iter_type: bool {
 	SHT_ITER_RO = 0,	/**< Read-only iterator. */
 	SHT_ITER_RW = 1		/**< Read/write iterator. */
 };
@@ -216,7 +216,7 @@ enum sht_err: uint8_t {
 	SHT_ERR_COUNT		/**< (Not an error; used for bounds checks.) */
 };
 
-_Static_assert(sizeof(enum sht_err) == 1, "sht_err size");
+static_assert(sizeof(enum sht_err) == 1);
 
 
 
@@ -261,7 +261,7 @@ void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit);
 
 // Initialize a hash table.
 SHT_FNATTR(nonnull)
-_Bool sht_init(struct sht_ht *ht, uint32_t capacity);
+bool sht_init(struct sht_ht *ht, uint32_t capacity);
 
 // Free the resources used by a hash table.
 SHT_FNATTR(nonnull)
@@ -290,24 +290,24 @@ uint32_t sht_size(const struct sht_ht *ht);
 
 // Determine whether a table is empty.
 SHT_FNATTR(nonnull)
-_Bool sht_empty(const struct sht_ht *ht);
+bool sht_empty(const struct sht_ht *ht);
 
 // Remove an entry from the table.
 SHT_FNATTR(nonnull)
-_Bool sht_delete(struct sht_ht *ht, const void *restrict key);
+bool sht_delete(struct sht_ht *ht, const void *restrict key);
 
 // Remove and return an entry from the table.
 SHT_FNATTR(nonnull)
-_Bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out);
+bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out);
 
 // Replace the entry associated with an existing key.
 SHT_FNATTR(nonnull)
-_Bool sht_replace(struct sht_ht *ht, const void *key,
+bool sht_replace(struct sht_ht *ht, const void *key,
 		  const void *entry);
 
 // Exchange an existing entry and a new entry.
 SHT_FNATTR(nonnull)
-_Bool sht_swap(struct sht_ht *ht, const void *key,
+bool sht_swap(struct sht_ht *ht, const void *key,
 	       const void *entry, void *out);
 
 
@@ -329,11 +329,11 @@ const void *sht_iter_next(struct sht_iter *iter);
 
 // Remove the last entry returned by a read/write iterator.
 SHT_FNATTR(nonnull)
-_Bool sht_iter_delete(struct sht_iter *iter);
+bool sht_iter_delete(struct sht_iter *iter);
 
 // Replace the last entry returned by an iterator.
 SHT_FNATTR(nonnull)
-_Bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry);
+bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry);
 
 
 /*
@@ -402,14 +402,14 @@ const char *sht_iter_msg(const struct sht_iter *iter);
  * enum sht_err err;
  *
  * ht = sht_new(hashfn, eqfn, NULL, sizeof(struct entry),
- *              _Alignof(struct entry), &err);
+ *              alignof(struct entry), &err);
  *
  * // Rewrite as ...
  * ht = SHT_NEW(hashfn, eqfn, NULL, struct entry, &err);
  *
  * // Without error reporting ...
  * ht = sht_new(hashfn, eqfn, NULL, sizeof(struct entry),
- *              _Alignof(struct entry), NULL);
+ *              alignof(struct entry), NULL);
  *
  * // Becomes ...
  * ht = SHT_NEW(hashfn, eqfn, NULL, struct entry);
@@ -430,10 +430,10 @@ const char *sht_iter_msg(const struct sht_iter *iter);
  */
 #define SHT_NEW(hashfn, eqfn, freefn, etype, ...)			\
 	({								\
-		_Static_assert(sizeof(etype) <= SHT_MAX_ESIZE,		\
+		static_assert(sizeof(etype) <= SHT_MAX_ESIZE,		\
 			       "Entry type (" #etype ") too large");	\
 		sht_new_(hashfn, eqfn, freefn,				\
-			 sizeof(etype), _Alignof(etype),		\
+			 sizeof(etype), alignof(etype),			\
 			 SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
 	})
 
