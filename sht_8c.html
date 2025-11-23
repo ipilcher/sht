@@ -115,7 +115,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:aa2bb68233ce1db0c4f1ba50fec4daa84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the description for an error code.  <br /></td></tr>
 <tr class="memitem:aae2db74c56749b52273a6e6212d63a0c" id="r_aae2db74c56749b52273a6e6212d63a0c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae2db74c56749b52273a6e6212d63a0c">sht_get_msg</a> (const struct sht_ht *ht)</td></tr>
 <tr class="memdesc:aae2db74c56749b52273a6e6212d63a0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of a table's last error.  <br /></td></tr>
-<tr class="memitem:adb0d21d1b389094b3188be811ed5616c" id="r_adb0d21d1b389094b3188be811ed5616c"><td class="memItemLeft" align="right" valign="top">struct sht_ht *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb0d21d1b389094b3188be811ed5616c">sht_new_</a> (<a class="el" href="sht_8h.html#a5f9d37456d909db3cfeb4496d631bc66">sht_hashfn_t</a> hashfn, <a class="el" href="sht_8h.html#a1f5af078e1c27398dcade83ce429047d">sht_eqfn_t</a> eqfn, <a class="el" href="sht_8h.html#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a> freefn, size_t esize, size_t ealign, enum <a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> *err)</td></tr>
+<tr class="memitem:adb0d21d1b389094b3188be811ed5616c" id="r_adb0d21d1b389094b3188be811ed5616c"><td class="memItemLeft" align="right" valign="top">struct sht_ht *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb0d21d1b389094b3188be811ed5616c">sht_new_</a> (<a class="el" href="sht_8h.html#a5f9d37456d909db3cfeb4496d631bc66">sht_hashfn_t</a> hashfn, <a class="el" href="sht_8h.html#ac7dfae93089b6b92a2b83f8e29e0d5d6">sht_eqfn_t</a> eqfn, <a class="el" href="sht_8h.html#a1de927ba1f32597cf294e4efc8c37a6a">sht_freefn_t</a> freefn, size_t esize, size_t ealign, enum <a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> *err)</td></tr>
 <tr class="memdesc:adb0d21d1b389094b3188be811ed5616c"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Create a new hash table.)  <br /></td></tr>
 <tr class="memitem:a45747c22ee2656dcd16d86ce74ea5ec8" id="r_a45747c22ee2656dcd16d86ce74ea5ec8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45747c22ee2656dcd16d86ce74ea5ec8">sht_set_hash_ctx</a> (struct sht_ht *ht, void *context)</td></tr>
 <tr class="memdesc:a45747c22ee2656dcd16d86ce74ea5ec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the "context" for a table's hash function.  <br /></td></tr>
@@ -127,29 +127,29 @@ Functions</h2></td></tr>
 <tr class="memdesc:a99d607b370024be6526a17863ee62145"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the load factor threshold for a table.  <br /></td></tr>
 <tr class="memitem:aa0790506e1bb1f4c3018feaa07d9fe62" id="r_aa0790506e1bb1f4c3018feaa07d9fe62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0790506e1bb1f4c3018feaa07d9fe62">sht_set_psl_limit</a> (struct sht_ht *ht, uint8_t limit)</td></tr>
 <tr class="memdesc:aa0790506e1bb1f4c3018feaa07d9fe62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the PSL limit of a table.  <br /></td></tr>
-<tr class="memitem:ab6a5c760d62564b28208f9cd780da00f" id="r_ab6a5c760d62564b28208f9cd780da00f"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6a5c760d62564b28208f9cd780da00f">sht_init</a> (struct sht_ht *ht, uint32_t capacity)</td></tr>
-<tr class="memdesc:ab6a5c760d62564b28208f9cd780da00f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a hash table.  <br /></td></tr>
+<tr class="memitem:a4eaf764fc86d5f9428d6763f3aecadcd" id="r_a4eaf764fc86d5f9428d6763f3aecadcd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4eaf764fc86d5f9428d6763f3aecadcd">sht_init</a> (struct sht_ht *ht, uint32_t capacity)</td></tr>
+<tr class="memdesc:a4eaf764fc86d5f9428d6763f3aecadcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a hash table.  <br /></td></tr>
 <tr class="memitem:a82e02f941cacb73ed15c616bfe268985" id="r_a82e02f941cacb73ed15c616bfe268985"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82e02f941cacb73ed15c616bfe268985">sht_size</a> (const struct sht_ht *ht)</td></tr>
 <tr class="memdesc:a82e02f941cacb73ed15c616bfe268985"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of entries in a table.  <br /></td></tr>
-<tr class="memitem:a2865bd37b19b90cb3dd3c01aebec7b35" id="r_a2865bd37b19b90cb3dd3c01aebec7b35"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2865bd37b19b90cb3dd3c01aebec7b35">sht_empty</a> (const struct sht_ht *ht)</td></tr>
-<tr class="memdesc:a2865bd37b19b90cb3dd3c01aebec7b35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether a table is empty.  <br /></td></tr>
+<tr class="memitem:a6ccef7db69da7e3394c146b0e5e63f42" id="r_a6ccef7db69da7e3394c146b0e5e63f42"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ccef7db69da7e3394c146b0e5e63f42">sht_empty</a> (const struct sht_ht *ht)</td></tr>
+<tr class="memdesc:a6ccef7db69da7e3394c146b0e5e63f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether a table is empty.  <br /></td></tr>
 <tr class="memitem:a5cd47d066198640b242e7a1ecebab92e" id="r_a5cd47d066198640b242e7a1ecebab92e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5cd47d066198640b242e7a1ecebab92e">sht_add</a> (struct sht_ht *ht, const void *key, const void *entry)</td></tr>
 <tr class="memdesc:a5cd47d066198640b242e7a1ecebab92e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an entry to the table, if its key is not already present.  <br /></td></tr>
 <tr class="memitem:a44c78b1e70265deda028ec34f6c2ecbd" id="r_a44c78b1e70265deda028ec34f6c2ecbd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44c78b1e70265deda028ec34f6c2ecbd">sht_set</a> (struct sht_ht *ht, const void *key, const void *entry)</td></tr>
 <tr class="memdesc:a44c78b1e70265deda028ec34f6c2ecbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unconditionally set the value associated with a key.  <br /></td></tr>
 <tr class="memitem:a0dd66cb8cf354a570429662675bc6485" id="r_a0dd66cb8cf354a570429662675bc6485"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dd66cb8cf354a570429662675bc6485">sht_get</a> (struct sht_ht *ht, const void *restrict key)</td></tr>
 <tr class="memdesc:a0dd66cb8cf354a570429662675bc6485"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lookup an entry in a table.  <br /></td></tr>
-<tr class="memitem:a774ddeec974dc6616b06c65e01078a15" id="r_a774ddeec974dc6616b06c65e01078a15"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a774ddeec974dc6616b06c65e01078a15">sht_replace</a> (struct sht_ht *ht, const void *key, const void *entry)</td></tr>
-<tr class="memdesc:a774ddeec974dc6616b06c65e01078a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the entry associated with an existing key.  <br /></td></tr>
-<tr class="memitem:af2fcd39aa951331b8dc042238c05eee6" id="r_af2fcd39aa951331b8dc042238c05eee6"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2fcd39aa951331b8dc042238c05eee6">sht_swap</a> (struct sht_ht *ht, const void *key, const void *entry, void *out)</td></tr>
-<tr class="memdesc:af2fcd39aa951331b8dc042238c05eee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exchange an existing entry and a new entry.  <br /></td></tr>
-<tr class="memitem:a805f5a3b63530022638a169a3cadf9ac" id="r_a805f5a3b63530022638a169a3cadf9ac"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a805f5a3b63530022638a169a3cadf9ac">sht_pop</a> (struct sht_ht *ht, const void *restrict key, void *restrict out)</td></tr>
-<tr class="memdesc:a805f5a3b63530022638a169a3cadf9ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove and return an entry from the table.  <br /></td></tr>
-<tr class="memitem:a773306947d9c00d86a5292def8f0cfa9" id="r_a773306947d9c00d86a5292def8f0cfa9"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a773306947d9c00d86a5292def8f0cfa9">sht_delete</a> (struct sht_ht *ht, const void *restrict key)</td></tr>
-<tr class="memdesc:a773306947d9c00d86a5292def8f0cfa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove an entry from the table.  <br /></td></tr>
+<tr class="memitem:a195b40910c12c6dc21fbfc5b2f4c2716" id="r_a195b40910c12c6dc21fbfc5b2f4c2716"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a195b40910c12c6dc21fbfc5b2f4c2716">sht_replace</a> (struct sht_ht *ht, const void *key, const void *entry)</td></tr>
+<tr class="memdesc:a195b40910c12c6dc21fbfc5b2f4c2716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the entry associated with an existing key.  <br /></td></tr>
+<tr class="memitem:a6d531c171c19475d113e6631ee23ef06" id="r_a6d531c171c19475d113e6631ee23ef06"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d531c171c19475d113e6631ee23ef06">sht_swap</a> (struct sht_ht *ht, const void *key, const void *entry, void *out)</td></tr>
+<tr class="memdesc:a6d531c171c19475d113e6631ee23ef06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exchange an existing entry and a new entry.  <br /></td></tr>
+<tr class="memitem:a826a9df51c8fe4ed3df707191ac6a105" id="r_a826a9df51c8fe4ed3df707191ac6a105"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a826a9df51c8fe4ed3df707191ac6a105">sht_pop</a> (struct sht_ht *ht, const void *restrict key, void *restrict out)</td></tr>
+<tr class="memdesc:a826a9df51c8fe4ed3df707191ac6a105"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove and return an entry from the table.  <br /></td></tr>
+<tr class="memitem:a16a6d148b8a1e9f24eeb56c3db568105" id="r_a16a6d148b8a1e9f24eeb56c3db568105"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16a6d148b8a1e9f24eeb56c3db568105">sht_delete</a> (struct sht_ht *ht, const void *restrict key)</td></tr>
+<tr class="memdesc:a16a6d148b8a1e9f24eeb56c3db568105"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove an entry from the table.  <br /></td></tr>
 <tr class="memitem:ae36e072969cef119b1176887dcdc8623" id="r_ae36e072969cef119b1176887dcdc8623"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae36e072969cef119b1176887dcdc8623">sht_free</a> (struct sht_ht *ht)</td></tr>
 <tr class="memdesc:ae36e072969cef119b1176887dcdc8623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the resources used by a hash table.  <br /></td></tr>
-<tr class="memitem:a82f0e05af3fc1174b3ff844ad1511362" id="r_a82f0e05af3fc1174b3ff844ad1511362"><td class="memItemLeft" align="right" valign="top">struct sht_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a> (struct sht_ht *ht, enum <a class="el" href="sht_8h.html#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a> type)</td></tr>
+<tr class="memitem:a82f0e05af3fc1174b3ff844ad1511362" id="r_a82f0e05af3fc1174b3ff844ad1511362"><td class="memItemLeft" align="right" valign="top">struct sht_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a> (struct sht_ht *ht, enum <a class="el" href="sht_8h.html#a8c782ca0214a2c1d605ac0fa25274e0e">sht_iter_type</a> type)</td></tr>
 <tr class="memdesc:a82f0e05af3fc1174b3ff844ad1511362"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new iterator.  <br /></td></tr>
 <tr class="memitem:ab1a800442ed16198b4317cf78e2e815a" id="r_ab1a800442ed16198b4317cf78e2e815a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1a800442ed16198b4317cf78e2e815a">sht_iter_err</a> (const struct sht_iter *iter)</td></tr>
 <tr class="memdesc:ab1a800442ed16198b4317cf78e2e815a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the error code of an iterator's last error.  <br /></td></tr>
@@ -157,10 +157,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a21446834bf764bc08865cb2934e0960c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of an iterator's last error.  <br /></td></tr>
 <tr class="memitem:a2e5418f907f471d6b3670add83cfd77b" id="r_a2e5418f907f471d6b3670add83cfd77b"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e5418f907f471d6b3670add83cfd77b">sht_iter_next</a> (struct sht_iter *iter)</td></tr>
 <tr class="memdesc:a2e5418f907f471d6b3670add83cfd77b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next entry from an iterator.  <br /></td></tr>
-<tr class="memitem:a25bea47651654bef265950974eb13976" id="r_a25bea47651654bef265950974eb13976"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25bea47651654bef265950974eb13976">sht_iter_delete</a> (struct sht_iter *iter)</td></tr>
-<tr class="memdesc:a25bea47651654bef265950974eb13976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the last entry returned by a <b>read/write</b> iterator.  <br /></td></tr>
-<tr class="memitem:a1db67fdca1f6c024f6dc5822f88c4a85" id="r_a1db67fdca1f6c024f6dc5822f88c4a85"><td class="memItemLeft" align="right" valign="top">_Bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1db67fdca1f6c024f6dc5822f88c4a85">sht_iter_replace</a> (struct sht_iter *iter, const void *restrict entry)</td></tr>
-<tr class="memdesc:a1db67fdca1f6c024f6dc5822f88c4a85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the last entry returned by an iterator.  <br /></td></tr>
+<tr class="memitem:a84cfd8fc36e1ba98ab427d82802ad420" id="r_a84cfd8fc36e1ba98ab427d82802ad420"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84cfd8fc36e1ba98ab427d82802ad420">sht_iter_delete</a> (struct sht_iter *iter)</td></tr>
+<tr class="memdesc:a84cfd8fc36e1ba98ab427d82802ad420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the last entry returned by a <b>read/write</b> iterator.  <br /></td></tr>
+<tr class="memitem:a65154d9195575fab4ad984fbbcfaf13d" id="r_a65154d9195575fab4ad984fbbcfaf13d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65154d9195575fab4ad984fbbcfaf13d">sht_iter_replace</a> (struct sht_iter *iter, const void *restrict entry)</td></tr>
+<tr class="memdesc:a65154d9195575fab4ad984fbbcfaf13d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the last entry returned by an iterator.  <br /></td></tr>
 <tr class="memitem:ac3f4b138ac33ecb1bbb59aa4a73354f8" id="r_ac3f4b138ac33ecb1bbb59aa4a73354f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac3f4b138ac33ecb1bbb59aa4a73354f8">sht_iter_free</a> (struct sht_iter *iter)</td></tr>
 <tr class="memdesc:ac3f4b138ac33ecb1bbb59aa4a73354f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free an iterator.  <br /></td></tr>
 </table>
@@ -248,7 +248,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string describing the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00214">214</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00213">213</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -266,7 +266,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="sht_8h.html#a1f5af078e1c27398dcade83ce429047d">sht_eqfn_t</a></td>          <td class="paramname"><span class="paramname"><em>eqfn</em></span>, </td>
+          <td class="paramtype"><a class="el" href="sht_8h.html#ac7dfae93089b6b92a2b83f8e29e0d5d6">sht_eqfn_t</a></td>          <td class="paramname"><span class="paramname"><em>eqfn</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -311,7 +311,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new hash table is returned. On error, <span class="tt">NULL</span> is returned, and an error code is returned in <code class="param">err</code> (if it is not <span class="tt">NULL</span>).</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="sht_8h.html#aff395306d3299b2e23d1ec5dfb0b70d0" title="Create a new hash table.">SHT_NEW()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00278">278</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00277">277</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -351,7 +351,7 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00332">332</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00331">331</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -387,11 +387,11 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="sht_8h.html#a1f5af078e1c27398dcade83ce429047d" title="Equality comparison function type.">sht_eqfn_t</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="sht_8h.html#ac7dfae93089b6b92a2b83f8e29e0d5d6" title="Equality comparison function type.">sht_eqfn_t</a> </dd>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00356">356</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00355">355</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -431,7 +431,7 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00380">380</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00379">379</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -469,7 +469,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00408">408</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00407">407</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -509,18 +509,18 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00438">438</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00437">437</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="ab6a5c760d62564b28208f9cd780da00f" name="ab6a5c760d62564b28208f9cd780da00f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6a5c760d62564b28208f9cd780da00f">&#9670;&#160;</a></span>sht_init()</h2>
+<a id="a4eaf764fc86d5f9428d6763f3aecadcd" name="a4eaf764fc86d5f9428d6763f3aecadcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eaf764fc86d5f9428d6763f3aecadcd">&#9670;&#160;</a></span>sht_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_init </td>
+          <td class="memname">bool sht_init </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
         </tr>
@@ -549,7 +549,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On failure, false (<span class="tt">0</span>) is returned, and the table's error status is set.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00537">537</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00536">536</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -582,18 +582,18 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The number of entries in the table.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00580">580</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00579">579</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a2865bd37b19b90cb3dd3c01aebec7b35" name="a2865bd37b19b90cb3dd3c01aebec7b35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2865bd37b19b90cb3dd3c01aebec7b35">&#9670;&#160;</a></span>sht_empty()</h2>
+<a id="a6ccef7db69da7e3394c146b0e5e63f42" name="a6ccef7db69da7e3394c146b0e5e63f42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ccef7db69da7e3394c146b0e5e63f42">&#9670;&#160;</a></span>sht_empty()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_empty </td>
+          <td class="memname">bool sht_empty </td>
           <td>(</td>
           <td class="paramtype">const struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span></td><td>)</td>
           <td></td>
@@ -615,7 +615,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>True (<span class="tt">1</span>) if the table is empty; false (<span class="tt">0</span>) if it has at least one entry.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00602">602</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00601">601</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -661,7 +661,7 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00907">907</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00906">906</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -707,7 +707,7 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00935">935</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00934">934</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -749,18 +749,18 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>If the the key is present in the table, a pointer to the key's entry is returned. Otherwise, <span class="tt">NULL</span> is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00963">963</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l00962">962</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a774ddeec974dc6616b06c65e01078a15" name="a774ddeec974dc6616b06c65e01078a15"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a774ddeec974dc6616b06c65e01078a15">&#9670;&#160;</a></span>sht_replace()</h2>
+<a id="a195b40910c12c6dc21fbfc5b2f4c2716" name="a195b40910c12c6dc21fbfc5b2f4c2716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a195b40910c12c6dc21fbfc5b2f4c2716">&#9670;&#160;</a></span>sht_replace()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_replace </td>
+          <td class="memname">bool sht_replace </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
         </tr>
@@ -793,18 +793,18 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, and the entry associated with the key is replaced with the new entry. Otherwise, false (<span class="tt">0</span>) is returned.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01075">1075</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01074">1074</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="af2fcd39aa951331b8dc042238c05eee6" name="af2fcd39aa951331b8dc042238c05eee6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2fcd39aa951331b8dc042238c05eee6">&#9670;&#160;</a></span>sht_swap()</h2>
+<a id="a6d531c171c19475d113e6631ee23ef06" name="a6d531c171c19475d113e6631ee23ef06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d531c171c19475d113e6631ee23ef06">&#9670;&#160;</a></span>sht_swap()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_swap </td>
+          <td class="memname">bool sht_swap </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
         </tr>
@@ -843,18 +843,18 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, the entry associated with the key is replaced with the new entry, and the previous entry is copied to <code class="param">out</code>. Otherwise, false (<span class="tt">0</span>) is returned, and the contents of <code class="param">out</code> are unchanged.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01102">1102</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01101">1101</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a805f5a3b63530022638a169a3cadf9ac" name="a805f5a3b63530022638a169a3cadf9ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a805f5a3b63530022638a169a3cadf9ac">&#9670;&#160;</a></span>sht_pop()</h2>
+<a id="a826a9df51c8fe4ed3df707191ac6a105" name="a826a9df51c8fe4ed3df707191ac6a105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a826a9df51c8fe4ed3df707191ac6a105">&#9670;&#160;</a></span>sht_pop()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_pop </td>
+          <td class="memname">bool sht_pop </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
         </tr>
@@ -885,22 +885,22 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned, and its entry is stored in <code class="param">out</code>. Otherwise, false (<span class="tt">0</span>) is returned (and the contents of <code class="param">out</code> are unchanged).</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a773306947d9c00d86a5292def8f0cfa9" title="Remove an entry from the table.">sht_delete()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a16a6d148b8a1e9f24eeb56c3db568105" title="Remove an entry from the table.">sht_delete()</a> </dd>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01290">1290</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01289">1289</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a773306947d9c00d86a5292def8f0cfa9" name="a773306947d9c00d86a5292def8f0cfa9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a773306947d9c00d86a5292def8f0cfa9">&#9670;&#160;</a></span>sht_delete()</h2>
+<a id="a16a6d148b8a1e9f24eeb56c3db568105" name="a16a6d148b8a1e9f24eeb56c3db568105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16a6d148b8a1e9f24eeb56c3db568105">&#9670;&#160;</a></span>sht_delete()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_delete </td>
+          <td class="memname">bool sht_delete </td>
           <td>(</td>
           <td class="paramtype">struct sht_ht *</td>          <td class="paramname"><span class="paramname"><em>ht</em></span>, </td>
         </tr>
@@ -925,11 +925,11 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the key was present in the table, true (<span class="tt">1</span>) is returned. Otherwise, false (<span class="tt">0</span>) is returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a805f5a3b63530022638a169a3cadf9ac" title="Remove and return an entry from the table.">sht_pop()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a826a9df51c8fe4ed3df707191ac6a105" title="Remove and return an entry from the table.">sht_pop()</a> </dd>
 <dd>
 <a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01313">1313</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01312">1312</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -961,7 +961,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="index.html#abort-conditions">Abort conditions</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01330">1330</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01329">1329</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -979,7 +979,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">enum <a class="el" href="sht_8h.html#ae56a1de80dda406e4b96260c89609df2">sht_iter_type</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span>&#160;)</td>
+          <td class="paramtype">enum <a class="el" href="sht_8h.html#a8c782ca0214a2c1d605ac0fa25274e0e">sht_iter_type</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -994,7 +994,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, a pointer to the new iterator is returned. If memory allocation fails, <span class="tt">NULL</span> is returned, and the error status of the table is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01364">1364</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01363">1363</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +1023,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A code that describes the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01417">1417</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01416">1416</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1052,7 +1052,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string that describes the error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01432">1432</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01431">1431</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1080,18 +1080,18 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the next entry, if any. If no more entries are available, <span class="tt">NULL</span> is returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01445">1445</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01444">1444</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a25bea47651654bef265950974eb13976" name="a25bea47651654bef265950974eb13976"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25bea47651654bef265950974eb13976">&#9670;&#160;</a></span>sht_iter_delete()</h2>
+<a id="a84cfd8fc36e1ba98ab427d82802ad420" name="a84cfd8fc36e1ba98ab427d82802ad420"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84cfd8fc36e1ba98ab427d82802ad420">&#9670;&#160;</a></span>sht_iter_delete()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_iter_delete </td>
+          <td class="memname">bool sht_iter_delete </td>
           <td>(</td>
           <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span></td><td>)</td>
           <td></td>
@@ -1112,18 +1112,18 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01485">1485</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01484">1484</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
-<a id="a1db67fdca1f6c024f6dc5822f88c4a85" name="a1db67fdca1f6c024f6dc5822f88c4a85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1db67fdca1f6c024f6dc5822f88c4a85">&#9670;&#160;</a></span>sht_iter_replace()</h2>
+<a id="a65154d9195575fab4ad984fbbcfaf13d" name="a65154d9195575fab4ad984fbbcfaf13d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65154d9195575fab4ad984fbbcfaf13d">&#9670;&#160;</a></span>sht_iter_replace()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Bool sht_iter_replace </td>
+          <td class="memname">bool sht_iter_replace </td>
           <td>(</td>
           <td class="paramtype">struct sht_iter *</td>          <td class="paramname"><span class="paramname"><em>iter</em></span>, </td>
         </tr>
@@ -1149,7 +1149,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>On success, true (<span class="tt">1</span>) is returned. On error, false (<span class="tt">0</span>) is returned and the error status of the iterator is set. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01522">1522</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01521">1521</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
@@ -1176,7 +1176,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01542">1542</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht_8c_source.html#l01541">1541</a> of file <a class="el" href="sht_8c_source.html">sht.c</a>.</p>
 
 </div>
 </div>
