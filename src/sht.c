@@ -16,6 +16,8 @@
 
 #include <assert.h>
 #include <limits.h>
+#include <stdbit.h>
+#include <stdckdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -285,7 +287,7 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
 			   "sht_new_: hashfn must not be NULL");
 	sht_assert_nonnull((const void *)(uintptr_t)eqfn,
 			   "sht_new_: eqfn must not be NULL");
-	if (__builtin_popcountg(ealign) != 1)
+	if (!stdc_has_single_bit(ealign))
 		sht_abort("sht_new_: ealign not a power of 2");
 	if (esize % ealign != 0)
 		sht_abort("sht_new_: Incompatible values of esize and ealign");
@@ -475,14 +477,14 @@ static bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 
 	b_size = tsize * sizeof(union sht_bckt);  /* Max result is 2^26 */
 
-	if (__builtin_mul_overflow(tsize, ht->esize, &e_size)) {
+	if (ckd_mul(&e_size, tsize, ht->esize)) {
 		ht->err = SHT_ERR_TOOBIG;
 		return 0;
 	}
 
 	pad = (ht->ealign - b_size % ht->ealign) % ht->ealign;
 
-	if (__builtin_add_overflow(b_size + pad, e_size, &size)) {
+	if (ckd_add(&size, b_size + pad, e_size)) {
 		ht->err = SHT_ERR_TOOBIG;
 		return 0;
 	}
@@ -551,7 +553,7 @@ bool sht_init(struct sht_ht *ht, uint32_t capacity)
 	capacity = (capacity * 100 + ht->lft - 1) / ht->lft;
 
 	// Find smallest power of 2 that is >= capacity (max result 2^31)
-	capacity = UINT32_C(1) << (32 - __builtin_clzg(capacity - 1, 1));
+	capacity = stdc_bit_ceil(capacity);
 
 	// Check final capacity
 	if (capacity > SHT_MAX_TSIZE) {
