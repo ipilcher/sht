@@ -422,7 +422,7 @@ const char *sht_iter_msg(const struct sht_iter *iter);
 			       "Entry type (" #etype ") too large");	\
 		sht_new_(hashfn, eqfn, freefn,				\
 			 sizeof(etype), alignof(etype),			\
-			 SHT_ARG2(_, ##__VA_ARGS__, NULL));		\
+			 SHT_ARG2(_, ##__VA_ARGS__, nullptr));		\
 	})
 
 

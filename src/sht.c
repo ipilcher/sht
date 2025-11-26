@@ -247,7 +247,7 @@ static void sht_assert_nonnull(const void *p, const char *msg)
 {
 	const void *volatile vp = p;
 
-	if (vp == NULL)
+	if (vp == nullptr)
 		sht_abort(msg);
 }
 
@@ -293,13 +293,13 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
 		sht_abort("sht_new_: Incompatible values of esize and ealign");
 
 	if (esize > SHT_MAX_ESIZE) {
-		err != NULL && (*err = SHT_ERR_BAD_ESIZE);
-		return NULL;
+		err != nullptr && (*err = SHT_ERR_BAD_ESIZE);
+		return nullptr;
 	}
 
-	if ((ht = calloc(1, sizeof *ht)) == NULL) {
-		err != NULL && (*err = SHT_ERR_ALLOC);
-		return NULL;
+	if ((ht = calloc(1, sizeof *ht)) == nullptr) {
+		err != nullptr && (*err = SHT_ERR_ALLOC);
+		return nullptr;
 	}
 
 	ht->hashfn = hashfn;
@@ -489,7 +489,7 @@ static bool sht_alloc_arrays(struct sht_ht *ht, uint32_t tsize)
 		return 0;
 	}
 
-	if ((new = malloc(size)) == NULL) {
+	if ((new = malloc(size)) == nullptr) {
 		ht->err = SHT_ERR_ALLOC;
 		return 0;
 	}
@@ -709,9 +709,9 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 	uint8_t *oe;			// current position occupant entry
 	uint32_t p;			// current position (index)
 
-	assert(	(key != NULL && ce == NULL && c_uniq == 0)	/* search */
-		|| (key != NULL && ce != NULL && c_uniq == 0)	/* insert */
-		|| (key == NULL && ce != NULL && c_uniq == 1)	/* rehash */
+	assert(	(key != nullptr && ce == nullptr && c_uniq == 0)    /* search */
+		|| (key != nullptr && ce != nullptr && c_uniq == 0) /* insert */
+		|| (key == nullptr && ce != nullptr && c_uniq == 1) /* rehash */
 	);
 
 	cb = b_tmp;  // Initial candidate bucket goes in b_tmp[0]
@@ -730,7 +730,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 
 		// Empty position?
 		if (ob->empty) {
-			if (ce != NULL) {
+			if (ce != nullptr) {
 				if (ht->count == ht->thold)  // rehash needed?
 					return -2;
 				sht_set_entry(ht, ce, cb, oe, ob);
@@ -749,7 +749,7 @@ static int32_t sht_probe(struct sht_ht *ht, uint32_t hash, const void *key,
 		// Found later bucket group?
 		if (cb->psl > ob->psl) {
 			// If we're just searching, we're done
-			if (ce == NULL)
+			if (ce == nullptr)
 				return -1;
 			// Only need this check before 1st displacement
 			if (!c_uniq && ht->count == ht->thold)
@@ -805,7 +805,7 @@ static bool sht_ht_grow(struct sht_ht *ht)
 
 	for (i = 0; i < ht->tsize / 2; ++i, ++b, e += ht->esize) {
 		if (!b->empty) {
-			result = sht_probe(ht, b->hash, NULL, e, 1);
+			result = sht_probe(ht, b->hash, nullptr, e, 1);
 			assert(result == -1);
 		}
 	}
@@ -848,7 +848,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 	if (ht->iter_lock != 0)
 		sht_abort("sht_add/sht_set: Table has iterator(s)");
 
-	assert(key != NULL && entry != NULL);
+	assert(key != nullptr && entry != nullptr);
 
 	if (ht->max_psl_ct != 0) {
 		ht->err = SHT_ERR_BAD_HASH;
@@ -862,7 +862,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 	if (result >= 0) {
 		if (replace) {
 			current = ht->entries + result * ht->esize;
-			if (ht->freefn != NULL)
+			if (ht->freefn != nullptr)
 				ht->freefn(current, ht->free_ctx);
 			memcpy(current, entry, ht->esize);
 		}
@@ -877,7 +877,7 @@ static int sht_insert(struct sht_ht *ht, const void *key,
 	if (!sht_ht_grow(ht))
 		return -1;
 
-	result = sht_probe(ht, hash, NULL, entry, 1);
+	result = sht_probe(ht, hash, nullptr, entry, 1);
 	assert(result == -1);
 	return 0;
 }
@@ -970,11 +970,11 @@ const void *sht_get(struct sht_ht *ht, const void *restrict key)
 		sht_abort("sht_get: Table not initialized");
 
 	hash = ht->hashfn(key, ht->hash_ctx);
-	result = sht_probe(ht, hash, key, NULL, 0);
+	result = sht_probe(ht, hash, key, nullptr, 0);
 
 	if (result < 0) {
 		assert(result == -1);
-		return NULL;
+		return nullptr;
 	}
 
 	return ht->entries + result * ht->esize;
@@ -998,8 +998,8 @@ static void sht_change_at(struct sht_ht *ht, uint32_t pos,
 
 	e = ht->entries + pos * ht->esize;
 
-	if (out == NULL) {
-		if (ht->freefn != NULL)
+	if (out == nullptr) {
+		if (ht->freefn != nullptr)
 			ht->freefn(e, ht->free_ctx);
 		memcpy(e, entry, ht->esize);
 	}
@@ -1043,7 +1043,7 @@ static bool sht_change(struct sht_ht *ht, const void *key,
 		sht_abort("sht_replace/sht_swap: Table not initialized");
 
 	hash = ht->hashfn(key, ht->hash_ctx);
-	pos = sht_probe(ht, hash, key, NULL, 0);
+	pos = sht_probe(ht, hash, key, nullptr, 0);
 
 	if (pos < 0) {
 		assert(pos == -1);
@@ -1075,7 +1075,7 @@ static bool sht_change(struct sht_ht *ht, const void *key,
  */
 bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)
 {
-	return sht_change(ht, key, entry, NULL);
+	return sht_change(ht, key, entry, nullptr);
 }
 
 /**
@@ -1184,10 +1184,10 @@ static void sht_remove_at(struct sht_ht *ht, uint32_t pos, void *restrict out)
 	uint32_t end, next;
 
 	// Copy entry to output buffer or free its resources
-	if (out != NULL) {
+	if (out != nullptr) {
 		memcpy(out, ht->entries + pos * ht->esize, ht->esize);
 	}
-	else if (ht->freefn != NULL) {
+	else if (ht->freefn != nullptr) {
 		ht->freefn(ht->entries + pos * ht->esize, ht->free_ctx);
 	}
 
@@ -1258,7 +1258,7 @@ static bool sht_remove(struct sht_ht *ht, const void *restrict key,
 
 	// Find the entry
 	hash = ht->hashfn(key, ht->hash_ctx);
-	pos = sht_probe(ht, hash, key, NULL, 0);
+	pos = sht_probe(ht, hash, key, nullptr, 0);
 	if (pos < 0) {
 		assert(pos == -1);
 		return 0;
@@ -1313,7 +1313,7 @@ bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)
  */
 bool sht_delete(struct sht_ht *ht, const void *restrict key)
 {
-	return sht_remove(ht, key, NULL);
+	return sht_remove(ht, key, nullptr);
 }
 
 /**
@@ -1337,7 +1337,7 @@ void sht_free(struct sht_ht *ht)
 	if (ht->iter_lock != 0)
 		sht_abort("sht_free: Table has iterator(s)");
 
-	if (ht->freefn != NULL) {
+	if (ht->freefn != nullptr) {
 
 		for (i = 0, b = ht->buckets; i < ht->tsize; ++i, ++b) {
 
@@ -1374,26 +1374,26 @@ struct sht_iter *sht_iter_new(struct sht_ht *ht, enum sht_iter_type type)
 
 		if (ht->iter_lock == UINT16_MAX) {
 			ht->err = SHT_ERR_ITER_LOCK;
-			return NULL;
+			return nullptr;
 		}
 
 		if ((lock = ht->iter_lock + 1) > SHT_MAX_ITERS) {
 			ht->err = SHT_ERR_ITER_COUNT;
-			return NULL;
+			return nullptr;
 		}
 	}
 	else {	// SHT_ITER_RW
 		if (ht->iter_lock != 0) {
 			ht->err = SHT_ERR_ITER_LOCK;
-			return NULL;
+			return nullptr;
 		}
 
 		lock = UINT16_MAX;
 	}
 
-	if ((iter = calloc(1, sizeof *iter)) == NULL) {
+	if ((iter = calloc(1, sizeof *iter)) == nullptr) {
 		ht->err = SHT_ERR_ALLOC;
-		return NULL;
+		return nullptr;
 	}
 
 	iter->ht = ht;
@@ -1449,7 +1449,7 @@ const void *sht_iter_next(struct sht_iter *iter)
 	const struct sht_ht *ht;
 
 	if (iter->last == INT32_MAX)
-		return NULL;
+		return nullptr;
 
 	assert(iter->last < (int32_t)SHT_MAX_TSIZE);  // 2^24
 
@@ -1467,7 +1467,7 @@ const void *sht_iter_next(struct sht_iter *iter)
 	}
 
 	iter->last = INT32_MAX;
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -1496,7 +1496,7 @@ bool sht_iter_delete(struct sht_iter *iter)
 	assert(iter->last >= 0 && (uint32_t)iter->last < iter->ht->tsize);
 	assert(!iter->ht->buckets[iter->last].empty);
 
-	sht_remove_at(iter->ht, iter->last, NULL);
+	sht_remove_at(iter->ht, iter->last, nullptr);
 
 	// If an entry has been shifted down, return it on next call to
 	// SHT_ITER_NEXT
@@ -1530,7 +1530,7 @@ bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)
 	assert(iter->last >= 0 && (uint32_t)iter->last < iter->ht->tsize);
 	assert(!iter->ht->buckets[iter->last].empty);
 
-	sht_change_at(iter->ht, iter->last, entry, NULL);
+	sht_change_at(iter->ht, iter->last, entry, nullptr);
 
 	return 1;
 }

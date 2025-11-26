@@ -475,8 +475,8 @@ static inline void *sht_strip_const_(const void *p)
  * @param	etype	Entry type.
  * @param	hashfn	Hash function wrapper name.
  * @param	eqfn	Equality function wrapper name.
- * @param	freefn	Free function wrapper name or `NULL`.
- * @param	...	Absorbs `NULL` argument , if free function exists.
+ * @param	freefn	Free function wrapper name or `nullptr`.
+ * @param	...	Absorbs `nullptr` argument , if free function exists.
  */
 #define SHT_WRAP_NEW(sc, ttype, name, etype, hashfn, eqfn, freefn, ...)	\
 	[[maybe_unused]]						\
@@ -484,7 +484,7 @@ static inline void *sht_strip_const_(const void *p)
 	{								\
 		return (ttype *)sht_new_(hashfn, eqfn, freefn,		\
 					 sizeof(etype), alignof(etype),	\
-					 NULL);				\
+					 nullptr);			\
 	}
 
 /**
@@ -1186,7 +1186,7 @@ static inline void *sht_strip_const_(const void *p)
 		SHT_HF_NAME(ttspec),			/* hashfn */	\
 		SHT_EF_NAME(ttspec),			/* eqfn */	\
 		__VA_OPT__(SHT_FF_NAME(ttspec),)	/* freefn? */	\
-		NULL					/* freefn? */	\
+		nullptr					/* freefn? */	\
 	)								\
 									\
 	/* sht_set_hash_ctx() wrapper */				\
