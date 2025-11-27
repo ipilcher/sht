@@ -218,20 +218,21 @@ const char *sht_get_msg(const struct sht_ht *ht)
 }
 
 /**
- * Check that a `nonnull` pointer really isn't `NULL`.
+ * Check that a `nonnull` function pointer really isn't `NULL`.
  *
- * The public API (`sht.h`) declares most pointer arguments to be non-`NULL`
- * (using the `gnu::nonnull` function attribute).  This causes GCC or Clang to
- * issue a warning when it determines that one of these function arguments is
- * `NULL`, which is a very desirable behavior.
+ * `sht.h` declares sht_new_() with the following function attribute &mdash;
+ * `[[gnu::nonnull(1, 2)]]`.  This tells the compiler (GCC and Clang) that its
+ * `hashfn` and `eqfn` arguments should not be `NULL`, and causes them to issue
+ * a warning when they determine that a `NULL` pointer is being used for one of
+ * these arguments.
  *
- * However, it also has the effect of causing the compiler to assume that the
- * value of these arguments can **never** be `NULL`, even though that is not
- * actually enforced.  Because of this assumption, explicit checks for `NULL`
- * values will usually be optimized away.
+ * Unfortunately, it also allows the compiler to assume that the value of these
+ * arguments will **never** be `NULL`, even though it is not actually enforced.
+ * Because of this assumption, explicit checks for `NULL` values will usually be
+ * optimized away.
  *
- * This function endeavors to "force" the compiler to check that a pointer value
- * is not `NULL`, even when its been told that it can't be.
+ * This function endeavors to "force" the compiler to check that a function
+ * pointer value is not `NULL`, even when its been told that it can't be.
  *
  * @param	p	The pointer to be checked.
  * @param	msg	Error message if pointer is `NULL`.
@@ -243,16 +244,16 @@ const char *sht_get_msg(const struct sht_ht *ht)
 #else
 [[gnu::optimize("-fno-delete-null-pointer-checks")]]
 #endif
-static void sht_assert_nonnull(const void *p, const char *msg)
+static void sht_assert_nonnull(void (*p)(void), const char *msg)
 {
-	const void *volatile vp = p;
+	void (*volatile vp)(void) = p;
 
 	if (vp == nullptr)
 		sht_abort(msg);
 }
 
 /**
- * (Create a new hash table.)
+ * Create a new hash table (call via SHT_NEW()).
  *
  * > **NOTE**
  * >
@@ -282,10 +283,9 @@ struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
 {
 	struct sht_ht *ht;
 
-	// Casts suppress warnings about mixing function and object pointers
-	sht_assert_nonnull((const void *)(uintptr_t)hashfn,
+	sht_assert_nonnull((void (*)(void))hashfn,
 			   "sht_new_: hashfn must not be NULL");
-	sht_assert_nonnull((const void *)(uintptr_t)eqfn,
+	sht_assert_nonnull((void (*)(void))eqfn,
 			   "sht_new_: eqfn must not be NULL");
 	if (!stdc_has_single_bit(ealign))
 		sht_abort("sht_new_: ealign not a power of 2");
