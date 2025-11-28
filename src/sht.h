@@ -221,7 +221,7 @@ static_assert(sizeof(enum sht_err) == 1);
  * Table lifecycle - create, configure, initialize & free
  */
 
-// Create a new hash table.
+// Create a new hash table (call via SHT_NEW()).
 [[gnu::nonnull(1, 2)]]
 struct sht_ht *sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn,
 			sht_freefn_t freefn, size_t esize,
