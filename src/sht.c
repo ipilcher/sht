@@ -608,6 +608,24 @@ bool sht_empty(const struct sht_ht *ht)
 }
 
 /**
+ * Get the "peak" probe sequence length (PSL) of a table.
+ *
+ * The peak PSL is the highest PSL value of any entry in the table since the
+ * time that the table was expanded (or created).  It provides an indication of
+ * the performance of the table's hash function.
+ *
+ * At the default load factor threshold (85%), PSL values should generally
+ * remain in the single digits, or the low teens at most, unless the hash
+ * function being used is extremely poor.
+ *
+ * @param	ht	The hash table.
+ */
+uint8_t sht_peak_psl(const struct sht_ht *ht)
+{
+	return ht->peak_psl;
+}
+
+/**
  * Low level insert function.
  *
  * Copies candidate entry & bucket into table and updates table statistics.

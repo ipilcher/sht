@@ -280,6 +280,10 @@ uint32_t sht_size(const struct sht_ht *ht);
 [[gnu::nonnull]]
 bool sht_empty(const struct sht_ht *ht);
 
+// Get the "peak" probe sequence length (PSL) of a table.
+[[gnu::nonnull]]
+uint8_t  sht_peak_psl(const struct sht_ht *ht);
+
 // Remove an entry from the table.
 [[gnu::nonnull]]
 bool sht_delete(struct sht_ht *ht, const void *restrict key);
