@@ -45,8 +45,12 @@ cd src
 
 %files devel
 %attr(0644, root, root) %{_includedir}/sht.h
+%attr(0644, root, root) %{_includedir}/sht-ts.h
 %attr(-, root, root) %{_libdir}/libsht.so
 
 %changelog
+* Mon Dec 1 2025 Ian Pilcher <arequipeno@gmail.com>
+- Add type-safe API header
+
 * Sat Nov 8 2025 Ian Pilcher <arequipeno@gmail.com>
-* Initial SPEC file
+- Initial SPEC file
