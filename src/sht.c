@@ -9,7 +9,10 @@
  */
 
 
-/** @file */
+/**
+ * @file
+ * SHT library implementation.
+ */
 
 
 #include "sht.h"

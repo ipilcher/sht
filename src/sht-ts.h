@@ -11,7 +11,6 @@
 
 /**
  * @file
- *
  * Generates type-safe wrappers for the SHT API.
  *
  * @include{doc} docs/type-safe.md

@@ -9,7 +9,10 @@
  */
 
 
-/** @file */
+/**
+ * @file
+ * SHT library API.
+ */
 
 
 #ifndef SHT_H
