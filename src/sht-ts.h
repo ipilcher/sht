@@ -682,9 +682,9 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_WRAP_SIZE(sc, name, ttype)					\
 	[[maybe_unused, gnu::nonnull]]					\
-	sc uint32_t name(ttype *ht)					\
+	sc uint32_t name(const ttype *ht)				\
 	{								\
-		return sht_size((struct sht_ht *)ht);			\
+		return sht_size((const struct sht_ht *)ht);		\
 	}
 
 /**
@@ -698,9 +698,25 @@ static inline void *sht_strip_const_(const void *p)
  */
 #define SHT_WRAP_EMPTY(sc, name, ttype)					\
 	[[maybe_unused, gnu::nonnull]]					\
-	sc bool name(ttype *ht)						\
+	sc bool name(const ttype *ht)					\
 	{								\
-		return sht_empty((struct sht_ht *)ht);			\
+		return sht_empty((const struct sht_ht *)ht);		\
+	}
+
+/**
+ * @internal
+ * @brief
+ * Generate a type-safe wrapper for sht_peakk_psl().
+ *
+ * @param	sc	Storage class (e.g., `static`).  May be empty.
+ * @param	name	Wrapper function name.
+ * @param	ttype	Type-safe table type (incomplete).
+ */
+#define SHT_WRAP_PEAK_PSL(sc, name, ttype)				\
+	[[maybe_unused, gnu::nonnull]]					\
+	sc uint8_t name(const ttype *ht)				\
+	{								\
+		return sht_peak_psl((const struct sht_ht *)ht);		\
 	}
 
 /**
@@ -1282,6 +1298,13 @@ static inline void *sht_strip_const_(const void *p)
 	SHT_WRAP_EMPTY(							\
 		SHT_FN_SC(ttspec),			/* sc */	\
 		SHT_FN_NAME(ttspec, _empty),		/* name */	\
+		SHT_HT_T(ttspec)			/* ttype */	\
+	)								\
+									\
+	/* sht_peak_psl() wrapper */					\
+	SHT_WRAP_PEAK_PSL(						\
+		SHT_FN_SC(ttspec),			/* sc */	\
+		SHT_FN_NAME(ttspec, _peak_psl),		/* name */	\
 		SHT_HT_T(ttspec)			/* ttype */	\
 	)								\
 									\
