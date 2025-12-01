@@ -48,6 +48,13 @@ will not fit in the 4 GiB address space of a 32-bit system.
 
 ## Usage
 
+> **NOTE**
+>
+> This document describes the API provided by the SHT library (`sht.h`), which
+> is not type-safe.  `sht-ts.h`, which provides a macro that generates type-safe
+> wrappers for the library API is the recommended way to make use of the
+> library.
+
 The basic usage pattern is:
 
 * Create a table &mdash; `SHT_NEW()`,
