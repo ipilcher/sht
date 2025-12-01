@@ -17,13 +17,31 @@ See:
 
 ## Building and installing
 
+> **NOTE**
+>
+> For installation on Fedora, see this [COPR repository][4].
+
 The library consists of a single file, so building it is straightforward.
+
+Determine the full and soname versions of the library, using the latest Git tag.
+
+```
+$ GIT_TAG=$(git tag --sort=committerdate \
+        | grep -E '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' \
+        | tail -n 1
+)
+
+$ LIB_VER=${GIT_TAG#v}
+$ SO_VER=${LIB_VER%.*}
+```
+
+Build the library.
 
 ```
 $ cd src
 
 $ gcc -O2 -Wall -Wextra -Wcast-qual -Wcast-align=strict -shared -fPIC \
-	-Wl,-soname,libsht.so.0.1 -o libsht.so.0.1.0 sht.c
+	-Wl,-soname,libsht.so.${SO_VER} -o libsht.so.${LIB_VER} sht.c
 ```
 
 Installation requires `root` privileges.  (Adjust the library path as necessary
@@ -32,9 +50,9 @@ for the target distribution and architecture.)
 Install the library file and symlinks.
 
 ```
-$ sudo cp src/libsht.so.0.1.0 /usr/local/lib64/
-$ sudo ln -s libsht.so.0.1.0 /usr/local/lib64/libsht.so.0.1
-$ sudo ln -s libsht.so.0.1.0 /usr/local/lib64/libsht.so
+$ sudo cp src/libsht.so.${LIB_VER} /usr/local/lib64/
+$ sudo ln -s libsht.so.${LIB_VER} /usr/local/lib64/libsht.so.${SO_VER}
+$ sudo ln -s libsht.so.${LIB_VER} /usr/local/lib64/libsht.so
 ```
 
 Configure the dynamic linker (if necessary) and update its cache.
@@ -46,13 +64,14 @@ $ echo /usr/local/lib64 | sudo tee /etc/ld.so.conf.d/local.conf
 $ sudo ldconfig
 ```
 
-If desired, installed the header file.
+If desired, installed the header files.
 
 ```
-$ sudo cp src/sht.h /usr/local/include
+$ sudo cp src/sht.h src/sht-ts.h /usr/local/include
 ```
 
 
 [1]: https://github.com/ipilcher/sht/blob/main/docs/robin-hood.md
 [2]: https://ipilcher.github.io/sht/
 [3]: https://github.com/ipilcher/sht/blob/main/docs/psl-limits.md
+[4]: https://copr.fedorainfracloud.org/coprs/ipilcher/sht/
