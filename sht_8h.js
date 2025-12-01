@@ -32,6 +32,7 @@ var sht_8h =
     [ "sht_get", "sht_8h.html#a0dd66cb8cf354a570429662675bc6485", null ],
     [ "sht_size", "sht_8h.html#a82e02f941cacb73ed15c616bfe268985", null ],
     [ "sht_empty", "sht_8h.html#a6ccef7db69da7e3394c146b0e5e63f42", null ],
+    [ "sht_peak_psl", "sht_8h.html#a2697cc607af6d33d457a956bfab0168c", null ],
     [ "sht_delete", "sht_8h.html#a16a6d148b8a1e9f24eeb56c3db568105", null ],
     [ "sht_pop", "sht_8h.html#a826a9df51c8fe4ed3df707191ac6a105", null ],
     [ "sht_replace", "sht_8h.html#a195b40910c12c6dc21fbfc5b2f4c2716", null ],

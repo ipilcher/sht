@@ -98,6 +98,9 @@ $(function(){initNavTree('sht-ts_8h.html','',''); });
   <div class="headertitle"><div class="title">sht-ts.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Generates type-safe wrappers for the SHT API.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="sht_8h_source.html">sht.h</a>&quot;</code><br />
 </div>
 <p><a href="sht-ts_8h_source.html">Go to the source code of this file.</a></p>
@@ -107,7 +110,423 @@ Macros</h2></td></tr>
 <tr class="memitem:a1b6c040a60b38bfb0a94150954ebd42a" id="r_a1b6c040a60b38bfb0a94150954ebd42a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a">SHT_TABLE_TYPE</a>(ttspec,  ktype,  etype,  hfspec,  efspec, ...)</td></tr>
 <tr class="memdesc:a1b6c040a60b38bfb0a94150954ebd42a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate types and functions for a type-safe hash table type.  <br /></td></tr>
 </table>
-<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Generates type-safe wrappers for the SHT API. </p>
+<p>The <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> macro generates a strongly typed front-end to the generic SHT hash table implementation. The underlying library (<span class="tt"><a class="el" href="sht_8h.html" title="SHT library API.">sht.h</a></span>) operates on <span class="tt">void</span> pointers, but the type-safe layer ensures that each instance of a table is associated with specific key and entry types, eliminating unsafe casts, mismatched callback signatures, and logic errors. All errors related to type mismatch are detected at compile time, not runtime.</p>
+<h3 class="doxsection"><a class="anchor" id="core-concepts"></a>
+Core concepts</h3>
+<p>A type-safe table instance is parameterized by the following.</p>
+<ul>
+<li><p class="startli">The table type spec (<span class="tt">ttspec</span>). This is a 1- or 2-member tuple that contains an <b>optional</b> storage class modifier and a <b>required</b> prefix.</p><ul>
+<li>If specified, the storage class modifier changes the storage class of the type-safe functions that are generated. By default, all of the generated functions have a <span class="tt">static</span> storage class, but this can be overridden by specifying a different storage class. The special value <span class="tt">extern</span> can be specified to remove any storage class specifier from the generated functions. (Generated hash, equality, and free functions are always <span class="tt">static</span>.)</li>
+<li>The prefix is used to construct the names of the generated types and functions. For example, a prefix of <span class="tt">foo</span> will generate functions named <span class="tt">foo_new()</span>, <span class="tt">foo_init()</span>, <span class="tt">foo_add()</span>, etc.</li>
+</ul>
+<p class="startli">The tuple must be parenthesized if a storage class modified is specified; otherwise, parentheses are optional, so the following formats are all valid &mdash; <span class="tt">prefix</span>, <span class="tt">(prefix)</span>, and <span class="tt">(storage_class, prefix)</span>.</p>
+</li>
+<li>The key type (<span class="tt">ktype</span>). The base type of the keys that will be stored in the table. For example, if the application-supplied hash and equality functions accept <span class="tt">const char *</span> as their <span class="tt">key</span> arguments, then the <span class="tt">ktype</span> would be <span class="tt">char</span>.</li>
+<li>The entry type (<span class="tt">etype</span>). The base type of the entries that will be stored in the table. If the application-supplied equality function accepts a <span class="tt">const struct foo_entry *</span> as its <span class="tt">entry</span> argument, then the <span class="tt">etype</span> would be <span class="tt">struct foo_entry</span>.</li>
+<li><p class="startli">The hash function spec (<span class="tt">hfspec</span>). This is a 1- or 2-member tuple that that contains a <b>required</b> type-safe hash function name and an <b>optional</b> context type.</p>
+<p class="startli">Note that unlike the key and entry types, context types are not <span class="tt">const</span>-qualified by default. This allows application-supplied hash, equality, and free functions to modify their contexts, if needed. If the supplied function does expect a <span class="tt">const</span>-qualified pointer as its context argument, then <span class="tt">const</span> should be included in the context type &mdash; e.g., <span class="tt">const uint32_t</span>.</p>
+<p class="startli">The tuple must be parenthesized if a context type is specified; otherwise, parentheses are optional, so the following formats are all valid &mdash; <span class="tt">hash_function</span>, <span class="tt">(hash_function)</span>, and <span class="tt">(hash_function, context_type)</span>.</p>
+</li>
+<li>The equality function spec (<span class="tt">efspec</span>). A 1- or 2-member tuple that contains a <b>required</b> type-safe equality function name and an <b>optional</b> context type.</li>
+<li><b>Optionally</b>, a free function spec &mdash; a 1- or 2-member tuple that contains a type-safe free function name and an optional context type.</li>
+</ul>
+<p>Based on these parameters, <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> generates:</p>
+<ul>
+<li>A distinct opaque table type (e.g., <span class="tt">struct foo_ht</span>),</li>
+<li>A corresponding opaque iterator type (e.g., <span class="tt">struct foo_iter</span>),</li>
+<li>Wrapper functions for the application-provided hash, equality, and (if specified) free functions. The generated functions accept <span class="tt">void</span> pointers as their key, entry, and context arguments, as required by the library API.</li>
+<li>Type-safe context setter functions for any context types that are specified. (If no context type is specified for a hash, equality, or free function, then no setter function will be generated for that context.)</li>
+<li>Type-safe wrappers for all of the library API functions (except <a class="el" href="sht_8c.html#aa2bb68233ce1db0c4f1ba50fec4daa84" title="Get the description for an error code.">sht_msg()</a>).</li>
+</ul>
+<h3 class="doxsection"><a class="anchor" id="examples"></a>
+Examples</h3>
+<h4 class="doxsection"><a class="anchor" id="integer-set"></a>
+Integer set</h4>
+<p>This example shows a simple set of integers. No values are stored, so no entry structure or free function is required. <a href="https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html#gacc4473b9d9953adcbfcc51b32cb887ef">XXH3_64bits()</a> is used as a hash function, and it does not require a seed, so no context is needed by either the hash or equality functions.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sht-ts_8h.html">sht-ts.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;xxhash.h&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> int_hash(<span class="keyword">const</span> <span class="keywordtype">int</span> *key)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (uint32_t)XXH3_64bits(key, <span class="keyword">sizeof</span> *key);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> int_eq(<span class="keyword">const</span> <span class="keywordtype">int</span> *restrict key, <span class="keyword">const</span> <span class="keywordtype">int</span> *restrict entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> *key == *entry;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_define" href="#a1b6c040a60b38bfb0a94150954ebd42a">SHT_TABLE_TYPE</a>(<span class="keywordtype">int</span>, <span class="keywordtype">int</span>, <span class="keywordtype">int</span>, int_hash, int_eq)</div>
+<div class="ttc" id="asht-ts_8h_html"><div class="ttname"><a href="sht-ts_8h.html">sht-ts.h</a></div><div class="ttdoc">Generates type-safe wrappers for the SHT API.</div></div>
+<div class="ttc" id="asht-ts_8h_html_a1b6c040a60b38bfb0a94150954ebd42a"><div class="ttname"><a href="#a1b6c040a60b38bfb0a94150954ebd42a">SHT_TABLE_TYPE</a></div><div class="ttdeci">#define SHT_TABLE_TYPE(ttspec, ktype, etype, hfspec, efspec,...)</div><div class="ttdoc">Generate types and functions for a type-safe hash table type.</div><div class="ttdef"><b>Definition</b> <a href="sht-ts_8h_source.html#l01162">sht-ts.h:1162</a></div></div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>NOTE</b></p>
+<p>The type-safe hash, equality, and (if needed) free functions should almost always be <span class="tt">static</span>, so that they can be inlined within the generated callback wrappers. </p>
+</blockquote>
+<p>A simplified subset of the code generated by this <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> invocation is shown below for illustrative purposes. See the next example for a complete <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> expansion.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> uint32_t int_hash_wrapper_(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key,</div>
+<div class="line">                              <span class="keywordtype">void</span> *restrict context)</div>
+<div class="line">{</div>
+<div class="line">    (void)context;</div>
+<div class="line">    <span class="keywordflow">return</span> int_hash(key);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> int_eq_wrapper_(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key,</div>
+<div class="line">                        <span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry, <span class="keywordtype">void</span> *restrict context)</div>
+<div class="line">{</div>
+<div class="line">    (void)context;</div>
+<div class="line">    <span class="keywordflow">return</span> int_eq(key, entry);</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>These wrapper functions conform to the SHT API for hash and equality functions.</p>
+<ul>
+<li>No free function wrapper was generated, because the <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> invocation did not include a free function spec.</li>
+<li>Neither the hash function spec nor the equality function spec included a context type, so the generated wrappers do not include that argument in their calls to the type-safe functions. (The <span class="tt">(void)context;</span> statements suppress unused argument warnings.)</li>
+</ul>
+<div class="fragment"><div class="line"><span class="keyword">struct </span>int_ht;</div>
+<div class="line"><span class="keyword">struct </span>int_iter;</div>
+</div><!-- fragment --><p>These incomplete types will be used in the type-safe wrapper functions.</p>
+<div class="fragment"><div class="line"><span class="keyword">static_assert</span>(<span class="keyword">sizeof</span>(int) &lt;= 16384, <span class="stringliteral">&quot;Entry type (int) too large&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">struct </span>int_ht *int_new(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (<span class="keyword">struct</span> int_ht *)<a class="code hl_function" href="sht_8c.html#adb0d21d1b389094b3188be811ed5616c">sht_new_</a>(int_hash_wrapper_, int_eq_wrapper_,</div>
+<div class="line">                                     <span class="keyword">nullptr</span>, <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>), <span class="keyword">alignof</span>(<span class="keywordtype">int</span>),</div>
+<div class="line">                                     <span class="keyword">nullptr</span>);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_adb0d21d1b389094b3188be811ed5616c"><div class="ttname"><a href="sht_8c.html#adb0d21d1b389094b3188be811ed5616c">sht_new_</a></div><div class="ttdeci">struct sht_ht * sht_new_(sht_hashfn_t hashfn, sht_eqfn_t eqfn, sht_freefn_t freefn, size_t esize, size_t ealign, enum sht_err *err)</div><div class="ttdoc">Create a new hash table (call via SHT_NEW()).</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00283">sht.c:283</a></div></div>
+</div><!-- fragment --><p>Note the compile-time check of the entry size (<span class="tt">int</span> in this case). Because of this check, the only possible failure mode of <span class="tt">int_new()</span> is a memory allocation failure (<a class="el" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7a87b4856b631b1a7b906e9d6083dbd2a1" title="Memory allocation failed.">SHT_ERR_ALLOC</a>), so there is no need to pass an error code output pointer to <a class="el" href="sht_8c.html#adb0d21d1b389094b3188be811ed5616c" title="Create a new hash table (call via SHT_NEW()).">sht_new_()</a>.</p>
+<p>This function simply calls <a class="el" href="sht_8c.html#adb0d21d1b389094b3188be811ed5616c" title="Create a new hash table (call via SHT_NEW()).">sht_new_()</a> and casts its return value to the generated table type. Like all of the generated wrappers (except the callback wrappers), it will almost always be "optimized away," and generate no actual code.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> int_set_lft(<span class="keyword">struct</span> int_ht *ht, uint8_t lft)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#a99d607b370024be6526a17863ee62145">sht_set_lft</a>((<span class="keyword">struct</span> sht_ht *)ht, lft);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> int_set_psl_limit(<span class="keyword">struct</span> int_ht *ht, uint8_t limit)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62">sht_set_psl_limit</a>((<span class="keyword">struct</span> sht_ht *)ht, limit);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_a99d607b370024be6526a17863ee62145"><div class="ttname"><a href="sht_8c.html#a99d607b370024be6526a17863ee62145">sht_set_lft</a></div><div class="ttdeci">void sht_set_lft(struct sht_ht *ht, uint8_t lft)</div><div class="ttdoc">Set the load factor threshold for a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00412">sht.c:412</a></div></div>
+<div class="ttc" id="asht_8c_html_aa0790506e1bb1f4c3018feaa07d9fe62"><div class="ttname"><a href="sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62">sht_set_psl_limit</a></div><div class="ttdeci">void sht_set_psl_limit(struct sht_ht *ht, uint8_t limit)</div><div class="ttdoc">Set the PSL limit of a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00442">sht.c:442</a></div></div>
+</div><!-- fragment --><p>The macro generates setters for the load factor threshold (LFT) and the probe sequence length (PSL) limit, but it doesn't generate any context setters, because no context types were specified.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">int</span> int_set(<span class="keyword">struct</span> int_ht *ht, <span class="keyword">const</span> <span class="keywordtype">int</span> *key, <span class="keyword">const</span> <span class="keywordtype">int</span> *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd">sht_set</a>((<span class="keyword">struct</span> sht_ht *)ht, key, entry);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> *int_get(<span class="keyword">struct</span> int_ht *ht, <span class="keyword">const</span> <span class="keywordtype">int</span> *key)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a0dd66cb8cf354a570429662675bc6485">sht_get</a>((<span class="keyword">struct</span> sht_ht *)ht, key);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_a0dd66cb8cf354a570429662675bc6485"><div class="ttname"><a href="sht_8c.html#a0dd66cb8cf354a570429662675bc6485">sht_get</a></div><div class="ttdeci">const void * sht_get(struct sht_ht *ht, const void *restrict key)</div><div class="ttdoc">Lookup an entry in a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00985">sht.c:985</a></div></div>
+<div class="ttc" id="asht_8c_html_a44c78b1e70265deda028ec34f6c2ecbd"><div class="ttname"><a href="sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd">sht_set</a></div><div class="ttdeci">int sht_set(struct sht_ht *ht, const void *key, const void *entry)</div><div class="ttdoc">Unconditionally set the value associated with a key.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00957">sht.c:957</a></div></div>
+</div><!-- fragment --><p>These wrappers accept and return pointers to the key and entry types (both <span class="tt">int</span>), rather than the <span class="tt">void</span> pointers used by the underlying API. (Conversions between <span class="tt">void</span> pointers and other object pointer types do not require explicit casts.)</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">struct </span>int_iter *int_iter_new(<span class="keyword">struct</span> int_ht *ht, <span class="keyword">enum</span> <a class="code hl_enumeration" href="sht_8h.html#a8c782ca0214a2c1d605ac0fa25274e0e">sht_iter_type</a> type)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (<span class="keyword">struct</span> int_iter *)<a class="code hl_function" href="sht_8c.html#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a>((<span class="keyword">struct</span> sht_ht *)ht, type);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_a82f0e05af3fc1174b3ff844ad1511362"><div class="ttname"><a href="sht_8c.html#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a></div><div class="ttdeci">struct sht_iter * sht_iter_new(struct sht_ht *ht, enum sht_iter_type type)</div><div class="ttdoc">Create a new iterator.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01386">sht.c:1386</a></div></div>
+<div class="ttc" id="asht_8h_html_a8c782ca0214a2c1d605ac0fa25274e0e"><div class="ttname"><a href="sht_8h.html#a8c782ca0214a2c1d605ac0fa25274e0e">sht_iter_type</a></div><div class="ttdeci">sht_iter_type</div><div class="ttdoc">Iterator types.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00182">sht.h:182</a></div></div>
+</div><!-- fragment --><p>This wrapper returns the incomplete type-safe iterator type that was declared earlier.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> *int_iter_next(<span class="keyword">struct</span> int_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a2e5418f907f471d6b3670add83cfd77b">sht_iter_next</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> int_iter_replace(<span class="keyword">struct</span> int_iter *iter, <span class="keyword">const</span> <span class="keywordtype">int</span> *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a65154d9195575fab4ad984fbbcfaf13d">sht_iter_replace</a>((<span class="keyword">struct</span> sht_iter *)iter, entry);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_a2e5418f907f471d6b3670add83cfd77b"><div class="ttname"><a href="sht_8c.html#a2e5418f907f471d6b3670add83cfd77b">sht_iter_next</a></div><div class="ttdeci">const void * sht_iter_next(struct sht_iter *iter)</div><div class="ttdoc">Get the next entry from an iterator.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01467">sht.c:1467</a></div></div>
+<div class="ttc" id="asht_8c_html_a65154d9195575fab4ad984fbbcfaf13d"><div class="ttname"><a href="sht_8c.html#a65154d9195575fab4ad984fbbcfaf13d">sht_iter_replace</a></div><div class="ttdeci">bool sht_iter_replace(struct sht_iter *iter, const void *restrict entry)</div><div class="ttdoc">Replace the last entry returned by an iterator.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01544">sht.c:1544</a></div></div>
+</div><!-- fragment --><p>These wrappers operate on the type-safe iterator (<span class="tt">struct int_iter *</span>) and entry (<span class="tt">int</span>) types.</p>
+<h4 class="doxsection"><a class="anchor" id="stringstring-map"></a>
+String/string map</h4>
+<p>This example shows a map that uses C strings as both its key and value types.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sht-ts_8h.html">sht-ts.h</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;xxhash.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>map_entry {</div>
+<div class="line">    <span class="keywordtype">char</span> *key;</div>
+<div class="line">    <span class="keywordtype">char</span> *value;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> uint64_t map_eq_called = 0;</div>
+<div class="line"><span class="keyword">static</span> uint64_t map_free_called = 0;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> uint32_t map_hash(<span class="keyword">const</span> <span class="keywordtype">char</span> *restrict key, <span class="keyword">const</span> XXH64_hash_t *seed)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (uint32_t)XXH3_64bits_withSeed(key, strlen(key), *seed)</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> map_eq(<span class="keyword">const</span> <span class="keywordtype">char</span> *key, <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry,</div>
+<div class="line">                   uint64_t *called)</div>
+<div class="line">{</div>
+<div class="line">    ++(*called);</div>
+<div class="line">    <span class="keywordflow">return</span> strcmp(key, entry-&gt;key) == 0;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> map_free(<span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry, uint64_t *called)</div>
+<div class="line">{</div>
+<div class="line">    ++(*called);</div>
+<div class="line">    free(entry-&gt;key);</div>
+<div class="line">    free(entry-&gt;value);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_define" href="#a1b6c040a60b38bfb0a94150954ebd42a">SHT_TABLE_TYPE</a>(</div>
+<div class="line">    (<span class="keyword">extern</span>, map),</div>
+<div class="line">    <span class="keywordtype">char</span>,</div>
+<div class="line">    <span class="keyword">struct</span> map_entry,</div>
+<div class="line">    (map_hash, <span class="keyword">const</span> XXH64_hash_t),</div>
+<div class="line">    (map_eq, uint64_t),</div>
+<div class="line">    (map_free, uint64_t)</div>
+<div class="line">)</div>
+</div><!-- fragment --><p>This example is constructed to show as many options as possible.</p>
+<ul>
+<li>The table type spec includes the special <span class="tt">extern</span> storage class, which causes all of the generated functions (except the callbacks) to have no explicit storage class. (This is probably not a good idea, because it will prevent the compiler from optimizing these functions away.)</li>
+<li>The underlying hash function (<a href="https://xxhash.com/doc/v0.8.3/group___x_x_h3__family.html#ga22b06ba82074a88f9c08c2dfa3808f80">XXH3_64bits_withSeed()</a>) requires a seed, which is passed to the type-safe hash function as a <span class="tt">const</span>-qualified pointer.</li>
+<li>The type-safe equality and free functions both use a <b>mutable</b> context to count the number of times that they are called.</li>
+</ul>
+<p>The complete expansion of this <a class="el" href="#a1b6c040a60b38bfb0a94150954ebd42a" title="Generate types and functions for a type-safe hash table type.">SHT_TABLE_TYPE()</a> invocation is shown below. It was produced by running the following command. (The <span class="tt">.clang-format</span> file used can be found in the root directory of this repository.)</p>
+<div class="fragment"><div class="line">gcc -E test.c | grep -v <span class="stringliteral">&#39;^# &#39;</span> | clang-format<span class="stringliteral">&#39;</span></div>
+</div><!-- fragment --><p>The macro expansion is found at the end of the generated file.</p>
+<div class="fragment"><div class="line"><span class="comment">// ...</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static_assert</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct </span>map_entry) &lt;= 16384,</div>
+<div class="line">              <span class="stringliteral">&quot;Entry type (struct map_entry) too large&quot;</span>);</div>
+<div class="line"><span class="keyword">struct </span>map_ht;</div>
+<div class="line"><span class="keyword">struct </span>map_iter;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> uint32_t map_hash_wrapper_(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key,</div>
+<div class="line">                                  <span class="keywordtype">void</span> *restrict context)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">typedef</span> uint32_t (*ts_hashfn_t)(<span class="keyword">const</span> <span class="keywordtype">char</span> *restrict,</div>
+<div class="line">                                    <span class="keyword">const</span> XXH64_hash_t *restrict);</div>
+<div class="line">    <span class="keyword">static_assert</span>(</div>
+<div class="line">            _Generic((map_hash), ts_hashfn_t: 1, <span class="keywordflow">default</span>: 0),</div>
+<div class="line">            <span class="stringliteral">&quot;map_hash has incorrect signature; expected: uint32_t map_hash ( &quot;</span></div>
+<div class="line">            <span class="stringliteral">&quot;const char *restrict , const XXH64_hash_t *restrict )&quot;</span>);</div>
+<div class="line">    (void)context;</div>
+<div class="line">    <span class="keywordflow">return</span> map_hash(key, context);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> map_eq_wrapper_(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict key,</div>
+<div class="line">                            <span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry, <span class="keywordtype">void</span> *restrict context)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">typedef</span> bool (*ts_eqfn_t)(<span class="keyword">const</span> <span class="keywordtype">char</span> *restrict,</div>
+<div class="line">                              <span class="keyword">const</span> <span class="keyword">struct </span>map_entry *restrict,</div>
+<div class="line">                              uint64_t *restrict);</div>
+<div class="line">    <span class="keyword">static_assert</span>(_Generic((map_eq), ts_eqfn_t: 1, <span class="keywordflow">default</span>: 0),</div>
+<div class="line">                  <span class="stringliteral">&quot;map_eq has incorrect signature; expected: bool map_eq ( &quot;</span></div>
+<div class="line">                  <span class="stringliteral">&quot;const char *restrict , const struct map_entry *restrict , &quot;</span></div>
+<div class="line">                  <span class="stringliteral">&quot;uint64_t *restrict )&quot;</span>);</div>
+<div class="line">    (void)context;</div>
+<div class="line">    <span class="keywordflow">return</span> map_eq(key, entry, context);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> map_free_wrapper_(<span class="keyword">const</span> <span class="keywordtype">void</span> *restrict entry,</div>
+<div class="line">                              <span class="keywordtype">void</span> *restrict context)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">typedef</span> void (*ts_freefn_t)(<span class="keyword">const</span> <span class="keyword">struct </span>map_entry *restrict,</div>
+<div class="line">                                uint64_t *restrict);</div>
+<div class="line">    <span class="keyword">static_assert</span>(_Generic((map_free), ts_freefn_t: 1, <span class="keywordflow">default</span>: 0),</div>
+<div class="line">                  <span class="stringliteral">&quot;map_free has incorrect signature; expected: void map_free ( &quot;</span></div>
+<div class="line">                  <span class="stringliteral">&quot;const struct map_entry *restrict , uint64_t *restrict )&quot;</span>);</div>
+<div class="line">    (void)context;</div>
+<div class="line">    map_free(entry, context);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused]]</div>
+<div class="line"><span class="keyword">struct </span>map_ht *map_new(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (<span class="keyword">struct</span> map_ht *)<a class="code hl_function" href="sht_8c.html#adb0d21d1b389094b3188be811ed5616c">sht_new_</a>(</div>
+<div class="line">            map_hash_wrapper_, map_eq_wrapper_, map_free_wrapper_,</div>
+<div class="line">            <span class="keyword">sizeof</span>(<span class="keyword">struct</span> map_entry), <span class="keyword">alignof</span>(<span class="keyword">struct</span> map_entry), <span class="keyword">nullptr</span>);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull(1)]]</div>
+<div class="line"><span class="keywordtype">void</span> map_set_hash_ctx(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> XXH64_hash_t *context)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#a45747c22ee2656dcd16d86ce74ea5ec8">sht_set_hash_ctx</a>((<span class="keyword">struct</span> sht_ht *)ht, sht_strip_const_(context));</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull(1)]]</div>
+<div class="line"><span class="keywordtype">void</span> map_set_eq_ctx(<span class="keyword">struct</span> map_ht *ht, uint64_t *context)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#a9d385ed61d95d30e63344ebe6aa522a3">sht_set_eq_ctx</a>((<span class="keyword">struct</span> sht_ht *)ht, sht_strip_const_(context));</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull(1)]]</div>
+<div class="line"><span class="keywordtype">void</span> map_set_free_ctx(<span class="keyword">struct</span> map_ht *ht, uint64_t *context)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#aae724bd6d23b2cc6921fe638c75c1b48">sht_set_free_ctx</a>((<span class="keyword">struct</span> sht_ht *)ht, sht_strip_const_(context));</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">void</span> map_set_lft(<span class="keyword">struct</span> map_ht *ht, uint8_t lft)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#a99d607b370024be6526a17863ee62145">sht_set_lft</a>((<span class="keyword">struct</span> sht_ht *)ht, lft);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">void</span> map_set_psl_limit(<span class="keyword">struct</span> map_ht *ht, uint8_t limit)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#aa0790506e1bb1f4c3018feaa07d9fe62">sht_set_psl_limit</a>((<span class="keyword">struct</span> sht_ht *)ht, limit);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_init(<span class="keyword">struct</span> map_ht *ht, uint32_t capacity)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a4eaf764fc86d5f9428d6763f3aecadcd">sht_init</a>((<span class="keyword">struct</span> sht_ht *)ht, capacity);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">void</span> map_free(<span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#ae36e072969cef119b1176887dcdc8623">sht_free</a>((<span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">int</span> map_add(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key, <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a5cd47d066198640b242e7a1ecebab92e">sht_add</a>((<span class="keyword">struct</span> sht_ht *)ht, key, entry);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">int</span> map_set(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key, <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd">sht_set</a>((<span class="keyword">struct</span> sht_ht *)ht, key, entry);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">struct </span>map_entry *map_get(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a0dd66cb8cf354a570429662675bc6485">sht_get</a>((<span class="keyword">struct</span> sht_ht *)ht, key);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line">uint32_t map_size(<span class="keyword">const</span> <span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a82e02f941cacb73ed15c616bfe268985">sht_size</a>((<span class="keyword">const</span> <span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_empty(<span class="keyword">const</span> <span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a6ccef7db69da7e3394c146b0e5e63f42">sht_empty</a>((<span class="keyword">const</span> <span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line">uint8_t map_peak_psl(<span class="keyword">const</span> <span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a2697cc607af6d33d457a956bfab0168c">sht_peak_psl</a>((<span class="keyword">const</span> <span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_delete(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a16a6d148b8a1e9f24eeb56c3db568105">sht_delete</a>((<span class="keyword">struct</span> sht_ht *)ht, key);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_pop(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *restrict key,</div>
+<div class="line">             <span class="keyword">struct</span> map_entry *restrict out)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a826a9df51c8fe4ed3df707191ac6a105">sht_pop</a>((<span class="keyword">struct</span> sht_ht *)ht, key, out);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_replace(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line">                 <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a195b40910c12c6dc21fbfc5b2f4c2716">sht_replace</a>((<span class="keyword">struct</span> sht_ht *)ht, key, entry);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_swap(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">const</span> <span class="keywordtype">char</span> *key, <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry,</div>
+<div class="line">              <span class="keyword">struct</span> map_entry *out)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a6d531c171c19475d113e6631ee23ef06">sht_swap</a>((<span class="keyword">struct</span> sht_ht *)ht, key, entry, out);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">struct </span>map_iter *map_iter_new(<span class="keyword">struct</span> map_ht *ht, <span class="keyword">enum</span> <a class="code hl_enumeration" href="sht_8h.html#a8c782ca0214a2c1d605ac0fa25274e0e">sht_iter_type</a> type)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> (<span class="keyword">struct</span> map_iter *)<a class="code hl_function" href="sht_8c.html#a82f0e05af3fc1174b3ff844ad1511362">sht_iter_new</a>((<span class="keyword">struct</span> sht_ht *)ht, type);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">void</span> map_iter_free(<span class="keyword">struct</span> map_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <a class="code hl_function" href="sht_8c.html#ac3f4b138ac33ecb1bbb59aa4a73354f8">sht_iter_free</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">struct </span>map_entry *map_iter_next(<span class="keyword">struct</span> map_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a2e5418f907f471d6b3670add83cfd77b">sht_iter_next</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_iter_delete(<span class="keyword">struct</span> map_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a84cfd8fc36e1ba98ab427d82802ad420">sht_iter_delete</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keywordtype">bool</span> map_iter_replace(<span class="keyword">struct</span> map_iter *iter, <span class="keyword">const</span> <span class="keyword">struct</span> map_entry *entry)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a65154d9195575fab4ad984fbbcfaf13d">sht_iter_replace</a>((<span class="keyword">struct</span> sht_iter *)iter, entry);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">enum</span> <a class="code hl_enumeration" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> map_get_err(<span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a8a0fc3959fa6efaa802eeb84eab95c44">sht_get_err</a>((<span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> *map_get_msg(<span class="keyword">struct</span> map_ht *ht)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#aae2db74c56749b52273a6e6212d63a0c">sht_get_msg</a>((<span class="keyword">struct</span> sht_ht *)ht);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">enum</span> <a class="code hl_enumeration" href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a> map_iter_err(<span class="keyword">struct</span> map_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#ab1a800442ed16198b4317cf78e2e815a">sht_iter_err</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line">[[maybe_unused, gnu::nonnull]]</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> *map_iter_msg(<span class="keyword">struct</span> map_iter *iter)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_function" href="sht_8c.html#a21446834bf764bc08865cb2934e0960c">sht_iter_msg</a>((<span class="keyword">struct</span> sht_iter *)iter);</div>
+<div class="line">}</div>
+<div class="ttc" id="asht_8c_html_a16a6d148b8a1e9f24eeb56c3db568105"><div class="ttname"><a href="sht_8c.html#a16a6d148b8a1e9f24eeb56c3db568105">sht_delete</a></div><div class="ttdeci">bool sht_delete(struct sht_ht *ht, const void *restrict key)</div><div class="ttdoc">Remove an entry from the table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01335">sht.c:1335</a></div></div>
+<div class="ttc" id="asht_8c_html_a195b40910c12c6dc21fbfc5b2f4c2716"><div class="ttname"><a href="sht_8c.html#a195b40910c12c6dc21fbfc5b2f4c2716">sht_replace</a></div><div class="ttdeci">bool sht_replace(struct sht_ht *ht, const void *key, const void *entry)</div><div class="ttdoc">Replace the entry associated with an existing key.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01097">sht.c:1097</a></div></div>
+<div class="ttc" id="asht_8c_html_a21446834bf764bc08865cb2934e0960c"><div class="ttname"><a href="sht_8c.html#a21446834bf764bc08865cb2934e0960c">sht_iter_msg</a></div><div class="ttdeci">const char * sht_iter_msg(const struct sht_iter *iter)</div><div class="ttdoc">Get a description of an iterator&#39;s last error.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01454">sht.c:1454</a></div></div>
+<div class="ttc" id="asht_8c_html_a2697cc607af6d33d457a956bfab0168c"><div class="ttname"><a href="sht_8c.html#a2697cc607af6d33d457a956bfab0168c">sht_peak_psl</a></div><div class="ttdeci">uint8_t sht_peak_psl(const struct sht_ht *ht)</div><div class="ttdoc">Get the &quot;peak&quot; probe sequence length (PSL) of a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00626">sht.c:626</a></div></div>
+<div class="ttc" id="asht_8c_html_a45747c22ee2656dcd16d86ce74ea5ec8"><div class="ttname"><a href="sht_8c.html#a45747c22ee2656dcd16d86ce74ea5ec8">sht_set_hash_ctx</a></div><div class="ttdeci">void sht_set_hash_ctx(struct sht_ht *ht, void *context)</div><div class="ttdoc">Set the &quot;context&quot; for a table&#39;s hash function.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00336">sht.c:336</a></div></div>
+<div class="ttc" id="asht_8c_html_a4eaf764fc86d5f9428d6763f3aecadcd"><div class="ttname"><a href="sht_8c.html#a4eaf764fc86d5f9428d6763f3aecadcd">sht_init</a></div><div class="ttdeci">bool sht_init(struct sht_ht *ht, uint32_t capacity)</div><div class="ttdoc">Initialize a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00541">sht.c:541</a></div></div>
+<div class="ttc" id="asht_8c_html_a5cd47d066198640b242e7a1ecebab92e"><div class="ttname"><a href="sht_8c.html#a5cd47d066198640b242e7a1ecebab92e">sht_add</a></div><div class="ttdeci">int sht_add(struct sht_ht *ht, const void *key, const void *entry)</div><div class="ttdoc">Add an entry to the table, if its key is not already present.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00929">sht.c:929</a></div></div>
+<div class="ttc" id="asht_8c_html_a6ccef7db69da7e3394c146b0e5e63f42"><div class="ttname"><a href="sht_8c.html#a6ccef7db69da7e3394c146b0e5e63f42">sht_empty</a></div><div class="ttdeci">bool sht_empty(const struct sht_ht *ht)</div><div class="ttdoc">Determine whether a table is empty.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00606">sht.c:606</a></div></div>
+<div class="ttc" id="asht_8c_html_a6d531c171c19475d113e6631ee23ef06"><div class="ttname"><a href="sht_8c.html#a6d531c171c19475d113e6631ee23ef06">sht_swap</a></div><div class="ttdeci">bool sht_swap(struct sht_ht *ht, const void *key, const void *entry, void *out)</div><div class="ttdoc">Exchange an existing entry and a new entry.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01124">sht.c:1124</a></div></div>
+<div class="ttc" id="asht_8c_html_a826a9df51c8fe4ed3df707191ac6a105"><div class="ttname"><a href="sht_8c.html#a826a9df51c8fe4ed3df707191ac6a105">sht_pop</a></div><div class="ttdeci">bool sht_pop(struct sht_ht *ht, const void *restrict key, void *restrict out)</div><div class="ttdoc">Remove and return an entry from the table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01312">sht.c:1312</a></div></div>
+<div class="ttc" id="asht_8c_html_a82e02f941cacb73ed15c616bfe268985"><div class="ttname"><a href="sht_8c.html#a82e02f941cacb73ed15c616bfe268985">sht_size</a></div><div class="ttdeci">uint32_t sht_size(const struct sht_ht *ht)</div><div class="ttdoc">Get the number of entries in a table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00584">sht.c:584</a></div></div>
+<div class="ttc" id="asht_8c_html_a84cfd8fc36e1ba98ab427d82802ad420"><div class="ttname"><a href="sht_8c.html#a84cfd8fc36e1ba98ab427d82802ad420">sht_iter_delete</a></div><div class="ttdeci">bool sht_iter_delete(struct sht_iter *iter)</div><div class="ttdoc">Remove the last entry returned by a read/write iterator.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01507">sht.c:1507</a></div></div>
+<div class="ttc" id="asht_8c_html_a8a0fc3959fa6efaa802eeb84eab95c44"><div class="ttname"><a href="sht_8c.html#a8a0fc3959fa6efaa802eeb84eab95c44">sht_get_err</a></div><div class="ttdeci">enum sht_err sht_get_err(const struct sht_ht *ht)</div><div class="ttdoc">Get the error code of a table&#39;s last error.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00170">sht.c:170</a></div></div>
+<div class="ttc" id="asht_8c_html_a9d385ed61d95d30e63344ebe6aa522a3"><div class="ttname"><a href="sht_8c.html#a9d385ed61d95d30e63344ebe6aa522a3">sht_set_eq_ctx</a></div><div class="ttdeci">void sht_set_eq_ctx(struct sht_ht *ht, void *context)</div><div class="ttdoc">Set the &quot;context&quot; for a table&#39;s equality function.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00360">sht.c:360</a></div></div>
+<div class="ttc" id="asht_8c_html_aae2db74c56749b52273a6e6212d63a0c"><div class="ttname"><a href="sht_8c.html#aae2db74c56749b52273a6e6212d63a0c">sht_get_msg</a></div><div class="ttdeci">const char * sht_get_msg(const struct sht_ht *ht)</div><div class="ttdoc">Get a description of a table&#39;s last error.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00218">sht.c:218</a></div></div>
+<div class="ttc" id="asht_8c_html_aae724bd6d23b2cc6921fe638c75c1b48"><div class="ttname"><a href="sht_8c.html#aae724bd6d23b2cc6921fe638c75c1b48">sht_set_free_ctx</a></div><div class="ttdeci">void sht_set_free_ctx(struct sht_ht *ht, void *context)</div><div class="ttdoc">Set the &quot;context&quot; for a table&#39;s free function.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l00384">sht.c:384</a></div></div>
+<div class="ttc" id="asht_8c_html_ab1a800442ed16198b4317cf78e2e815a"><div class="ttname"><a href="sht_8c.html#ab1a800442ed16198b4317cf78e2e815a">sht_iter_err</a></div><div class="ttdeci">enum sht_err sht_iter_err(const struct sht_iter *iter)</div><div class="ttdoc">Get the error code of an iterator&#39;s last error.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01439">sht.c:1439</a></div></div>
+<div class="ttc" id="asht_8c_html_ac3f4b138ac33ecb1bbb59aa4a73354f8"><div class="ttname"><a href="sht_8c.html#ac3f4b138ac33ecb1bbb59aa4a73354f8">sht_iter_free</a></div><div class="ttdeci">void sht_iter_free(struct sht_iter *iter)</div><div class="ttdoc">Free an iterator.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01564">sht.c:1564</a></div></div>
+<div class="ttc" id="asht_8c_html_ae36e072969cef119b1176887dcdc8623"><div class="ttname"><a href="sht_8c.html#ae36e072969cef119b1176887dcdc8623">sht_free</a></div><div class="ttdeci">void sht_free(struct sht_ht *ht)</div><div class="ttdoc">Free the resources used by a hash table.</div><div class="ttdef"><b>Definition</b> <a href="sht_8c_source.html#l01352">sht.c:1352</a></div></div>
+<div class="ttc" id="asht_8h_html_a13c6debd7b2ee2b587a74957662713a7"><div class="ttname"><a href="sht_8h.html#a13c6debd7b2ee2b587a74957662713a7">sht_err</a></div><div class="ttdeci">sht_err</div><div class="ttdoc">Error codes.</div><div class="ttdef"><b>Definition</b> <a href="sht_8h_source.html#l00195">sht.h:195</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition in file <a class="el" href="sht-ts_8h_source.html">sht-ts.h</a>.</p>
+</div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
 <a id="a1b6c040a60b38bfb0a94150954ebd42a" name="a1b6c040a60b38bfb0a94150954ebd42a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1b6c040a60b38bfb0a94150954ebd42a">&#9670;&#160;</a></span>SHT_TABLE_TYPE</h2>
 
@@ -172,7 +591,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sht-ts_8h_source.html#l01141">1141</a> of file <a class="el" href="sht-ts_8h_source.html">sht-ts.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sht-ts_8h_source.html#l01162">1162</a> of file <a class="el" href="sht-ts_8h_source.html">sht-ts.h</a>.</p>
 
 </div>
 </div>

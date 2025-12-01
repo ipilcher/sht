@@ -12,6 +12,7 @@ var sht_8c =
     [ "sht_init", "sht_8c.html#a4eaf764fc86d5f9428d6763f3aecadcd", null ],
     [ "sht_size", "sht_8c.html#a82e02f941cacb73ed15c616bfe268985", null ],
     [ "sht_empty", "sht_8c.html#a6ccef7db69da7e3394c146b0e5e63f42", null ],
+    [ "sht_peak_psl", "sht_8c.html#a2697cc607af6d33d457a956bfab0168c", null ],
     [ "sht_add", "sht_8c.html#a5cd47d066198640b242e7a1ecebab92e", null ],
     [ "sht_set", "sht_8c.html#a44c78b1e70265deda028ec34f6c2ecbd", null ],
     [ "sht_get", "sht_8c.html#a0dd66cb8cf354a570429662675bc6485", null ],
