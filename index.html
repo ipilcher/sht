@@ -120,6 +120,10 @@ Limits and assumptions</h1>
 <p>In addition to the limits imposed by the library, the total size of a table is limited by the amount of memory available to the application. A table's total memory footprint scales with the product of the number of buckets and the entry size (i.e. <span class="tt">total_size ∝ buckets × entry_size</span>), so the largest possible table will not fit in the 4 GiB address space of a 32-bit system.</p>
 <h1 class="doxsection"><a class="anchor" id="usage"></a>
 Usage</h1>
+<blockquote class="doxtable">
+<p><b>NOTE</b></p>
+<p>This document describes the API provided by the SHT library (<span class="tt"><a class="el" href="sht_8h.html" title="SHT library API.">sht.h</a></span>), which is not type-safe. <span class="tt"><a class="el" href="sht-ts_8h.html" title="Generates type-safe wrappers for the SHT API.">sht-ts.h</a></span>, which provides a macro that generates type-safe wrappers for the library API is the recommended way to make use of the library. </p>
+</blockquote>
 <p>The basic usage pattern is:</p>
 <ul>
 <li>Create a table &mdash; <span class="tt"><a class="el" href="sht_8h.html#aff395306d3299b2e23d1ec5dfb0b70d0" title="Create a new hash table.">SHT_NEW()</a></span>,</li>
