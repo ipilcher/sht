@@ -36,6 +36,7 @@ cd src
 %__ln_s libsht.so.%{libver} %{buildroot}%{_libdir}/libsht.so.%{sover}
 %__mkdir_p %{buildroot}%{_includedir}
 %__cp src/sht.h %{buildroot}%{_includedir}/
+%__cp src/sht-ts.h %{buildroot}%{_includedir}/
 %__ln_s libsht.so.%{libver} %{buildroot}%{_libdir}/libsht.so
 
 %files
