@@ -1,4 +1,3 @@
-.clang-format
 docs/internal/
 docs/public/
 tests/sht_test
